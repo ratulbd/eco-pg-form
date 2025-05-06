@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E.CO PG Run Data Collection Form</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -33,6 +36,14 @@
     </div>
 
     <script>
+        // Enhance dropdowns with Select2
+        $(document).ready(function () {
+            $('#siteDropdown, #runnerDropdown').select2({
+                placeholder: 'Search and select...',
+                allowClear: true
+            });
+        });
+
         // Load data from CSV files
         async function loadCSVData(file) {
             const response = await fetch(file);
@@ -56,49 +67,50 @@
         populateDropdown('siteDropdown', 'data/sites.csv');
         populateDropdown('runnerDropdown', 'data/runners.csv');
 
-        document.getElementById('pgForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
+        // Form validation for PG Start and Stop Date & Time
+        document.getElementById('pgForm').addEventListener('submit', function (event) {
+            const pgStart = new Date(document.getElementById('pgStart').value);
+            const pgStop = new Date(document.getElementById('pgStop').value);
+
+            if (pgStop <= pgStart) {
+                event.preventDefault();
+                alert('PG Stop Date & Time must be greater than PG Start Date & Time.');
+                return;
+            }
+
             const loading = document.querySelector('.loading');
             const successMessage = document.querySelector('.success-message');
             const submitButton = event.target.querySelector('button');
+
             submitButton.disabled = true;
             loading.style.display = 'block';
 
             const site = document.getElementById('siteDropdown').value;
             const runner = document.getElementById('runnerDropdown').value;
-            const pgStart = document.getElementById('pgStart').value;
-            const pgStop = document.getElementById('pgStop').value;
             const timestamp = new Date().toISOString();
 
-            const data = {
-                site,
-                runner,
-                pgStart,
-                pgStop,
-                timestamp
-            };
+            const data = { site, runner, pgStart, pgStop, timestamp };
 
-            try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbzwLNI6M5nbl0fz9BGPNfhcf7N9u89TDFtGIk2NPrT8w_FPI9v8AGck6WMaFWjZi-Xx/exec', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
+            fetch('https://script.google.com/macros/s/AKfycbzwLNI6M5nbl0fz9BGPNfhcf7N9u89TDFtGIk2NPrT8w_FPI9v8AGck6WMaFWjZi-Xx/exec', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
                 if (response.ok) {
                     successMessage.style.display = 'block';
                     event.target.reset();
                 } else {
                     alert('Submission failed. Please try again.');
                 }
-            } catch (error) {
+            })
+            .catch(() => {
                 alert('Submission failed. Please try again.');
-            } finally {
+            })
+            .finally(() => {
                 submitButton.disabled = false;
                 loading.style.display = 'none';
-            }
+            });
         });
     </script>
 </body>

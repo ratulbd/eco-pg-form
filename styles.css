@@ -34,10 +34,16 @@ select, input[type="datetime-local"], button {
 }
 
 button {
-    background-color: #007BFF;
+    background: linear-gradient(to right, #007bff, #0056b3);
     color: #fff;
     border: none;
     cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
 }
 
 button:disabled {
