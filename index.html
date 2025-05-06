@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.CO PG Run Data Collection Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>E.CO PG Run Data Collection Form</h2>
+        <form id="pgForm">
+            <label for="site">Select Site:</label>
+            <select id="siteDropdown" required>
+                <option value="" disabled selected>Select a site</option>
+            </select>
+
+            <label for="runner">Select PG Runner:</label>
+            <select id="runnerDropdown" required>
+                <option value="" disabled selected>Select a runner</option>
+            </select>
+
+            <label for="pgStart">PG Start Date & Time:</label>
+            <input type="datetime-local" id="pgStart" required>
+
+            <label for="pgStop">PG Stop Date & Time:</label>
+            <input type="datetime-local" id="pgStop" required>
+
+            <button type="submit">Submit</button>
+        </form>
+        <div class="loading">Submitting...</div>
+        <div class="success-message">Submission successful!</div>
+    </div>
+
+    <script>
+        // Load data from CSV files
+        async function loadCSVData(file) {
+            const response = await fetch(file);
+            const text = await response.text();
+            const lines = text.split('\n').slice(1); // Skip header row
+            return lines.map(line => line.trim());
+        }
+
+        async function populateDropdown(dropdownId, dataFile) {
+            const dropdown = document.getElementById(dropdownId);
+            const data = await loadCSVData(dataFile);
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item;
+                option.textContent = item;
+                dropdown.appendChild(option);
+            });
+        }
+
+        // Populate the dropdowns
+        populateDropdown('siteDropdown', 'data/sites.csv');
+        populateDropdown('runnerDropdown', 'data/runners.csv');
+
+        document.getElementById('pgForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const loading = document.querySelector('.loading');
+            const successMessage = document.querySelector('.success-message');
+            const submitButton = event.target.querySelector('button');
+            submitButton.disabled = true;
+            loading.style.display = 'block';
+
+            const site = document.getElementById('siteDropdown').value;
+            const runner = document.getElementById('runnerDropdown').value;
+            const pgStart = document.getElementById('pgStart').value;
+            const pgStop = document.getElementById('pgStop').value;
+            const timestamp = new Date().toISOString();
+
+            const data = {
+                site,
+                runner,
+                pgStart,
+                pgStop,
+                timestamp
+            };
+
+            try {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbzwLNI6M5nbl0fz9BGPNfhcf7N9u89TDFtGIk2NPrT8w_FPI9v8AGck6WMaFWjZi-Xx/exec', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    successMessage.style.display = 'block';
+                    event.target.reset();
+                } else {
+                    alert('Submission failed. Please try again.');
+                }
+            } catch (error) {
+                alert('Submission failed. Please try again.');
+            } finally {
+                submitButton.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
