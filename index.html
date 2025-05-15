@@ -147,11 +147,21 @@ $(document).ready(function () {
   $('#pgForm').submit(function (event) {
     event.preventDefault();
     const formData = new FormData(this);
-    const jsonData = {};
-    formData.forEach((value, key) => {
-      jsonData[key] = value;
-    });
-    jsonData.timestamp = new Date().toISOString(); // ✅ Timestamp added
+const expectedFields = [
+  'ttNumber', 'operatorName', 'site', 'pgOperator', 'teamLeader',
+  'selectOption', 'siteAttend', 'siteAttendDateTime',
+  'pgStart1', 'pgStop1', 'pgStart2', 'pgStop2', 'pgStart3', 'pgStop3'
+];
+
+const jsonData = {};
+
+// Ensure all expected fields are included, even if empty
+expectedFields.forEach(field => {
+  jsonData[field] = formData.get(field) || '';
+});
+
+jsonData.timestamp = new Date().toISOString();
+
 
     $('.loading').show();
     fetch('/.netlify/functions/proxy', {
