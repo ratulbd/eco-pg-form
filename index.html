@@ -93,6 +93,7 @@
   </div>
 
  <!-- Only the script section is shown here for brevity -->
+<!-- Inside <script> tag at the bottom of the file -->
 <script>
 $(document).ready(function () {
   $('#siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').select2({
@@ -147,21 +148,20 @@ $(document).ready(function () {
   $('#pgForm').submit(function (event) {
     event.preventDefault();
     const formData = new FormData(this);
-const expectedFields = [
-  'ttNumber', 'operatorName', 'site', 'pgOperator', 'teamLeader',
-  'selectOption', 'siteAttend', 'siteAttendDateTime',
-  'pgStart1', 'pgStop1', 'pgStart2', 'pgStop2', 'pgStart3', 'pgStop3'
-];
 
-const jsonData = {};
+    // ✅ FIXED: Ensure all expected fields are included, even if empty
+    const expectedFields = [
+      'ttNumber', 'operatorName', 'site', 'pgOperator', 'teamLeader',
+      'selectOption', 'siteAttend', 'siteAttendDateTime',
+      'pgStart1', 'pgStop1', 'pgStart2', 'pgStop2', 'pgStart3', 'pgStop3'
+    ];
 
-// Ensure all expected fields are included, even if empty
-expectedFields.forEach(field => {
-  jsonData[field] = formData.get(field) || '';
-});
+    const jsonData = {};
+    expectedFields.forEach(field => {
+      jsonData[field] = formData.get(field) || ''; // ✅ FIXED: Correct fallback for empty fields
+    });
 
-jsonData.timestamp = new Date().toISOString();
-
+    jsonData.timestamp = new Date().toISOString(); // ✅ Timestamp added
 
     $('.loading').show();
     fetch('/.netlify/functions/proxy', {
