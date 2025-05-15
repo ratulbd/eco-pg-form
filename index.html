@@ -12,13 +12,13 @@
 <body>
   <div class="container">
     <h2>E.CO PG Run Data Collection Form</h2>
-    <form id="dataCollectionForm">
-
-      <div class="card"> <label for="ttNumber">TT Number:</label>
-        <input type="text" id="ttNumber" required />
+    <form id="pgForm">
+      <div class="card">
+        <label for="ttNumber">TT Number:</label>
+        <input type="text" id="ttNumber" name="ttNumber" required />
 
         <label for="operatorName">Operator Name:</label>
-        <select id="operatorName" required>
+        <select id="operatorName" name="operatorName" required>
           <option value="" disabled selected>Select an operator</option>
           <option value="GP">GP</option>
           <option value="BL">BL</option>
@@ -26,19 +26,20 @@
         </select>
 
         <label for="siteDropdown">Select Site:</label>
-        <select id="siteDropdown" required></select>
+        <select id="siteDropdown" name="site" required></select>
       </div>
-    
-      <div class="card"> <label for="pgOperatorDropdown">Select PG Operator Name:</label>
-        <select id="pgOperatorDropdown" required></select>
+
+      <div class="card">
+        <label for="pgOperatorDropdown">Select PG Operator Name:</label>
+        <select id="pgOperatorDropdown" name="pgOperator" required></select>
 
         <label for="teamLeaderDropdown">Select Team Leader Name:</label>
-        <select id="teamLeaderDropdown" required></select>
+        <select id="teamLeaderDropdown" name="teamLeader" required></select>
       </div>
 
       <div class="card">
         <label for="selectOption">Select Option:</label>
-        <select id="selectOption" required>
+        <select id="selectOption" name="selectOption" required>
           <option value="" disabled selected>Select an option</option>
           <option value="Misscall TT">Misscall TT</option>
           <option value="PG Run">PG Run</option>
@@ -47,7 +48,7 @@
 
       <div id="misscallTTFields" style="display: none;" class="card">
         <label for="siteAttend">Site Attend:</label>
-        <select id="siteAttend">
+        <select id="siteAttend" name="siteAttend">
           <option value="" disabled selected>Select an option</option>
           <option value="YES">YES</option>
           <option value="NO">NO</option>
@@ -55,7 +56,7 @@
 
         <div id="siteAttendDateTimeField" style="display: none;">
           <label for="siteAttendDateTime">Site Attend Date & Time:</label>
-          <input type="datetime-local" id="siteAttendDateTime" />
+          <input type="datetime-local" id="siteAttendDateTime" name="siteAttendDateTime" />
         </div>
       </div>
 
@@ -63,185 +64,115 @@
         <div class="event-card">
           <h3>1st Event</h3>
           <label for="pgStart1">PG Start Date & Time:</label>
-          <input type="datetime-local" id="pgStart1" /> 
+          <input type="datetime-local" id="pgStart1" name="pgStart1" required />
           <label for="pgStop1">PG Stop Date & Time:</label>
-          <input type="datetime-local" id="pgStop1" /> 
+          <input type="datetime-local" id="pgStop1" name="pgStop1" required />
         </div>
 
         <div class="event-card">
           <h3>2nd Event</h3>
           <label for="pgStart2">PG Start Date & Time:</label>
-          <input type="datetime-local" id="pgStart2" />
+          <input type="datetime-local" id="pgStart2" name="pgStart2" />
           <label for="pgStop2">PG Stop Date & Time:</label>
-          <input type="datetime-local" id="pgStop2" />
+          <input type="datetime-local" id="pgStop2" name="pgStop2" />
         </div>
 
         <div class="event-card">
           <h3>3rd Event</h3>
           <label for="pgStart3">PG Start Date & Time:</label>
-          <input type="datetime-local" id="pgStart3" />
+          <input type="datetime-local" id="pgStart3" name="pgStart3" />
           <label for="pgStop3">PG Stop Date & Time:</label>
-          <input type="datetime-local" id="pgStop3" />
+          <input type="datetime-local" id="pgStop3" name="pgStop3" />
         </div>
       </div>
 
       <button type="submit">Submit</button>
     </form>
-    <div class="loading" style="display: none;">Submitting...</div>
-    <div class="success-message" style="display: none;">Submission successful!</div>
+    <div class="loading">Submitting...</div>
+    <div class="success-message">Submission successful!</div>
   </div>
 
   <script>
     $(document).ready(function () {
-      // Initialize Select2 for static dropdowns first
-      $('#operatorName, #selectOption, #siteAttend').select2({
-        allowClear: true
-      });
-      
-      // For dynamically populated dropdowns, initialize with a basic placeholder.
-      // They will be fully configured in initializeForm after data is loaded.
       $('#siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').select2({
-        placeholder: 'Loading data...', // Temporary placeholder
+        placeholder: 'Search and select...',
         allowClear: true
       });
 
       $('#selectOption').change(function () {
-        const selectedValue = $(this).val();
-        $('#misscallTTFields').hide();
-        $('#pgRunFields').hide();
-        $('#pgStart1, #pgStop1, #siteAttendDateTime').removeAttr('required');
-
-        if (selectedValue === 'Misscall TT') {
+        if ($(this).val() === 'Misscall TT') {
           $('#misscallTTFields').show();
-        } else if (selectedValue === 'PG Run') {
+          $('#pgRunFields').hide();
+        } else if ($(this).val() === 'PG Run') {
+          $('#misscallTTFields').hide();
           $('#pgRunFields').show();
-          $('#pgStart1, #pgStop1').attr('required', 'required'); 
+        } else {
+          $('#misscallTTFields').hide();
+          $('#pgRunFields').hide();
         }
-      }).trigger('change'); 
+      });
 
       $('#siteAttend').change(function () {
         if ($(this).val() === 'YES') {
           $('#siteAttendDateTimeField').show();
-          $('#siteAttendDateTime').attr('required', 'required');
         } else {
           $('#siteAttendDateTimeField').hide();
-          $('#siteAttendDateTime').removeAttr('required');
         }
-      }).trigger('change'); 
+      });
 
-      $('#dataCollectionForm').submit(function(event) {
-        event.preventDefault(); 
-        console.log('Form submitted with data:', $(this).serializeArray());
-        // Add your form submission logic here (e.g., using fetch to send data to a server)
-        
+      async function loadCSVData(file) {
+        const response = await fetch(file);
+        const text = await response.text();
+        const lines = text.split('\\n').slice(1);
+        return lines.map(line => line.trim()).filter(line => line);
+      }
+
+      async function populateDropdown(dropdownId, dataFile) {
+        const dropdown = document.getElementById(dropdownId);
+        const data = await loadCSVData(dataFile);
+        data.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item;
+          option.textContent = item;
+          dropdown.appendChild(option);
+        });
+        $(`#${dropdownId}`).select2({ placeholder: 'Search and select...', allowClear: true });
+      }
+
+      populateDropdown('siteDropdown', 'data/sites.csv');
+      populateDropdown('pgOperatorDropdown', 'data/runners.csv');
+      populateDropdown('teamLeaderDropdown', 'data/runners.csv');
+
+      $('#pgForm').submit(function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const jsonData = {};
+        formData.forEach((value, key) => {
+          jsonData[key] = value;
+        });
+
         $('.loading').show();
-        setTimeout(() => { // Simulate API call
-          $('.loading').hide();
-          $('.success-message').show();
-          $('#dataCollectionForm')[0].reset();
-          // Reset select2 fields to their placeholder or initial state
-          $('#operatorName, #selectOption, #siteAttend, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').val(null).trigger('change.select2');
-          // Trigger change for conditional logic after reset
-          $('#selectOption').trigger('change');
-          $('#siteAttend').trigger('change');
-          setTimeout(() => { $('.success-message').hide(); }, 3000);
-        }, 1500);
+        fetch('/.netlify/functions/proxy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(jsonData)
+        })
+          .then(response => response.json())
+          .then(result => {
+            $('.loading').hide();
+            $('.success-message').show();
+            $('#pgForm')[0].reset();
+            $('#operatorName, #selectOption, #siteAttend, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').val(null).trigger('change.select2');
+            $('#selectOption').trigger('change');
+            $('#siteAttend').trigger('change');
+            setTimeout(() => { $('.success-message').hide(); }, 3000);
+          })
+          .catch(error => {
+            $('.loading').hide();
+            alert('Submission failed: ' + error.message);
+          });
       });
     });
-
-    async function loadCSVData(file) {
-      console.log(`Attempting to load CSV: ${file}`); // Log file being loaded
-      try {
-        const response = await fetch(file);
-        if (!response.ok) { 
-          console.error(`Failed to load CSV: ${file}. Status: ${response.status} ${response.statusText}`);
-          alert(`Error: Could not load data from ${file}. Please check the file path (should be 'data/filename.csv' relative to index.html) and ensure the file exists. Check the browser console for more details.`);
-          return []; 
-        }
-        const text = await response.text();
-        if (!text || text.trim() === '') {
-            console.warn(`CSV file ${file} is empty or contains only whitespace.`);
-            return [];
-        }
-        const lines = text.split(/\r?\n/) 
-                           .slice(1) // Skip header row
-                           .map(line => line.trim()) // Trim whitespace from each line
-                           .filter(line => line); // Filter out any empty lines resulting from trim or extra newlines
-        
-        if (lines.length === 0) {
-            console.warn(`No data rows (or only header) found in ${file} after processing.`);
-        } else {
-            console.log(`Successfully loaded ${lines.length} data rows from ${file}.`);
-        }
-        return lines;
-      } catch (error) {
-        console.error(`Error fetching or parsing CSV: ${file}`, error);
-        alert(`An error occurred while trying to process ${file}. Check the browser console for technical details.`);
-        return [];
-      }
-    }
-
-    async function populateDropdown(dropdownId, dataFile, placeholderText = 'Select an option') {
-      const dropdown = document.getElementById(dropdownId);
-      if (!dropdown) {
-        console.error(`Dropdown element with ID '${dropdownId}' not found.`);
-        return;
-      }
-      
-      // Clear existing options but preserve a default/disabled/selected one if it exists
-      let firstOptionHTML = '';
-      if (dropdown.options.length > 0 && dropdown.options[0].value === "" && dropdown.options[0].disabled && dropdown.options[0].selected) {
-        firstOptionHTML = dropdown.options[0].outerHTML;
-      } else if (dropdown.options.length > 0 && dropdown.options[0].value === "" && !dropdown.options[0].disabled) {
-        // If there's a generic "Select..." option that isn't disabled, preserve it
-        firstOptionHTML = dropdown.options[0].outerHTML;
-      }
-      dropdown.innerHTML = firstOptionHTML; 
-
-      const data = await loadCSVData(dataFile);
-
-      if (data.length === 0) {
-        if (firstOptionHTML === '') { // Only add "No data" if no placeholder existed
-            console.warn(`No data loaded from ${dataFile} for dropdown ${dropdownId}. Adding 'No data available' option.`);
-            const option = document.createElement('option');
-            option.value = "";
-            option.textContent = "No data available";
-            option.disabled = true;
-            dropdown.appendChild(option);
-        } else {
-            console.warn(`No data loaded from ${dataFile} for dropdown ${dropdownId}. Retaining existing placeholder.`);
-        }
-      } else {
-        data.forEach(item => {
-          if (item) { 
-            const option = document.createElement('option');
-            option.value = item;
-            option.textContent = item;
-            dropdown.appendChild(option);
-          }
-        });
-      }
-      // Crucially, update Select2 after changing options
-      $(dropdown).select2({
-          placeholder: placeholderText,
-          allowClear: true
-      });
-    }
-
-    async function initializeForm() {
-      console.log("Initializing form and populating dropdowns...");
-      // Populate dropdowns and set their specific placeholders for Select2
-      await populateDropdown('siteDropdown', 'data/sites.csv', 'Search and select site...');
-      await populateDropdown('pgOperatorDropdown', 'data/runners.csv', 'Search and select PG operator...');
-      await populateDropdown('teamLeaderDropdown', 'data/runners.csv', 'Search and select team leader...');
-      console.log("Dropdown population complete.");
-    }
-
-    // Call the initialization function after the DOM is ready
-    // $(document).ready(function() { // Not strictly needed here as initializeForm is called at the end of script
-    initializeForm();
-    // });
-
   </script>
 </body>
 </html>
