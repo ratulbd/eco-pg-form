@@ -8,7 +8,6 @@ export async function handler(event, context) {
 
   try {
     const data = JSON.parse(event.body);
-
     // Replace with your actual Google Apps Script Web App URL
     const googleScriptURL = 'https://script.google.com/macros/s/AKfycbzM0069-5MgbR-yETb2d2Sob9Ufg4EumeHWx14nhWyn5koPx2aYCR01Mj9SJ6U75xAr/exec';
 

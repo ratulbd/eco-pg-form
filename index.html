@@ -1,118 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <title>E.CO PG Run Data Collection Form</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="icon" href="favicon.ico" type="image/x-icon">
+ <title>E.CO PG Run Data Collection Form</title>
+ <link rel="stylesheet" href="styles.css">
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h2>E.CO PG Run Data Collection Form</h2>
-        <form id="pgForm">
-            <label for="site">Select Site:</label>
-            <select id="siteDropdown" required>
-                <option value="" disabled selected>Select a site</option>
-            </select>
+ <div class="container">
+ <h2>E.CO PG Run Data Collection Form</h2>
+ <form id="pgForm">
+ <label for="site">Select Site:</label>
+ <select id="siteDropdown" required>
+ <option value="" disabled selected>Select a site</option>
+ </select>
+ <label for="runner">Select PG Runner:</label>
+ <select id="runnerDropdown" required>
+ <option value="" disabled selected>Select a runner</option>
+ </select>
+ <label for="pgStart">PG Start Date & Time:</label>
+ <input type="datetime-local" id="pgStart" required>
+ <label for="pgStop">PG Stop Date & Time:</label>
+ <input type="datetime-local" id="pgStop" required>
+ <button type="submit">Submit</button>
+ </form>
+ <div class="loading">Submitting...</div>
+ <div class="success-message">Submission successful!</div>
+ </div>
+ <script>
+ $(document).ready(function () {
+  Dropdown').select2({
+     placeholder: 'Search and select...',
+     allowClear: true
+   });
+ });
 
-            <label for="runner">Select PG Runner:</label>
-            <select id="runnerDropdown" required>
-                <option value="" disabled selected>Select a runner</option>
-            </select>
+ async function loadCSVData(file) {
+   const response = await fetch(file);
+   const text = await response.text();
+   const lines = text.split('\n').slice(1);
+   return lines.map(line => line.trim());
+ }
 
-            <label for="pgStart">PG Start Date & Time:</label>
-            <input type="datetime-local" id="pgStart" required>
+ async function populateDropdown(dropdownId, dataFile) {
+   const dropdown = document.getElementById(dropdownId);
+   const data = await loadCSVData(dataFile);
+   data.forEach(item => {
+     const option = document.createElement('option');
+     option.value = item;
+     option.textContent = item;
+     dropdown.appendChild(option);
+   });
+ }
 
-            <label for="pgStop">PG Stop Date & Time:</label>
-            <input type="datetime-local" id="pgStop" required>
+ populateDropdown('siteDropdown', 'data/sites.csv');
+ populateDropdown('runnerDropdown', 'data/runners.csv');
 
-            <button type="submit">Submit</button>
-        </form>
-        <div class="loading">Submitting...</div>
-        <div class="success-message">Submission successful!</div>
-    </div>
+ document.getElementById('pgForm').addEventListener('submit', function (event) {
+   const pgStart = new Date(document.getElementById('pgStart').value);
+   const pgStop = new Date(document.getElementById('pgStop').value);
+   if (pgStop <= pgStart) {
+     event.preventDefault();
+     alert('PG Stop Date & Time must be greater than PG Start Date & Time.');
+     return;
+   }
 
-    <script>
-        // Enhance dropdowns with Select2
-        $(document).ready(function () {
-            $('#siteDropdown, #runnerDropdown').select2({
-                placeholder: 'Search and select...',
-                allowClear: true
-            });
-        });
+   const loading = document.querySelector('.loading');
+   const successMessage = document.querySelector('.success-message');
+   const submitButton = event.target.querySelector('button');
+   submitButton.disabled = true;
+   loading.style.display = 'block';
 
-        // Load data from CSV files
-        async function loadCSVData(file) {
-            const response = await fetch(file);
-            const text = await response.text();
-            const lines = text.split('\n').slice(1); // Skip header row
-            return lines.map(line => line.trim());
-        }
+   const site = document.getElementById('siteDropdown').value;
+   const runner = document.getElementById('runnerDropdown').value;
+   const timestamp = new Date().toISOString();
+   const data = { site, runner, pgStart, pgStop, timestamp };
 
-        async function populateDropdown(dropdownId, dataFile) {
-            const dropdown = document.getElementById(dropdownId);
-            const data = await loadCSVData(dataFile);
-            data.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item;
-                option.textContent = item;
-                dropdown.appendChild(option);
-            });
-        }
-
-        // Populate the dropdowns
-        populateDropdown('siteDropdown', 'data/sites.csv');
-        populateDropdown('runnerDropdown', 'data/runners.csv');
-
-        // Form validation for PG Start and Stop Date & Time
-        document.getElementById('pgForm').addEventListener('submit', function (event) {
-            const pgStart = new Date(document.getElementById('pgStart').value);
-            const pgStop = new Date(document.getElementById('pgStop').value);
-
-            if (pgStop <= pgStart) {
-                event.preventDefault();
-                alert('PG Stop Date & Time must be greater than PG Start Date & Time.');
-                return;
-            }
-
-            const loading = document.querySelector('.loading');
-            const successMessage = document.querySelector('.success-message');
-            const submitButton = event.target.querySelector('button');
-
-            submitButton.disabled = true;
-            loading.style.display = 'block';
-
-            const site = document.getElementById('siteDropdown').value;
-            const runner = document.getElementById('runnerDropdown').value;
-            const timestamp = new Date().toISOString();
-
-            const data = { site, runner, pgStart, pgStop, timestamp };
-
-            fetch('/.netlify/functions/proxy', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            })
-            .then(response => {
-                if (response.ok) {
-                    successMessage.style.display = 'block';
-                    event.target.reset();
-                } else {
-                    alert('Submission failed. Please try again.');
-                }
-            })
-            .catch(() => {
-                alert('Submission failed. Please try again.');
-            })
-            .finally(() => {
-                submitButton.disabled = false;
-                loading.style.display = 'none';
-            });
-        });
-    </script>
+   fetch('/.netlify/functions/proxy', {
+     method: 'POST',
+     headers: { 'Content-Type': 'application/json' },
+     body: JSON.stringify(data)
+   })
+   .then(response => {
+     if (response.ok) {
+       successMessage.style.display = 'block';
+       event.target.reset();
+     } else {
+       alert('Submission failed. Please try again.');
+     }
+   })
+   .catch(() => {
+     alert('Submission failed. Please try again.');
+   })
+   .finally(() => {
+     submitButton.disabled = false;
+     loading.style.display = 'none';
+   });
+ });
+ </script>
 </body>
 </html>
