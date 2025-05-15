@@ -1,0 +1,72 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 20px auto; /* Adjusted margin for better mobile view */
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+label {
+    display: block;
+    margin: 15px 0 5px;
+    color: #555;
+}
+
+select, input[type="datetime-local"], button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:disabled {
+    background-color: #ccc;
+}
+
+.success-message {
+    display: none;
+    text-align: center;
+    color: green;
+    margin-top: 20px;
+}
+
+.loading {
+    display: none;
+    text-align: center;
+    color: #007BFF;
+    margin-top: 20px;
+}
+
+/* Mobile responsiveness  */
+@media (max-width: 480px) {
+    .container {
+        width: 90%; /* Take up more width on small screens  */
+        margin: 10px auto;
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 1.5em; /* Smaller heading  */
+    }
+}
