@@ -2,43 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport <label for="ttNumber">TT Number:</label>
-        <input type="text" id="ttNumber" name="ttNumber" required />
-        <span class="error-message" id="ttNumberError"></span>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E.CO PG Run Data Collection Form</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+  <style>
+    /* Add temporary styling for error messages and invalid fields */
+    .error-message {
+        color: red;
+        font-size: 0.8em;
+        display: block; /* Make it appear on its own line */
+        margin-top: -15px; /* Pull it up slightly */
+        margin-bottom: 15px; /* Space after the message */
+        min-height: 1em; /* Reserve space even when empty */
+    }
+    .is-invalid {
+        border-color: red !important; /* Use !important to override default/focus styles */
+    }
+     /* Style for select2 invalid state */
+    .select2-container--default .select2-selection--single.is-invalid {
+         border-color: red !important;
+    }
+     /* Adjust label margin if needed */
+     label + .error-message {
+         margin-top: -15px; /* Adjust margin if error is right after label */
+     }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>E.CO PG Run Data Collection Form</h2>
+    <form id="pgForm" novalidate> <div class="card">
+        <label for="ttNumber">TT Number:</label>
+        <input type="text" id="ttNumber" name="ttNumber" />
+        <span class="error-message" id="ttNumber-error"></span>
 
         <label for="operatorName">Operator Name:</label>
-        <select id="operatorName" name="operatorName" required>
-          <option value selected>Select an operator</option>
+        <select id="operatorName" name="operatorName">
+          <option value="" disabled selected>Select an operator</option>
           <option value="GP">GP</option>
           <option value="BL">BL</option>
           <option value="ROBI">ROBI</option>
         </select>
-        <span class="error-message" id="operatorNameError"></span>
+         <span class="error-message" id="operatorName-error"></span>
 
         <label for="siteDropdown">Select Site:</label>
-        <select id="siteDropdown" name="site" required></select>
-        <span class="error-message" id="siteDropdownError"></span>
+        <select id="siteDropdown" name="site"></select>
+        <span class="error-message" id="site-error"></span>
       </div>
 
       <div class="card">
         <label for="pgOperatorDropdown">Select PG Operator Name:</label>
-        <select id="pgOperatorDropdown" name="pgOperator" required></select>
-        <span class="error-message" id="pgOperatorDropdownError"></span>
+        <select id="pgOperatorDropdown" name="pgOperator"></select>
+        <span class="error-message" id="pgOperator-error"></span>
 
         <label for="teamLeaderDropdown">Select Team Leader Name:</label>
-        <select id="teamLeaderDropdown" name="teamLeader" required></select>
-        <span class="error-message" id="teamLeaderDropdownError"></span>
+        <select id="teamLeaderDropdown" name="teamLeader"></select>
+        <span class="error-message" id="teamLeader-error"></span>
       </div>
 
       <div class="card">
         <label for="selectOption">Select Option:</label>
-        <select id="selectOption" name="selectOption" required>
+        <select id="selectOption" name="selectOption">
           <option value="" disabled selected>Select an option</option>
           <option value="Misscall TT">Misscall TT</option>
           <option value="PG Run">PG Run</option>
         </select>
-        <span class="error-message" id="selectOptionError"></span>
+        <span class="error-message" id="selectOption-error"></span>
       </div>
+
       <div id="misscallTTFields" style="display: none;" class="card">
         <label for="siteAttend">Site Attend:</label>
         <select id="siteAttend" name="siteAttend">
@@ -46,12 +78,12 @@
           <option value="YES">YES</option>
           <option value="NO">NO</option>
         </select>
-        <span class="error-message" id="siteAttendError"></span>
+         <span class="error-message" id="siteAttend-error"></span>
 
         <div id="siteAttendDateTimeField" style="display: none;">
           <label for="siteAttendDateTime">Site Attend Date & Time:</label>
           <input type="datetime-local" id="siteAttendDateTime" name="siteAttendDateTime" />
-          <span class="error-message" id="siteAttendDateTimeError"></span>
+          <span class="error-message" id="siteAttendDateTime-error"></span>
         </div>
       </div>
 
@@ -60,39 +92,35 @@
           <h3>1st Event</h3>
           <label for="pgStart1">PG Start Date & Time:</label>
           <input type="datetime-local" id="pgStart1" name="pgStart1" />
-          <span class="error-message" id="pgStart1Error"></span>
-
+           <span class="error-message" id="pgStart1-error"></span>
           <label for="pgStop1">PG Stop Date & Time:</label>
           <input type="datetime-local" id="pgStop1" name="pgStop1" />
-          <span class="error-message" id="pgStop1Error"></span>
+           <span class="error-message" id="pgStop1-error"></span>
         </div>
 
         <div class="event-card">
           <h3>2nd Event</h3>
           <label for="pgStart2">PG Start Date & Time:</label>
           <input type="datetime-local" id="pgStart2" name="pgStart2" />
-          <span class="error-message" id="pgStart2Error"></span>
-
+           <span class="error-message" id="pgStart2-error"></span>
           <label for="pgStop2">PG Stop Date & Time:</label>
           <input type="datetime-local" id="pgStop2" name="pgStop2" />
-          <span class="error-message" id="pgStop2Error"></span>
+           <span class="error-message" id="pgStop2-error"></span>
         </div>
 
         <div class="event-card">
           <h3>3rd Event</h3>
           <label for="pgStart3">PG Start Date & Time:</label>
           <input type="datetime-local" id="pgStart3" name="pgStart3" />
-          <span class="error-message" id="pgStart3Error"></span>
-
+           <span class="error-message" id="pgStart3-error"></span>
           <label for="pgStop3">PG Stop Date & Time:</label>
           <input type="datetime-local" id="pgStop3" name="pgStop3" />
-          <span class="error-message" id="pgStop3Error"></span>
+           <span class="error-message" id="pgStop3-error"></span>
         </div>
       </div>
 
       <button type="submit">Submit</button>
     </form>
-
     <div class="loading">Submitting...</div>
     <div class="success-message">Submission successful!</div>
   </div>
@@ -102,140 +130,446 @@
     <strong>Rakibul Islam Ratul</strong><br>
     <small>Sr. Manager, Central Governance, Metal Plus Ltd.</small></p>
   </div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
   <script>
     $(document).ready(function () {
-      function showError(id, message) {
-        $(`#${id}`).addClass('invalid');
-        $(`#${id}Error`).text(message).show();
-      }
-
-      function hideError(id) {
-        $(`#${id}`).removeClass('invalid');
-        $(`#${id}Error`).hide();
-      }
-
-      function validateField(id, message) {
-        const value = $(`#${id}`).val();
-        if (!value) {
-          showError(id, message);
-          return false;
-        } else {
-          hideError(id);
-          return true;
-        }
-      }
-
-      function validateDateOrder(startId, stopId, label) {
-        const start = new Date($(`#${startId}`).val());
-        const stop = new Date($(`#${stopId}`).val());
-        if ($(`#${startId}`).val() && $(`#${stopId}`).val() && stop <= start) {
-          showError(stopId, `${label} Stop must be after Start`);
-          return false;
-        } else {
-          hideError(stopId);
-          return true;
-        }
-      }
-
-      function validateForm() {
-        let valid = true;
-        valid &= validateField('ttNumber', 'TT Number is required.');
-        valid &= validateField('operatorName', 'Operator Name is required.');
-        valid &= validateField('siteDropdown', 'Site is required.');
-        valid &= validateField('pgOperatorDropdown', 'PG Operator is required.');
-        valid &= validateField('teamLeaderDropdown', 'Team Leader is required.');
-        valid &= validateField('selectOption', 'Select Option is required.');
-
-        const option = $('#selectOption').val();
-        if (option === 'Misscall TT') {
-          valid &= validateField('siteAttend', 'Site Attend is required.');
-          if ($('#siteAttend').val() === 'YES') {
-            valid &= validateField('siteAttendDateTime', 'Date & Time is required.');
-          }
-        }
-
-        if (option === 'PG Run') {
-          valid &= validateField('pgStart1', 'Start time is required.');
-          valid &= validateField('pgStop1', 'Stop time is required.');
-          valid &= validateDateOrder('pgStart1', 'pgStop1', '1st Event');
-
-          if ($('#pgStart2').val() || $('#pgStop2').val()) {
-            valid &= validateField('pgStart2', 'Start time is required.');
-            valid &= validateField('pgStop2', 'Stop time is required.');
-            valid &= validateDateOrder('pgStart2', 'pgStop2', '2nd Event');
-          }
-
-          if ($('#pgStart3').val() || $('#pgStop3').val()) {
-            valid &= validateField('pgStart3', 'Start time is required.');
-            valid &= validateField('pgStop3', 'Stop time is required.');
-            valid &= validateDateOrder('pgStart3', 'pgStop3', '3rd Event');
-          }
-        }
-
-        return !!valid;
-      }
-
-      $('#pgForm').on('submit', function (e) {
-        e.preventDefault();
-        if (validateForm()) {
-          $('.loading').show();
-          const formData = $(this).serializeArray();
-          const jsonData = {};
-          formData.forEach(item => jsonData[item.name] = item.value);
-
-          fetch('/.netlify/functions/proxy', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(jsonData)
-          })
-          .then(res => res.json())
-          .then(result => {
-            $('.loading').hide();
-            if (result.result === 'success') {
-              $('.success-message').show();
-              setTimeout(() => $('.success-message').hide(), 3000);
-              $('#pgForm')[0].reset();
-              $('select').val('').trigger('change');
-              $('.error-message').hide();
-              $('.invalid').removeClass('invalid');
-            } else {
-              alert('Submission failed: ' + (result.error || 'Unknown error from server'));
-            }
-          })
-          .catch(err => {
-            $('.loading').hide();
-            alert('Submission failed: ' + err.message);
-          });
-        }
+      // Initialize Select2
+      $('#siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').select2({
+        placeholder: 'Search and select...',
+        allowClear: true
+      });
+      $('#operatorName, #selectOption, #siteAttend').select2({
+           placeholder: 'Select...',
+           allowClear: true
       });
 
-      $('#selectOption').on('change', function () {
-        const val = $(this).val();
-        if (val === 'Misscall TT') {
+       // Add event listeners for select2 change to trigger validation
+       $('#operatorName, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown, #selectOption, #siteAttend').on('change', function() {
+            validateField($(this).attr('id')); // Use validateField for general fields
+            // Re-validate conditional date/time fields based on these selections
+            validateConditionalDateTimeFields();
+       });
+
+
+      // Handle conditional field display based on Select Option
+      // Also triggers validation for relevant fields
+      $('#selectOption').change(function () {
+        if ($(this).val() === 'Misscall TT') {
           $('#misscallTTFields').show();
           $('#pgRunFields').hide();
-        } else if (val === 'PG Run') {
+          // Clear and remove validation errors from PG Run fields when hidden
+          $('#pgRunFields input').val('');
+          $('#pgRunFields .error-message').text('');
+          $('#pgRunFields input').removeClass('is-invalid');
+          $('#pgRunFields select').removeClass('is-invalid').trigger('change'); // Selects don't have individual error spans here, but good practice
+
+        } else if ($(this).val() === 'PG Run') {
           $('#misscallTTFields').hide();
           $('#pgRunFields').show();
+          // Clear and remove validation errors from Misscall TT fields when hidden
+          $('#misscallTTFields select, #misscallTTFields input').val(null).trigger('change');
+          $('#misscallTTFields .error-message').text('');
+          $('#misscallTTFields select, #misscallTTFields input').removeClass('is-invalid');
+          $('#siteAttendDateTimeField input').removeClass('is-invalid'); // Ensure date field invalid state is cleared
+          $('#siteAttend').trigger('change'); // Ensure Site Attend DateTime is hidden
+
         } else {
-          $('#misscallTTFields, #pgRunFields').hide();
+          // Hide both if neither option is selected
+          $('#misscallTTFields').hide();
+          $('#pgRunFields').hide();
+           // Clear all conditional fields and errors
+          $('#misscallTTFields select, #misscallTTFields input').val(null).trigger('change');
+          $('#pgRunFields input').val('');
+          $('#misscallTTFields .error-message, #pgRunFields .error-message').text('');
+          $('#misscallTTFields select, #misscallTTFields input, #pgRunFields input').removeClass('is-invalid');
+           $('#siteAttend').trigger('change'); // Ensure Site Attend DateTime is hidden
         }
+         // Trigger validation for selectOption itself
+        validateField($(this).attr('id'));
+         // Re-validate conditional date/time fields based on this selection
+        validateConditionalDateTimeFields();
       });
 
-      $('#siteAttend').on('change', function () {
+      // Handle conditional field display based on Site Attend
+       // Also triggers validation for relevant fields
+      $('#siteAttend').change(function () {
         if ($(this).val() === 'YES') {
           $('#siteAttendDateTimeField').show();
         } else {
           $('#siteAttendDateTimeField').hide();
+           $('#siteAttendDateTimeField input').val(''); // Clear date if field is hidden
+            // Clear validation error for Site Attend DateTime when hidden
+           $('#siteAttendDateTime-error').text('');
+           $('#siteAttendDateTime').removeClass('is-invalid');
         }
+        // Trigger validation for siteAttend itself and its dependent date field
+         validateField($(this).attr('id'));
+         validateField('siteAttendDateTime'); // Validate dependent field
       });
 
-      $('#siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').select2({ placeholder: 'Search and select...', allowClear: true });
-      $('#operatorName, #selectOption, #siteAttend').select2({ placeholder: 'Select...', allowClear: true });
-    });
+      // Function to load data from CSV
+      async function loadCSVData(file) {
+        try {
+           const response = await fetch(file);
+           if (!response.ok) {
+               throw new Error(`HTTP error! status: ${response.status}`);
+           }
+           const text = await response.text();
+           const lines = text.split('\n').slice(1); // Skip header row
+           return lines.map(line => line.trim()).filter(line => line); // Trim whitespace and remove empty lines
+        } catch (error) {
+           console.error("Error loading CSV data:", error);
+           return []; // Return empty array on error
+        }
+      }
+
+      // Function to populate dropdowns from CSV data
+      async function populateDropdown(dropdownId, dataFile) {
+        const dropdown = document.getElementById(dropdownId);
+        // Add a default blank option for required fields with select2 allowClear
+         $(dropdown).append('<option value=""></option>');
+
+        const data = await loadCSVData(dataFile);
+        data.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item;
+          option.textContent = item;
+          dropdown.appendChild(option);
+        });
+         // Refresh select2 after populating
+        $(`#${dropdownId}`).val(null).trigger('change'); // Set to blank and refresh Select2
+      }
+
+      // Populate dropdowns on page load
+      populateDropdown('siteDropdown', 'data/sites.csv'); // Assuming data/sites.csv exists
+      populateDropdown('pgOperatorDropdown', 'data/runners.csv'); // Assuming data/runners.csv exists
+      populateDropdown('teamLeaderDropdown', 'data/runners.csv'); // Assuming data/runners.csv exists
+
+
+      // Helper function to parse datetime-local string into a Date object (local time)
+      function parseDateTimeLocal(datetimeStr) {
+          if (!datetimeStr) return null;
+          const [datePart, timePart] = datetimeStr.split('T');
+          if (!datePart || !timePart) return null; // Basic check for valid format
+          const [year, month, day] = datePart.split('-').map(Number);
+          const [hour, minute] = timePart.split(':').map(Number);
+
+          // Validate parts are numbers and within reasonable range
+          if (isNaN(year) || isNaN(month) || isNaN(day) || isNaN(hour) || isNaN(minute)) return null;
+          if (month < 1 || month > 12 || day < 1 || day > 31 || hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
+
+          // Month is 0-indexed in Date constructor
+          // Note: This creates a Date object in the browser's local timezone
+          return new Date(year, month - 1, day, hour, minute);
+      }
+
+      // Helper function to display or clear error messages and apply invalid class
+      function displayError(fieldId, message) {
+          const errorSpan = $(`#${fieldId}-error`);
+          const fieldElement = $(`#${fieldId}`);
+
+          if (message) {
+              errorSpan.text(message);
+              fieldElement.addClass('is-invalid');
+              // Special handling for Select2 as the error class goes on the container
+              if (fieldElement.hasClass('select2-hidden-accessible')) {
+                 fieldElement.next('.select2-container').find('.select2-selection--single').addClass('is-invalid');
+              }
+          } else {
+              errorSpan.text('');
+              fieldElement.removeClass('is-invalid');
+               if (fieldElement.hasClass('select2-hidden-accessible')) {
+                 fieldElement.next('.select2-container').find('.select2-selection--single').removeClass('is-invalid');
+              }
+          }
+      }
+
+      // --- Real-time Validation Functions ---
+
+      // Validate required text/select fields
+      function validateField(fieldId) {
+          const value = $(`#${fieldId}`).val();
+          if (!value) {
+              displayError(fieldId, 'This field is mandatory.');
+              return false; // Indicates validation failed
+          } else {
+              displayError(fieldId, ''); // Clear error
+              return true; // Indicates validation passed
+          }
+      }
+
+       // Validate conditional Date/Time fields based on selected option
+       function validateConditionalDateTimeFields() {
+           const selectOption = $('#selectOption').val();
+           const siteAttend = $('#siteAttend').val();
+
+           // Clear previous conditional errors first
+           displayError('siteAttend', '');
+           displayError('siteAttendDateTime', '');
+           displayError('pgStart1', '');
+           displayError('pgStop1', '');
+           displayError('pgStart2', '');
+           displayError('pgStop2', '');
+           displayError('pgStart3', '');
+           displayError('pgStop3', '');
+
+
+           let allValid = true; // Track validity within this group
+
+           if (selectOption === 'Misscall TT') {
+               // Site Attend is mandatory for Misscall TT
+               if (!siteAttend) {
+                   displayError('siteAttend', 'This field is mandatory for Misscall TT.');
+                   allValid = false;
+               } else if (siteAttend === 'YES') {
+                   // Site Attend Date & Time is mandatory if Site Attend is YES
+                   if (!$('#siteAttendDateTime').val()) {
+                       displayError('siteAttendDateTime', 'Date & Time is mandatory when Site Attend is YES.');
+                       allValid = false;
+                   } else {
+                       // Basic date format validation on input type="datetime-local" is often handled by browser,
+                       // but parseDateTimeLocal returning null can catch issues.
+                       if (!parseDateTimeLocal($('#siteAttendDateTime').val())) {
+                            displayError('siteAttendDateTime', 'Invalid date format.');
+                            allValid = false;
+                       }
+                   }
+               }
+
+           } else if (selectOption === 'PG Run') {
+               const pgStart1 = parseDateTimeLocal($('#pgStart1').val());
+               const pgStop1 = parseDateTimeLocal($('#pgStop1').val());
+               const pgStart2 = parseDateTimeLocal($('#pgStart2').val());
+               const pgStop2 = parseDateTimeLocal($('#pgStop2').val());
+               const pgStart3 = parseDateTimeLocal($('#pgStart3').val());
+               const pgStop3 = parseDateTimeLocal($('#pgStop3').val());
+
+               // 1st Event is mandatory for PG Run
+               if (! $('#pgStart1').val() || ! $('#pgStop1').val()) {
+                   displayError('pgStart1', 'Mandatory for PG Run.');
+                   displayError('pgStop1', 'Mandatory for PG Run.');
+                   allValid = false;
+               } else {
+                   // Validate 1st Event dates are valid and Stop > Start
+                   if (!pgStart1) { displayError('pgStart1', 'Invalid date format.'); allValid = false; }
+                   if (!pgStop1) { displayError('pgStop1', 'Invalid date format.'); allValid = false; }
+                   if (pgStart1 && pgStop1 && pgStop1 <= pgStart1) {
+                       displayError('pgStop1', 'Must be after Start time.');
+                       allValid = false;
+                   }
+               }
+
+               // 2nd Event checks (if either field has a value)
+               if ($('#pgStart2').val() || $('#pgStop2').val()) {
+                    // Must fill both Start and Stop for 2nd event
+                    if (!$('#pgStart2').val() || !$('#pgStop2').val()) {
+                        displayError('pgStart2', 'Both times mandatory if providing 2nd event.');
+                        displayError('pgStop2', 'Both times mandatory if providing 2nd event.');
+                        allValid = false;
+                    } else {
+                         // Must have valid 1st event times if 2nd is filled
+                         if (! $('#pgStart1').val() || ! $('#pgStop1').val()) {
+                            displayError('pgStart2', 'Requires 1st event times.');
+                            displayError('pgStop2', 'Requires 1st event times.');
+                            allValid = false;
+                         } else {
+                             // Validate 2nd Event dates are valid and Stop > Start and Start > 1st Stop
+                             if (!pgStart2) { displayError('pgStart2', 'Invalid date format.'); allValid = false; }
+                             if (!pgStop2) { displayError('pgStop2', 'Invalid date format.'); allValid = false; }
+                             if (pgStart2 && pgStop2) { // Only check order if both are valid dates
+                                 if (pgStop2 <= pgStart2) {
+                                     displayError('pgStop2', 'Must be after Start time.');
+                                     allValid = false;
+                                 }
+                                  // Need valid pgStop1 for this check
+                                 if (pgStop1 && pgStart2 <= pgStop1) {
+                                     displayError('pgStart2', 'Must be after 1st Stop time.');
+                                     allValid = false;
+                                 }
+                             } else if (pgStart2 || pgStop2) { // If partially filled and dates are invalid
+                                  allValid = false;
+                             }
+                         }
+                    }
+               }
+
+               // 3rd Event checks (if either field has a value)
+               if ($('#pgStart3').val() || $('#pgStop3').val()) {
+                   // Must fill both Start and Stop for 3rd event
+                   if (!$('#pgStart3').val() || !$('#pgStop3').val()) {
+                       displayError('pgStart3', 'Both times mandatory if providing 3rd event.');
+                       displayError('pgStop3', 'Both times mandatory if providing 3rd event.');
+                       allValid = false;
+                   } else {
+                       // Must have valid 1st AND 2nd event times if 3rd is filled
+                       if (! $('#pgStart1').val() || ! $('#pgStop1').val() || ! $('#pgStart2').val() || ! $('#pgStop2').val()) {
+                           displayError('pgStart3', 'Requires 1st & 2nd event times.');
+                           displayError('pgStop3', 'Requires 1st & 2nd event times.');
+                           allValid = false;
+                       } else {
+                            // Validate 3rd Event dates are valid and Stop > Start and Start > 2nd Stop
+                            if (!pgStart3) { displayError('pgStart3', 'Invalid date format.'); allValid = false; }
+                            if (!pgStop3) { displayError('pgStop3', 'Invalid date format.'); allValid = false; }
+                            if (pgStart3 && pgStop3) { // Only check order if both are valid dates
+                                if (pgStop3 <= pgStart3) {
+                                    displayError('pgStop3', 'Must be after Start time.');
+                                    allValid = false;
+                                }
+                                // Need valid pgStop2 for this check
+                                if (pgStop2 && pgStart3 <= pgStop2) {
+                                    displayError('pgStart3', 'Must be after 2nd Stop time.');
+                                    allValid = false;
+                                }
+                            } else if (pgStart3 || pgStop3) { // If partially filled and dates are invalid
+                                allValid = false;
+                            }
+                       }
+                   }
+               }
+           }
+
+           return allValid; // Return overall validity for conditional fields
+       }
+
+
+      // --- Event Listeners for Real-time Validation ---
+
+      // Basic required fields validation on blur
+      $('#ttNumber').on('blur', function() { validateField('ttNumber'); });
+
+      // Conditional date/time fields validation on change/blur
+      $('#siteAttendDateTime, #pgStart1, #pgStop1, #pgStart2, #pgStop2, #pgStart3, #pgStop3').on('change blur', function() {
+          validateConditionalDateTimeFields(); // Re-validate all conditional date fields
+      });
+
+
+      // --- Form Submission Handler ---
+      $('#pgForm').submit(function (event) {
+        event.preventDefault(); // Prevent default submission initially
+
+        // Perform final validation on ALL fields before submitting
+        let formIsValid = true;
+
+        // Validate basic required fields
+        formIsValid = validateField('ttNumber') && formIsValid;
+        formIsValid = validateField('operatorName') && formIsValid;
+        formIsValid = validateField('siteDropdown') && formIsValid; // Use siteDropdown ID for validation
+        formIsValid = validateField('pgOperatorDropdown') && formIsValid; // Use dropdown ID
+        formIsValid = validateField('teamLeaderDropdown') && formIsValid; // Use dropdown ID
+        formIsValid = validateField('selectOption') && formIsValid;
+
+        // Validate conditional fields (including PG events and Site Attend)
+        formIsValid = validateConditionalDateTimeFields() && formIsValid; // This also validates siteAttend and its date field
+
+        // If any validation failed, stop submission
+        if (!formIsValid) {
+           $('.loading').hide(); // Hide loading if it was shown
+           // You might want to scroll to the first error or highlight summary here
+           alert('Please fix the errors in the form.'); // Simple alert for submission failure
+           return;
+        }
+
+        // If validation passes, proceed with submission
+        const formData = new FormData(this);
+        const jsonData = {};
+        const expectedFields = [
+           'ttNumber', 'operatorName', 'site', 'pgOperator', 'teamLeader',
+           'selectOption', 'siteAttend', 'siteAttendDateTime',
+           'pgStart1', 'pgStop1', 'pgStart2', 'pgStop2', 'pgStart3', 'pgStop3'
+         ];
+         expectedFields.forEach(field => {
+           // For select2 dropdowns, use the hidden input value if it exists, otherwise the select value
+           // This ensures we get the actual value, especially after .val(null).trigger('change')
+            if ($(`#${field}`).hasClass('select2-hidden-accessible')) {
+                 // Select2 stores the actual value in the hidden input or on the original select
+                 // .val() on the original select is usually reliable after initialization
+                 jsonData[field] = $(`#${field}`).val() || '';
+            } else if (field === 'site') {
+                 // Handle site field which is siteDropdown select
+                 jsonData[field] = $('#siteDropdown').val() || '';
+            } else if (field === 'pgOperator') {
+                 // Handle pgOperator field which is pgOperatorDropdown select
+                 jsonData[field] = $('#pgOperatorDropdown').val() || '';
+            } else if (field === 'teamLeader') {
+                 // Handle teamLeader field which is teamLeaderDropdown select
+                 jsonData[field] = $('#teamLeaderDropdown').val() || '';
+            }
+            else {
+                jsonData[field] = $(`#${field}`).val() || '';
+            }
+         });
+
+
+        jsonData.timestamp = new Date().toISOString(); // Add timestamp in ISO format
+
+        console.log("Data being sent:", JSON.stringify(jsonData, null, 2)); // Keep the log
+        $('.loading').show(); // Show loading indicator
+
+        // Send data to Google Apps Script Web App (or Netlify proxy)
+        fetch('/.netlify/functions/proxy', { // Or your direct Apps Script Web App URL
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(jsonData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                     throw new Error(`HTTP error! status: ${response.status}, body: ${text}`);
+                });
+            }
+            return response.json();
+        })
+        .then(result => {
+          $('.loading').hide();
+          if (result.result === 'success') {
+              $('.success-message').show();
+              $('#pgForm')[0].reset();
+              // Reset select2 dropdowns and trigger change
+              $('#operatorName, #selectOption, #siteAttend').val(null).trigger('change');
+               // Specific reset for CSV-populated select2s (clears text)
+               $('#siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').val(null).trigger('change');
+
+               // Manually reset Select2 search input visually if needed
+               $('.select2-selection__rendered').empty().append('<span class="select2-selection__placeholder">Select...</span>');
+
+
+              // Trigger change on conditional fields to hide them and clear their values
+              $('#selectOption').trigger('change'); // This also triggers siteAttend change if needed
+              $('#siteAttend').trigger('change');
+
+              // Clear all validation errors after successful submission
+              $('.error-message').text('');
+              $('input, select').removeClass('is-invalid');
+              $('.select2-container .select2-selection--single').removeClass('is-invalid');
+
+
+              setTimeout(() => { $('.success-message').hide(); }, 3000);
+          } else {
+               alert('Submission failed: ' + (result.error || 'Unknown error from server'));
+          }
+        })
+        .catch(error => {
+          $('.loading').hide();
+          alert('Submission failed: ' + error.message);
+          console.error('Submission error:', error);
+        });
+      });
+
+
+       // --- Initial Setup ---
+       // Trigger change on load for selectOption to set initial display state
+       // This also cascades to siteAttend change if Misscall TT is default selected
+       $('#selectOption').trigger('change');
+
+       // Trigger blur on initial required fields to show errors on load if empty (optional, but good for mandatory fields)
+       $('#ttNumber').trigger('blur');
+
+
+    }); // End of $(document).ready
+
   </script>
+
 </body>
 </html>

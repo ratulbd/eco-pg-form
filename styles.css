@@ -244,14 +244,29 @@ button:disabled {
 }
 
 .error-message {
-  color: red;
-  font-size: 0.85em;
-  display: none;
-  margin-top: -15px;
-  margin-bottom: 10px;
+    color: red;
+    font-size: 0.8em;
+    display: block; /* Make it appear on its own line */
+    margin-top: -15px; /* Pull it up slightly relative to input */
+    margin-bottom: 15px; /* Space after the message */
+    min-height: 1em; /* Reserve space to prevent layout shifts when empty */
+    /* Add padding or margin if needed based on your layout */
 }
 
-input.invalid,
-select.invalid {
-  border-color: red !important;
+/* Style for input/select borders when invalid */
+input.is-invalid,
+select.is-invalid {
+    border-color: red !important; /* Use !important to override other border styles */
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Optional: add a red shadow */
+}
+
+/* Style for Select2 containers when the linked select is invalid */
+.select2-container--default .select2-selection--single.is-invalid {
+     border-color: red !important;
+     box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Optional: add a red shadow */
+}
+
+/* Adjust label margin if needed */
+label + .error-message {
+     margin-top: -15px; /* Adjust margin if error is right after label */
 }
