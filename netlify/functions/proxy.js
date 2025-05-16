@@ -9,7 +9,7 @@ export async function handler(event, context) {
   try {
     const data = JSON.parse(event.body);
     // Replace with your actual Google Apps Script Web App URL
-    const googleScriptURL = 'https://script.google.com/macros/s/AKfycbyYIjsVWJQT-ZRJPAPT6rN6290wxad1sWZLMrA6GrxBhCX0S9j2PygraZaW8elzdkfY/exec';
+    const googleScriptURL = 'https://script.google.com/macros/s/AKfycbxvSSsfcOQfDbW4hOsDWYxCkr1bkf-5HldFmv0wy_2vWz0BNVercZSEfy9YxeGmHj1N/exec';
 
     const response = await fetch(googleScriptURL, {
       method: 'POST',
