@@ -163,6 +163,8 @@ $(document).ready(function () {
 
     jsonData.timestamp = new Date().toISOString(); // ✅ Timestamp added
 
+  console.log("Data being sent:", JSON.stringify(jsonData, null, 2));
+
     $('.loading').show();
     fetch('/.netlify/functions/proxy', {
       method: 'POST',
@@ -186,6 +188,12 @@ $(document).ready(function () {
   });
 });
 </script>
+
+ </div> <div class="footer-info">
+    <p>Powered and Developed By<br>
+    <strong>Rakibul Islam Ratul</strong><br>
+    <small>Sr. Manager, Central Governance, Metal Plus Ltd.</small></p>
+  </div>
 
 </body>
 </html>

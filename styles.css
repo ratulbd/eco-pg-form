@@ -1,89 +1,244 @@
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* More modern font */
+  background-color: #eef2f6; /* Light background */
   margin: 0;
-  padding: 0;
+  padding: 20px; /* Add padding around the body */
+  line-height: 1.6; /* Improved readability */
 }
 
 .container {
   max-width: 600px;
-  margin: 20px auto; /* Adjusted margin for better mobile view */
-  padding: 20px;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  padding: 30px; /* Increased padding */
+  background-color: #ffffff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* More pronounced shadow */
+  border-radius: 10px; /* Rounded corners */
 }
 
 h2 {
   text-align: center;
-  color: #333;
+  color: #2c3e50; /* Darker, professional color */
+  margin-bottom: 30px; /* More space below heading */
+  font-size: 2em;
 }
 
 label {
   display: block;
-  margin: 15px 0 5px;
-  color: #555;
+  margin: 15px 0 8px; /* Adjusted margin */
+  color: #34495e; /* Slightly darker label color */
+  font-weight: bold; /* Make labels bold */
 }
 
 select,
 input[type="datetime-local"],
-input[type="text"],
-button {
+input[type="text"] {
   width: 100%;
-  padding: 10px;
+  padding: 12px 15px; /* Increased padding */
   margin-bottom: 20px;
-  border: 1px solid #ddd;
+  border: 1px solid #bdc3c7; /* Lighter border color */
   border-radius: 5px;
-  box-sizing: border-box; /* Include padding and border in element's total width and height */
+  box-sizing: border-box;
+  font-size: 1em;
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transitions */
+}
+
+select:focus,
+input[type="datetime-local"]:focus,
+input[type="text"]:focus {
+  border-color: #3498db; /* Highlight border on focus */
+  box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); /* Add a subtle shadow on focus */
+  outline: none; /* Remove default outline */
 }
 
 button {
-  background-color: #007BFF;
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px; /* Space above button */
+  background-color: #2ecc71; /* Green call-to-action color */
   color: #fff;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 1.1em;
+  transition: background-color 0.3s ease-in-out; /* Smooth transition */
+}
+
+button:hover {
+  background-color: #27ae60; /* Darker green on hover */
 }
 
 button:disabled {
-  background-color: #ccc;
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
 .success-message {
   display: none;
   text-align: center;
-  color: green;
+  color: #27ae60; /* Green */
+  background-color: #d4edda; /* Light green background */
+  border: 1px solid #c3e6cb;
+  border-radius: 5px;
+  padding: 15px;
   margin-top: 20px;
 }
 
 .loading {
   display: none;
   text-align: center;
-  color: #007BFF;
+  color: #3498db; /* Blue */
   margin-top: 20px;
+  font-style: italic;
 }
 
 .card,
 .event-card {
-  background-color: #f9f9f9;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  background-color: #fdfefe; /* Very light off-white */
+  padding: 20px; /* Increased padding */
+  margin-bottom: 25px; /* More space between cards */
+  border-radius: 8px; /* Slightly more rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* Subtle shadow */
+  border: 1px solid #ecf0f1; /* Very light border */
 }
 
 .event-card h3 {
   margin-top: 0;
-  color: #007BFF;
+  color: #3498db; /* Blue for event titles */
+  border-bottom: 1px solid #ecf0f1; /* Subtle separator */
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+/* Styles for Select2 dropdowns */
+/* These override default select2 styles for better integration */
+.select2-container--default .select2-selection--single {
+    height: 44px !important; /* Match input height */
+    padding: 8px 24px 8px 15px !important; /* Adjust padding */
+    border: 1px solid #bdc3c7 !important;
+    border-radius: 5px !important;
+    font-size: 1em !important;
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 42px !important; /* Match container height */
+}
+
+.select2-container--default.select2-container--open .select2-selection--single {
+    border-color: #3498db !important;
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3) !important;
+}
+
+.select2-container--default .select2-dropdown {
+    border-color: #bdc3c7 !important;
+    border-radius: 5px !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
 /* Mobile responsiveness */
-@media (max-width: 480px) {
+@media (max-width: 600px) { /* Adjusted breakpoint */
   .container {
-    width: 90%; /* Take up more width on small screens */
+    width: 95%; /* Take up more width on small screens */
     margin: 10px auto;
-    padding: 10px;
+    padding: 15px; /* Less padding on small screens */
   }
 
   h2 {
-    font-size: 1.5em; /* Smaller heading */
+    font-size: 1.8em; /* Smaller heading */
+    margin-bottom: 20px;
+  }
+
+  select,
+  input[type="datetime-local"],
+  input[type="text"],
+  button {
+    padding: 10px; /* Smaller padding */
+    margin-bottom: 15px;
+  }
+
+   .card,
+  .event-card {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .event-card h3 {
+     margin-bottom: 15px;
+     padding-bottom: 8px;
+  }
+}
+
+/* Added for the footer text */
+.footer-info {
+  text-align: center; /* Center the text */
+  margin-top: 40px; /* Space above the text */
+  padding: 20px; /* Padding around the text */
+  color: #555; /* A subtle color */
+  font-size: 0.9em; /* Smaller font size */
+  opacity: 0; /* Start hidden for animation */
+  animation: fadeIn 2s ease-in forwards; /* Apply fade-in animation */
+}
+
+.footer-info strong {
+  color: #333; /* Make the name slightly darker */
+}
+
+/* Define the fadeIn animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0; /* Start with 0 opacity */
+  }
+  to {
+    opacity: 1; /* End with 1 opacity (fully visible) */
+  }
+}
+
+/* Optional: Add a subtle pulse animation on hover */
+/*
+.footer-info:hover {
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02); // Slightly larger
+    opacity: 0.9; // Slightly less opaque
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+*/
+
+/* Adjust container margin if needed to prevent overlap */
+.container {
+    /* ... existing styles ... */
+    margin-bottom: 40px; /* Ensure space between container and footer */
+}
+
+/* Add some basic styling for the <small> tag */
+.footer-info small {
+    display: block; /* Make the title go to a new line */
+    margin-top: 5px;
+    color: #777;
+    font-size: 0.8em;
+}
+
+/* Adjust mobile responsiveness for the footer */
+@media (max-width: 600px) {
+  .footer-info {
+    margin-top: 20px;
+    padding: 10px;
+  }
+  .footer-info p {
+    font-size: 0.8em;
+  }
+  .footer-info small {
+    font-size: 0.7em;
   }
 }
