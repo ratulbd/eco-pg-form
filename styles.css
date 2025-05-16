@@ -243,30 +243,47 @@ button:disabled {
   }
 }
 
+/* Add this to your existing styles.css, replacing the previous error-related rules */
+
 .error-message {
     color: red;
     font-size: 0.8em;
-    display: block; /* Make it appear on its own line */
-    margin-top: -15px; /* Pull it up slightly relative to input */
-    margin-bottom: 15px; /* Space after the message */
-    min-height: 1em; /* Reserve space to prevent layout shifts when empty */
-    /* Add padding or margin if needed based on your layout */
+    display: block; /* Ensure it takes its own line */
+    margin-top: 5px; /* Add space above the error message */
+    margin-bottom: 15px; /* Add space below the error message */
+    min-height: 1em; /* Reserve space to prevent layout shifts */
+    /* Adjust padding or margin if needed based on your specific layout */
+    padding: 0 5px; /* Optional: add slight horizontal padding */
 }
 
 /* Style for input/select borders when invalid */
-input.is-invalid,
-select.is-invalid {
+input.is-invalid {
     border-color: red !important; /* Use !important to override other border styles */
     box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Optional: add a red shadow */
 }
 
 /* Style for Select2 containers when the linked select is invalid */
+/* This targets the visible part of the Select2 dropdown */
 .select2-container--default .select2-selection--single.is-invalid {
      border-color: red !important;
      box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Optional: add a red shadow */
 }
 
-/* Adjust label margin if needed */
-label + .error-message {
-     margin-top: -15px; /* Adjust margin if error is right after label */
+/* Ensure error message follows the Select2 container with correct spacing */
+.select2-container + .error-message {
+    margin-top: 5px; /* Ensure space after the select2 dropdown */
 }
+
+/* Adjust label margin if needed */
+label {
+  /* Keep your existing label styles, but ensure sufficient margin-bottom */
+   display: block;
+   margin: 15px 0 5px; /* Reduced margin-bottom slightly, error message adds spacing */
+   color: #34495e;
+   font-weight: bold;
+}
+
+/* This might be needed if your label+error combination is too tight */
+/* label + .error-message {
+     margin-top: 0px;
+} */
