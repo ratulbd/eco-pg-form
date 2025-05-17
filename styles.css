@@ -26,7 +26,9 @@ body {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* More pronounced shadow */
   border-radius: 10px; /* Rounded corners */
    margin-bottom: 60px; /* Space above footer (Adjusted from styles1.css) */
-   /* No animation here, as login handles initial show */
+   /* Ensure formContainer doesn't clip dropdowns */
+   position: relative; /* Needed for absolute positioning of dropdownParent */
+   overflow: visible; /* Ensure dropdowns aren't clipped */
    box-sizing: border-box; /* Ensure padding is included in width */
 }
 
@@ -256,6 +258,7 @@ button:disabled {
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
   border: 1px solid #ecf0f1;
+    overflow: visible; /* Ensure content and dropdowns inside are not clipped */
 }
 
 .event-card h3 {
@@ -286,10 +289,20 @@ button:disabled {
     box-shadow: 0 0 8px rgba(52, 152, 219, 0.3) !important;
 }
 
-.select2-container--default .select2-dropdown {
-    border-color: #bdc3c7 !important; /* Border color */
-    border-radius: 5px !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+/* Styles for the Select2 dropdown list when it's open */
+.select2-container--open .select2-dropdown {
+    position: absolute !important; /* Ensure it's taken out of the normal flow */
+    top: 100% !important; /* Position it directly below the selected element */
+    left: 0 !important;
+    width: 100% !important; /* Ensure dropdown matches input width */
+    z-index: 1000 !important; /* Add a high z-index to ensure it appears above other elements */
+    box-sizing: border-box; /* Include padding/border in width */
+    overflow: auto !important; /* Allow scrolling if list is long */
+    /* Optional: Set a max-height if needed */
+    /* max-height: 200px !important; */
+    border-color: #bdc3c7 !important; /* Match border color */
+    border-top: none !important; /* Remove top border to connect visually */
+    border-radius: 0 0 5px 5px !important; /* Rounded corners at the bottom */
 }
 
 
@@ -438,7 +451,13 @@ input[type="datetime-local"] + .error-message {
     /* Adjust Select2 dropdowns on small screens */
    .select2-container--open .select2-dropdown {
         width: 100% !important; /* Ensure dropdown matches input width */
-        z-index: 1000; /* Add a high z-index to ensure it appears above other elements */
+        z-index: 1000 !important; /* Add a high z-index to ensure it appears above other elements */
+        position: absolute !important; /* Ensure it's taken out of the normal flow */
+        top: 100% !important; /* Position it directly below the selected element */
+        left: 0 !important;
+        overflow: auto !important; /* Allow scrolling if list is long */
+        border-radius: 0 0 5px 5px !important; /* Rounded corners at the bottom */
+
    }
     .select2-container--default .select2-selection--single {
        height: 40px !important; /* Slightly smaller height */
