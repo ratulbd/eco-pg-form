@@ -146,6 +146,29 @@
            allowClear: true
       });
 
+      // --- Set Max Date/Time for datetime-local inputs ---
+      function setMaxDateTime() {
+          const now = new Date();
+          // Format the date and time as YYYY-MM-DDTHH:MM
+          const year = now.getFullYear();
+          const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed
+          const day = now.getDate().toString().padStart(2, '0');
+          const hours = now.getHours().toString().padStart(2, '0');
+          const minutes = now.getMinutes().toString().padStart(2, '0');
+
+          const maxDateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+          // Apply the max attribute to all datetime-local inputs
+          $('input[type="datetime-local"]').attr('max', maxDateTimeString);
+          console.log("Max datetime set to:", maxDateTimeString);
+      }
+
+      // Call the function to set the max attribute when the page loads
+      setMaxDateTime();
+
+      // You might want to call this periodically if the user keeps the form open for a long time
+      // setInterval(setMaxDateTime, 60000); // Update max every minute
+
 
       // Handle conditional field display based on Select Option
       // Also triggers validation for relevant fields
@@ -352,6 +375,8 @@
 
 
            let allValid = true; // Track validity within this group
+            const now = new Date(); // Get current time for future date comparison
+
 
            if (selectOption === 'Misscall TT') {
                // Site Attend is mandatory for Misscall TT
@@ -365,9 +390,16 @@
                        allValid = false;
                    } else {
                        // Validate date format if value exists
-                       if (!parseDateTimeLocal($('#siteAttendDateTime').val())) {
+                       const siteAttendDateTime = parseDateTimeLocal($('#siteAttendDateTime').val());
+                       if (!siteAttendDateTime) {
                             displayError('siteAttendDateTime', 'Invalid date format.');
                             allValid = false;
+                       } else {
+                           // Check if date is in the future (greater than current time)
+                            if (siteAttendDateTime > now) {
+                                displayError('siteAttendDateTime', 'Future date/time selection is not allowed.');
+                                allValid = false;
+                            }
                        }
                    }
                }
@@ -388,18 +420,32 @@
                const pgStart3 = parseDateTimeLocal(pgStart3Val);
                const pgStop3 = parseDateTimeLocal(pgStop3Val);
 
+
                // 1st Event is mandatory for PG Run
                if (!pgStart1Val || !pgStop1Val) {
                    if (!pgStart1Val) displayError('pgStart1', 'Mandatory for PG Run.');
                    if (!pgStop1Val) displayError('pgStop1', 'Mandatory for PG Run.');
                    allValid = false;
                } else {
-                   // Validate 1st Event dates are valid and Stop > Start
-                   if (!pgStart1) { displayError('pgStart1', 'Invalid date format.'); allValid = false; }
-                   if (!pgStop1) { displayError('pgStop1', 'Invalid date format.'); allValid = false; }
-                   if (pgStart1 && pgStop1 && pgStop1 <= pgStart1) {
-                       displayError('pgStop1', 'Must be after Start time.');
-                       allValid = false;
+                   // Validate 1st Event dates are valid and Stop > Start and not in future
+                   if (!pgStart1) { displayError('pgStart1', 'Invalid format/value.'); allValid = false; }
+                   if (!pgStop1) { displayError('pgStop1', 'Invalid format/value.'); allValid = false; }
+
+                   if (pgStart1 && pgStop1) { // Only check order and future if both are valid dates
+                       if (pgStop1 <= pgStart1) {
+                           displayError('pgStop1', 'Must be after Start time.');
+                           allValid = false;
+                       }
+                       if (pgStart1 > now) {
+                           displayError('pgStart1', 'Future date/time not allowed.');
+                           allValid = false;
+                       }
+                       if (pgStop1 > now) {
+                            displayError('pgStop1', 'Future date/time not allowed.');
+                            allValid = false;
+                       }
+                   } else if (pgStart1Val || pgStop1Val) { // If partially filled but dates are invalid
+                        allValid = false; // Invalid format/value already flagged
                    }
                }
 
@@ -417,22 +463,30 @@
                             displayError('pgStop2', 'Requires 1st event times.'); // Apply to both for clarity
                             allValid = false;
                          } else {
-                             // Validate 2nd Event dates are valid and Stop > Start and Start > 1st Stop
+                             // Validate 2nd Event dates are valid and Stop > Start, Start > 1st Stop, and not in future
                              let currentEventValid = true; // Track validity within this event check
-                             if (!pgStart2) { displayError('pgStart2', 'Invalid date format.'); currentEventValid = false; allValid = false; }
-                             if (!pgStop2) { displayError('pgStop2', 'Invalid date format.'); currentEventValid = false; allValid = false; }
+                             if (!pgStart2) { displayError('pgStart2', 'Invalid format/value.'); currentEventValid = false; allValid = false; }
+                             if (!pgStop2) { displayError('pgStop2', 'Invalid format/value.'); currentEventValid = false; allValid = false; }
 
-                             if (currentEventValid) { // Only check order if both dates are valid
+                             if (currentEventValid) { // Only check order and future if both dates are valid
                                  if (pgStop2 <= pgStart2) {
                                      displayError('pgStop2', 'Must be after Start time.');
                                      allValid = false;
                                  }
-                                  // Need valid pgStop1 for this check
+                                  // Need valid pgStop1 for this check (and it must not have a future error itself)
                                  if (pgStop1 && pgStart2 <= pgStop1) { // Check pgStop1 validity again before comparison
                                      displayError('pgStart2', 'Must be after 1st Stop time.');
                                      allValid = false;
                                  }
-                             } else { // If partially filled and dates are invalid, overall form is invalid
+                                 if (pgStart2 > now) {
+                                     displayError('pgStart2', 'Future date/time not allowed.');
+                                     allValid = false;
+                                 }
+                                 if (pgStop2 > now) {
+                                      displayError('pgStop2', 'Future date/time not allowed.');
+                                      allValid = false;
+                                 }
+                             } else { // If partially filled and dates are invalid
                                   allValid = false; // Already set by invalid format checks, but good practice
                              }
                          }
@@ -453,22 +507,30 @@
                            displayError('pgStop3', 'Requires 1st & 2nd event times.'); // Apply to both
                            allValid = false;
                        } else {
-                            // Validate 3rd Event dates are valid and Stop > Start and Start > 2nd Stop
+                            // Validate 3rd Event dates are valid and Stop > Start and Start > 2nd Stop and not in future
                             let currentEventValid = true; // Track validity within this event check
-                            if (!pgStart3) { displayError('pgStart3', 'Invalid date format.'); currentEventValid = false; allValid = false; }
-                            if (!pgStop3) { displayError('pgStop3', 'Invalid date format.'); currentEventValid = false; allValid = false; }
+                            if (!pgStart3) { displayError('pgStart3', 'Invalid format/value.'); currentEventValid = false; allValid = false; }
+                            if (!pgStop3) { displayError('pgStop3', 'Invalid format/value.'); currentEventValid = false; allValid = false; }
 
-                            if (currentEventValid) { // Only check order if both dates are valid
+                            if (currentEventValid) { // Only check order and future if both dates are valid
                                 if (pgStop3 <= pgStart3) {
                                     displayError('pgStop3', 'Must be after Start time.');
                                     allValid = false;
                                 }
-                                // Need valid pgStop2 for this check
+                                // Need valid pgStop2 for this check (and it must not have a future error itself)
                                 if (pgStop2 && pgStart3 <= pgStop2) { // Check pgStop2 validity before comparison
                                     displayError('pgStart3', 'Must be after 2nd Stop time.');
                                     allValid = false;
                                 }
-                            } else { // If partially filled and dates are invalid, overall form is invalid
+                                if (pgStart3 > now) {
+                                     displayError('pgStart3', 'Future date/time not allowed.');
+                                     allValid = false;
+                                }
+                                if (pgStop3 > now) {
+                                     displayError('pgStop3', 'Future date/time not allowed.');
+                                     allValid = false;
+                                }
+                            } else { // If partially filled and dates are invalid
                                 allValid = false; // Already set, but good practice
                             }
                        }
@@ -610,9 +672,14 @@
             if (contentType && (contentType.includes("application/json") || contentType.includes("text/plain"))) {
                  return response.text().then(text => {
                       try {
+                         // If the text is empty, parsing will fail, which is expected if the script returns nothing
+                         if (!text) {
+                             throw new Error("Received empty response body from server.");
+                         }
                          return JSON.parse(text); // Try to parse the text as JSON
                       } catch (jsonError) {
                          console.error('Failed to parse response as JSON:', jsonError, 'Response text:', text);
+                         // Throw an error that will be caught by the .catch block
                          throw new Error('Failed to parse JSON response from server.');
                       }
                  });
@@ -628,7 +695,8 @@
           $('.loading').hide();
           console.log("Fetch Response JSON Result:", result); // Log the parsed JSON result
 
-          if (result && result.result === 'success') { // Check if result is an object and has result: 'success'
+          // Check if result is a valid object and has the expected success structure
+          if (result && typeof result === 'object' && result.result === 'success') {
               $('.success-message').show();
               $('#pgForm')[0].reset();
               // Reset select2 dropdowns and trigger change
@@ -651,8 +719,9 @@
               setTimeout(() => { $('.success-message').hide(); }, 3000);
           } else {
                // Handles cases where response was OK but the JSON body didn't have {result: 'success'} or was unexpected
-               alert('Submission failed: ' + (result ? (result.error || 'Unknown response format from server') : 'Empty or invalid response from server'));
-               console.error('Submission result:', result);
+               // Log the unexpected result for debugging
+               console.error('Submission result was not successful:', result);
+               alert('Submission failed: ' + (result && result.error ? result.error : 'Unknown response format from server or empty response.'));
           }
         })
         .catch(error => {
