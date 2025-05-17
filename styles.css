@@ -1,4 +1,4 @@
-/* Content from uploaded styles1.css starts here */
+/* Basic Body and Page Layout */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* More modern font */
   /* Subtle gradient background - Added for attractive login style */
@@ -19,6 +19,7 @@ body {
 /* Style for the main form container when visible */
 .container { /* This is the form container */
   max-width: 600px;
+  width: 100%; /* Ensure it can take full width on smaller screens */
   margin: 20px auto; /* Adjusted margin for better mobile view */
   padding: 30px; /* Increased padding */
   background-color: #ffffff; /* White background for the form */
@@ -26,6 +27,7 @@ body {
   border-radius: 10px; /* Rounded corners */
    margin-bottom: 60px; /* Space above footer (Adjusted from styles1.css) */
    /* No animation here, as login handles initial show */
+   box-sizing: border-box; /* Ensure padding is included in width */
 }
 
 /* Style for the attractive login container */
@@ -42,6 +44,7 @@ body {
   animation: fadeInUp 0.8s ease-out;
    /* Ensure it takes space when visible */
    /* Removed flex properties from here, handled by body */
+   box-sizing: border-box; /* Ensure padding is included in width */
 }
 
 /* Animation for the login container */
@@ -376,7 +379,7 @@ input[type="datetime-local"] + .error-message {
 }
 
 /* Mobile responsiveness - Refined */
-@media (max-width: 600px) {
+@media (max-width: 768px) { /* Increased breakpoint slightly */
   body {
       padding: 10px; /* Less padding on small screens */
   }
@@ -388,6 +391,7 @@ input[type="datetime-local"] + .error-message {
    .login-container { /* For the login container */
     width: 100%; /* Full width minus padding */
     padding: 20px; /* Less padding inside */
+     max-width: none; /* Remove max-width on small screens */
   }
 
   h2 {
@@ -450,6 +454,10 @@ input[type="datetime-local"] + .error-message {
     .select2-container--default .select2-selection--single .select2-selection__arrow {
         height: 38px !important; /* Match height */
     }
+     /* Adjust Select2 dropdown list width */
+   .select2-container--open .select2-dropdown {
+        width: 100% !important; /* Ensure dropdown matches input width */
+   }
 
 
 }
