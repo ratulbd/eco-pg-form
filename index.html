@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>E.CO PG Run Data Collection Form - MPL</title>
   <link rel="stylesheet" href="styles.css" /> <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-  </head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
 <body>
 
 <div class="login-container" id="loginContainer">
@@ -83,7 +84,7 @@
         </div>
         <div id="siteAttendDateTimeField" style="display: none;">
            <div class="card"> <label for="siteAttendDateTime">Site Attend Date & Time:</label>
-               <input type="datetime-local" id="siteAttendDateTime" name="siteAttendDateTime" />
+               <input type="text" id="siteAttendDateTime" name="siteAttendDateTime" />
                <span class="error-message" id="siteAttendDateTime-error"></span>
            </div>
         </div>
@@ -93,30 +94,30 @@
         <div class="event-card">
           <h3>1st Event</h3>
           <label for="pgStart1">PG Start Date & Time:</label>
-           <input type="datetime-local" id="pgStart1" name="pgStart1" />
+           <input type="text" id="pgStart1" name="pgStart1" />
            <span class="error-message" id="pgStart1-error"></span>
           <label for="pgStop1">PG Stop Date & Time:</label>
-           <input type="datetime-local" id="pgStop1" name="pgStop1" />
+           <input type="text" id="pgStop1" name="pgStop1" />
            <span class="error-message" id="pgStop1-error"></span>
         </div>
 
         <div class="event-card">
           <h3>2nd Event</h3>
           <label for="pgStart2">PG Start Date & Time:</label>
-           <input type="datetime-local" id="pgStart2" name="pgStart2" />
+           <input type="text" id="pgStart2" name="pgStart2" />
            <span class="error-message" id="pgStart2-error"></span>
           <label for="pgStop2">PG Stop Date & Time:</label>
-           <input type="datetime-local" id="pgStop2" name="pgStop2" />
+           <input type="text" id="pgStop2" name="pgStop2" />
            <span class="error-message" id="pgStop2-error"></span>
         </div>
 
         <div class="event-card">
           <h3>3rd Event</h3>
           <label for="pgStart3">PG Start Date & Time:</label>
-           <input type="datetime-local" id="pgStart3" name="pgStart3" />
+           <input type="text" id="pgStart3" name="pgStart3" />
            <span class="error-message" id="pgStart3-error"></span>
           <label for="pgStop3">PG Stop Date & Time:</label>
-           <input type="datetime-local" id="pgStop3" name="pgStop3" />
+           <input type="text" id="pgStop3" name="pgStop3" />
            <span class="error-message" id="pgStop3-error"></span>
         </div>
       </div>
@@ -138,66 +139,56 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <script>
   $(document).ready(function () {
     console.log("Document ready."); // Log document ready
-
-    // Helper function to get current date/time in YYYY-MM-DDTHH:MM format
-    function getCurrentDateTimeLocal() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = (now.getMonth() + 1).toString().padStart(2, '0');
-        const day = now.getDate().toString().padStart(2, '0');
-        const hours = now.getHours().toString().padStart(2, '0');
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
-    }
-
 
     // --- Function to Initialize the Form Features (Comprehensive Validation) ---
     function initializeForm() {
         console.log("Initializing form features..."); // Log when form init starts
 
         // Initialize Select2 - ONLY on select elements
-        $('#operatorName, #selectOption, #siteAttend, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').each(function() {
-             if (!$(this).hasClass('select2-hidden-accessible')) { // Prevent re-initialization
-                 $(this).select2({
-                      placeholder: 'Select...', // Generic placeholder for all
-                      allowClear: true,
-                      dropdownParent: $('#formContainer')[0] // Ensure dropdown is within the form container (Access DOM element)
-                 });
-                  console.log(`Select2 initialized on #${this.id}`);
-             } else {
-                  console.log(`Select2 already initialized on #${this.id}`);
+        $('#operatorName, #selectOption, #siteAttend, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').select2({
+             placeholder: 'Select...', // Generic placeholder for all
+             allowClear: true,
+             dropdownParent: $('#formContainer') // Ensure dropdown is within the form container
+        });
+        console.log("Select2 initialized on specific select elements.");
+
+        // --- Initialize Flatpickr Date/Time Pickers ---
+        // Target inputs with type="text" that have specific date/time IDs
+        const flatpickrOptions = {
+            enableTime: true, // Enable time selection
+            dateFormat: "Y-m-d\\TH:i", // Format asYYYY-MM-DDTHH:MM (ISO format)
+            maxDate: "today", // Restrict to today or earlier
+             // Append picker to form container to prevent z-index issues with modals/hidden elements
+            appendTo: $('#formContainer')[0],
+            // Optional: Add a hook to log when a date is selected
+             onValueUpdate: function(selectedDates, dateStr, instance) {
+                 console.log(`Flatpickr value updated for #${instance.input.id}:`, dateStr);
              }
-         });
-        console.log("Select2 initialization process completed.");
+        };
 
-        // --- Removed Flatpickr Initialization ---
-        console.log("Flatpickr initialization skipped (removed).");
-
-        // --- Set max date for native datetime-local inputs ---
-        const nowFormatted = getCurrentDateTimeLocal();
-        $('input[type="datetime-local"]').attr('max', nowFormatted);
-        console.log(`Set max date/time for datetime-local inputs to: ${nowFormatted}`);
+        flatpickr("#siteAttendDateTime", flatpickrOptions);
+        flatpickr("#pgStart1", flatpickrOptions);
+        flatpickr("#pgStop1", flatpickrOptions);
+        flatpickr("#pgStart2", flatpickrOptions);
+        flatpickr("#pgStop2", flatpickrOptions);
+        flatpickr("#pgStart3", flatpickrOptions);
+        flatpickr("#pgStop3", flatpickrOptions);
+         console.log("Flatpickr initialized on specific text inputs.");
 
 
         // --- Helper Functions (For Validation) ---
 
-        // Helper function to parse date/time string into a Date object (should work with native datetime-local)
+        // Helper function to parse date/time string into a Date object (handles ISO format from Flatpickr)
         function parseDateTime(datetimeStr) {
-            if (!datetimeStr) {
-                console.log("parseDateTime: Received empty string, returning null.");
-                return null;
-            }
-            console.log("parseDateTime: Parsing string:", datetimeStr);
+            if (!datetimeStr) return null;
             const date = new Date(datetimeStr);
              // Check if date is valid
-            if (isNaN(date.getTime())) {
-                console.log("parseDateTime: Parsed date is invalid.");
-                return null;
-            }
-            console.log("parseDateTime: Parsed Date object:", date);
+            if (isNaN(date.getTime())) return null;
             return date;
         }
 
@@ -216,8 +207,7 @@
               }
 
               if (!errorSpan.length) {
-                 // Corrected syntax error here: escaped the backtick inside the string
-                 console.warn(`Error span not found for field: #${fieldId}-error\`. This field's errors will not be displayed visually, only invalid class applied.`);
+                 console.error(`Error span not found for field: #${fieldId}-error`);
                  // Fallback: just toggle invalid class if error span is missing
                  if (message) {
                      fieldElement.addClass('is-invalid');
@@ -225,14 +215,19 @@
                      if (fieldElement.hasClass('select2-hidden-accessible')) {
                        fieldElement.next('.select2-container').find('.select2-selection--single').addClass('is-invalid');
                      }
-                      // No special handling needed for native datetime-local inputs here
+                     // Special handling for Flatpickr
+                      if (fieldElement.hasClass('flatpickr-input')) {
+                           fieldElement.addClass('is-invalid');
+                      }
 
                  } else {
                      fieldElement.removeClass('is-invalid');
                       if (fieldElement.hasClass('select2-hidden-accessible')) {
                        fieldElement.next('.select2-container').find('.select2-selection--single').removeClass('is-invalid');
                      }
-                      // No special handling needed for native datetime-local inputs here
+                     if (fieldElement.hasClass('flatpickr-input')) {
+                           fieldElement.removeClass('is-invalid');
+                     }
                  }
                  return; // Exit if no error span
               }
@@ -240,12 +235,14 @@
 
               if (message) {
                   errorSpan.text(message);
-                  // Apply invalid class to the original field AND related visible elements (Select2)
+                  // Apply invalid class to the original field AND related visible elements (Select2, Flatpickr)
                   fieldElement.addClass('is-invalid');
                   if (fieldElement.hasClass('select2-hidden-accessible')) {
                      fieldElement.next('.select2-container').find('.select2-selection--single').addClass('is-invalid');
                   }
-                   // No special handling needed for native datetime-local inputs here
+                   if (fieldElement.hasClass('flatpickr-input')) {
+                       fieldElement.addClass('is-invalid');
+                   }
 
               } else {
                   errorSpan.text('');
@@ -254,7 +251,9 @@
                    if (fieldElement.hasClass('select2-hidden-accessible')) {
                      fieldElement.next('.select2-container').find('.select2-selection--single').removeClass('is-invalid');
                    }
-                  // No special handling needed for native datetime-local inputs here
+                  if (fieldElement.hasClass('flatpickr-input')) {
+                       fieldElement.removeClass('is-invalid');
+                   }
               }
           }
 
@@ -320,7 +319,7 @@
                                  const siteAttendDateTime = parseDateTime(siteAttendDateTimeVal);
                                   console.log("Site Attend DateTime value:", siteAttendDateTimeVal, "Parsed Date object:", siteAttendDateTime);
                                  if (!siteAttendDateTime) {
-                                      displayError('siteAttendDateTime', 'Invalid date format or value.'); // Should not happen with native datetime-local usually
+                                      displayError('siteAttendDateTime', 'Invalid date format or value.');
                                       allValid = false;
                                        console.log("Site Attend DateTime has invalid format/value.");
                                  } else if (siteAttendDateTime > now) {
@@ -373,8 +372,8 @@
                          console.log("1st Event is mandatory and incomplete.");
                      } else {
                           // Validate date formats
-                         if (!pgStart1) { displayError('pgStart1', 'Invalid format/value.'); allValid = false; console.log("1st Start has invalid format."); } // Should not happen with native datetime-local usually
-                         if (!pgStop1) { displayError('pgStop1', 'Invalid format/value.'); allValid = false; console.log("1st Stop has invalid format."); } // Should not happen with native datetime-local usually
+                         if (!pgStart1) { displayError('pgStart1', 'Invalid format/value.'); allValid = false; console.log("1st Start has invalid format."); }
+                         if (!pgStop1) { displayError('pgStop1', 'Invalid format/value.'); allValid = false; console.log("1st Stop has invalid format."); }
 
                          // Validate Start < Stop and not in future for 1st event
                          if (pgStart1 && pgStop1) {
@@ -411,8 +410,8 @@
                           } else {
                                // Validate date formats
                                let currentEventValid = true;
-                               if (!pgStart2) { displayError('pgStart2', 'Invalid format/value.'); currentEventValid = false; allValid = false; console.log("2nd Start has invalid format."); } // Should not happen with native datetime-local usually
-                               if (!pgStop2) { displayError('pgStop2', 'Invalid format/value.'); currentEventValid = false; allValid = false; console.log("2nd Stop has invalid format."); } // Should not happen with native datetime-local usually
+                               if (!pgStart2) { displayError('pgStart2', 'Invalid format/value.'); currentEventValid = false; allValid = false; console.log("2nd Start has invalid format."); }
+                               if (!pgStop2) { displayError('pgStop2', 'Invalid format/value.'); currentEventValid = false; allValid = false; console.log("2nd Stop has invalid format."); }
 
                                // Validate Start < Stop, not in future, and after previous event
                                if (currentEventValid) {
@@ -479,8 +478,8 @@
 
                               // Validate date formats
                               let currentEventValid = true;
-                              if (!pgStart3) { displayError('pgStart3', 'Invalid format/value.'); currentEventValid = false; allValid = false; console.log("3rd Start has invalid format."); } // Should not happen with native datetime-local usually
-                              if (!pgStop3) { displayError('pgStop3', 'Invalid format/value.'); currentEventValid = false; allValid = false; console.log("3rd Stop has invalid format."); } // Should not happen with native datetime-local usually
+                              if (!pgStart3) { displayError('pgStart3', 'Invalid format/value.'); currentEventValid = false; allValid = false; console.log("3rd Start has invalid format."); }
+                              if (!pgStop3) { displayError('pgStop3', 'Invalid format/value.'); currentEventValid = false; allValid = false; console.log("3rd Stop has invalid format."); }
 
                               // Validate Start < Stop, not in future, and after previous event
                               if (currentEventValid) {
@@ -562,9 +561,14 @@
                         $('#misscallTTFields').show();
                         $('#pgRunFields').hide();
                          // Clear fields and errors when hiding PG Run fields
-                         // Clear native datetime-local inputs
-                        $('input[type="datetime-local"]', '#pgRunFields').val(''); // Clear native inputs
-                        $('input[type="text"]', '#pgRunFields').val(''); // Clear other text inputs if any
+                         // Clear Flatpickr inputs using their instances
+                        $('input[type="text"]', '#pgRunFields').each(function() {
+                             if(this._flatpickr) {
+                                 this._flatpickr.clear();
+                             } else {
+                                 $(this).val('');
+                             }
+                         });
                          // Trigger change on hidden selects to clear them visually/data
                          $('select', '#pgRunFields').val(null).trigger('change.select2');
 
@@ -575,8 +579,13 @@
                         $('#pgRunFields').show();
                          // Clear fields and errors when hiding Misscall TT fields
                          $('select', '#misscallTTFields').val(null).trigger('change.select2');
-                         $('input[type="datetime-local"]', '#misscallTTFields').val(''); // Clear native inputs
-                         $('input[type="text"]', '#misscallTTFields').val(''); // Clear other text inputs if any
+                         $('input[type="text"]', '#misscallTTFields').each(function() {
+                             if(this._flatpickr) { // Although Site Attend DateTime is text, it uses Flatpickr
+                                  this._flatpickr.clear();
+                             } else {
+                                 $(this).val(''); // Fallback clear for other hidden text inputs
+                             }
+                         });
                          $('#siteAttendDateTimeField').hide(); // Ensure datetime field is hidden
 
 
@@ -586,8 +595,13 @@
                         $('#pgRunFields').hide();
                          // Clear all conditional fields and errors
                         $('select', '#misscallTTFields, #pgRunFields').val(null).trigger('change.select2');
-                         $('input[type="datetime-local"]', '#misscallTTFields, #pgRunFields').val(''); // Clear native inputs
-                         $('input[type="text"]', '#misscallTTFields, #pgRunFields').val(''); // Clear other text inputs if any
+                         $('input[type="text"]', '#misscallTTFields, #pgRunFields').each(function() {
+                             if(this._flatpickr) {
+                                  this._flatpickr.clear();
+                             } else {
+                                  $(this).val('');
+                             }
+                         });
                          $('#siteAttendDateTimeField').hide(); // Ensure datetime field is hidden
                      }
                    validateConditionalDateTimeFields(); // Then re-validate all conditional fields
@@ -600,14 +614,19 @@
                    } else {
                         console.log("Site Attend is NOT YES. Hiding Site Attend DateTime field.");
                        $('#siteAttendDateTimeField').hide();
-                       $('#siteAttendDateTime').val(''); // Clear native input
-                       console.log(`Cleared native input #${this.id} when Site Attend is not YES.`);
+                       $('#siteAttendDateTime').each(function() { // Clear date using Flatpickr instance
+                            if(this._flatpickr) {
+                                this._flatpickr.clear();
+                            } else {
+                                $(this).val(''); // Fallback clear
+                            }
+                       });
                    }
                    validateConditionalDateTimeFields(); // Then re-validate conditional fields
               }
          });
 
-        // Conditional date/time fields validation on change/blur (using native input events)
+        // Conditional date/time fields validation on change/blur (using Flatpickr's events)
         $('#siteAttendDateTime, #pgStart1, #pgStop1, #pgStart2, #pgStop2, #pgStart3, #pgStop3').on('change blur', function() {
             const fieldId = $(this).attr('id');
             console.log(`Change/Blur event fired on date/time field #${fieldId}. Value: ${$(this).val()}`);
@@ -632,7 +651,7 @@
                  // Read response text even if not OK to get potential error details
                  const errorText = await response.text();
                   console.error(`HTTP error fetching ${file}: Status ${response.status}, Body: ${errorText}`);
-                 throw new Error(`HTTP error! status: ${response.status} for ${file}`);
+                 throw new Error(`HTTP error! status: ${response.status}`);
              }
              const text = await response.text();
               console.log(`Successfully loaded ${file}. Text length: ${text.length}`);
@@ -665,7 +684,7 @@
           const data = await loadCSVData(dataFile);
            console.log(`Data loaded for #${dropdownId}:`, data);
            if (data.length === 0) {
-               console.warn(`No data loaded for dropdown #${dropdownId}. Check CSV file content.`);
+               console.warn(`No data loaded for dropdown #${dropdownId}. Check CSV file.`);
            }
           data.forEach(item => {
             const option = document.createElement('option');
@@ -675,16 +694,8 @@
           });
            console.log(`Options added to #${dropdownId}.`);
            // Trigger change.select2 to update the Select2 visual representation after populating
-           // Check if Select2 is initialized before triggering change.select2
-           if ($(dropdown).hasClass('select2-hidden-accessible')) {
-                $(dropdown).val(null).trigger('change.select2');
-                console.log(`Select2 triggered for #${dropdownId} after population.`);
-           } else {
-                console.warn(`Select2 not initialized on #${dropdownId}. Cannot trigger change.select2`);
-                // If Select2 isn't initialized, the dropdown won't look like Select2
-                // But the options should still be in the native select.
-           }
-
+           $(`#${dropdownId}`).val(null).trigger('change.select2');
+           console.log(`Select2 triggered for #${dropdownId} after population.`);
         }
 
          // Populate dropdowns when the form is initialized (after login)
@@ -836,9 +847,15 @@
                 $('.select2-selection__rendered').empty().append('<span class="select2-selection__placeholder">Select...</span>');
 
 
-                // Clear native datetime-local inputs
-                 $('input[type="datetime-local"]').val('');
-                 console.log("Cleared native datetime-local inputs.");
+                // Reset Flatpickr inputs using their instance to clear them
+                 $('input[type="text"].flatpickr-input').each(function() {
+                     if(this._flatpickr) { // Check if flatpickr instance exists
+                         this._flatpickr.clear();
+                         console.log(`Cleared Flatpickr input #${this.id}`);
+                     } else {
+                          $(this).val(''); // Fallback clear for non-flatpickr text inputs if any
+                     }
+                 });
 
 
                // Trigger change on conditional fields to hide/show sections and clear values/errors properly
@@ -851,6 +868,7 @@
                $('.error-message').text(''); // Clear error message spans
                $('input, select').removeClass('is-invalid'); // Remove invalid class from inputs/selects
                $('.select2-container .select2-selection--single').removeClass('is-invalid'); // Remove invalid class from Select2 visuals
+                $('input[type="text"].flatpickr-input').removeClass('is-invalid'); // Remove invalid class from Flatpickr inputs
 
 
                // Hide success message after a few seconds
@@ -1058,10 +1076,10 @@
       });
 
     // --- Initial State on document ready ---
-    // The login container is shown by default in HTML, form container is hidden.
-    // The login form submission handler is attached here.
-    // The form initialization is deferred until successful login.
+    // The login container is shown by default in HTML, the form container is hidden using style="display: none;"
+    // Ensure form container is hidden on page load in case style is overridden or for clarity
      $('#formContainer').hide();
+     // Ensure login container is visible on page load (it is by default in HTML)
      $('#loginContainer').show();
       console.log("Initial display state set: login visible, form hidden.");
 
