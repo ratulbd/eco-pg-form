@@ -127,11 +127,12 @@
 
 <script>
   $(document).ready(function () {
+    console.log("Document ready."); // Log document ready
 
     // --- Function to Initialize the Form Features (Comprehensive Validation) ---
     // This contains the logic from the later versions with Flatpickr and detailed validation
     function initializeForm() {
-        console.log("Initializing form features (with comprehensive validation)."); // Log when form init starts
+        console.log("Initializing form features..."); // Log when form init starts
 
         // Initialize Select2
         $('#siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').select2({
@@ -151,7 +152,8 @@
             enableTime: true, // Enable time selection
             dateFormat: "Y-m-d\\TH:i", // Format asYYYY-MM-DDTHH:MM (ISO format for consistency)
             maxDate: "today", // Restrict to today or earlier
-            appendTo: $('#formContainer')[0] // Append picker to form container
+             // Append picker to form container to prevent z-index issues with modals/hidden elements
+            appendTo: $('#formContainer')[0]
         };
 
         flatpickr("#siteAttendDateTime", flatpickrOptions);
@@ -249,6 +251,7 @@
 
          // Validate conditional Date/Time fields based on selected option and relationships
          function validateConditionalDateTimeFields() {
+             console.log("Validating conditional date/time fields...");
              const selectOption = $('#selectOption').val();
              const siteAttend = $('#siteAttend').val();
 
@@ -267,12 +270,14 @@
              const now = new Date();
 
              if (selectOption === 'Misscall TT') {
+                  console.log("Option: Misscall TT");
                  // Validate Site Attend if Misscall TT is selected and section is visible
                  if ($('#misscallTTFields').is(':visible')) {
                      if (!siteAttend) {
                          displayError('siteAttend', 'This field is mandatory for Misscall TT.');
                          allValid = false;
                      } else if (siteAttend === 'YES') {
+                         console.log("Site Attend: YES");
                          // Validate Site Attend DateTime if Site Attend is YES and field is visible
                          if ($('#siteAttendDateTimeField').is(':visible')) {
                              const siteAttendDateTimeVal = $('#siteAttendDateTime').val();
@@ -281,6 +286,7 @@
                                  allValid = false;
                              } else {
                                  const siteAttendDateTime = parseDateTime(siteAttendDateTimeVal);
+                                  console.log("Site Attend DateTime value:", siteAttendDateTimeVal, "Parsed:", siteAttendDateTime);
                                  if (!siteAttendDateTime) {
                                       displayError('siteAttendDateTime', 'Invalid date format or value.');
                                       allValid = false;
@@ -294,6 +300,7 @@
                  }
 
              } else if (selectOption === 'PG Run') {
+                 console.log("Option: PG Run");
                  // Validate PG Run fields if PG Run is selected and section is visible
                  if ($('#pgRunFields').is(':visible')) {
                      const pgStart1Val = $('#pgStart1').val();
@@ -309,6 +316,10 @@
                      const pgStop2 = parseDateTime(pgStop2Val);
                      const pgStart3 = parseDateTime(pgStart3Val);
                      const pgStop3 = parseDateTime(pgStop3Val);
+
+                     console.log("PG Run values:", {pgStart1Val, pgStop1Val, pgStart2Val, pgStop2Val, pgStart3Val, pgStop3Val});
+                     console.log("PG Run parsed:", {pgStart1, pgStop1, pgStart2, pgStop2, pgStart3, pgStop3});
+
 
                      // Validate 1st Event - Mandatory if PG Run is selected
                      if (!pgStart1Val || !pgStop1Val) {
@@ -357,7 +368,7 @@
                                        displayError('pgStop2', 'Must be after Start time.');
                                        allValid = false;
                                    }
-                                   // Check against previous event only if previous event is valid
+                                   // Check against previous event only if previous event is valid AND filled
                                    if (pgStop1 && pgStart2 <= pgStop1) {
                                        displayError('pgStart2', 'Must be after 1st Stop time.');
                                        allValid = false;
@@ -385,42 +396,60 @@
                          } else {
                              // Check against previous event only if previous events are valid and filled
                              if (!pgStart1Val || !pgStop1Val || !pgStart2Val || !pgStop2Val) {
-                                  // This case is already handled by the 2nd event validation, but adding here for clarity
-                                  // If 2nd event is not fully valid/filled, 3rd event cannot be valid.
-                             } else {
-                                  // Validate date formats
-                                  let currentEventValid = true;
-                                  if (!pgStart3) { displayError('pgStart3', 'Invalid format/value.'); currentEventValid = false; allValid = false; }
-                                  if (!pgStop3) { displayError('pgStop3', 'Invalid format/value.'); currentEventValid = false; allValid = false; }
+                                   // If 2nd event is not fully valid/filled, 3rd event cannot be valid.
+                                   // This check is somewhat redundant if 2nd event validation runs,
+                                   // but ensures sequential filling.
+                                   if (!pgStart1Val || !pgStop1Val) { // Check if 1st event is missing
+                                        displayError('pgStart3', 'Requires 1st event times.');
+                                        displayError('pgStop3', 'Requires 1st event times.');
+                                        allValid = false;
+                                   } else if (!pgStart2Val || !pgStop2Val) { // Check if 2nd event is missing
+                                        displayError('pgStart3', 'Requires 2nd event times.');
+                                        displayError('pgStop3', 'Requires 2nd event times.');
+                                        allValid = false;
+                                   }
 
-                                  // Validate Start < Stop, not in future, and after previous event
-                                  if (currentEventValid) {
-                                      if (pgStop3 <= pgStart3) {
-                                          displayError('pgStop3', 'Must be after Start time.');
-                                          allValid = false;
-                                      }
-                                      // Check against previous event only if previous event is valid
-                                      if (pgStop2 && pgStart3 <= pgStop2) {
-                                          displayError('pgStart3', 'Must be after 2nd Stop time.');
-                                          allValid = false;
-                                      }
-                                      if (pgStart3 > now) {
-                                           displayError('pgStart3', 'Future date/time not allowed.');
-                                           allValid = false;
-                                      }
-                                      if (pgStop3 > now) {
-                                           displayError('pgStop3', 'Future date/time not allowed.');
-                                           allValid = false;
-                                      }
-                                  } else { // If format is invalid, the field is invalid
+                                   // If previous events are missing, don't proceed with date comparisons
+                                   if (!allValid) return false;
+                             }
+
+                              // Validate date formats
+                              let currentEventValid = true;
+                              if (!pgStart3) { displayError('pgStart3', 'Invalid format/value.'); currentEventValid = false; allValid = false; }
+                              if (!pgStop3) { displayError('pgStop3', 'Invalid format/value.'); currentEventValid = false; allValid = false; }
+
+                              // Validate Start < Stop, not in future, and after previous event
+                              if (currentEventValid) {
+                                  if (pgStop3 <= pgStart3) {
+                                      displayError('pgStop3', 'Must be after Start time.');
+                                      allValid = false;
+                                  }
+                                  // Check against previous event only if previous event is valid AND filled
+                                  if (pgStop2 && pgStart3 <= pgStop2) {
+                                      displayError('pgStart3', 'Must be after 2nd Stop time.');
+                                      allValid = false;
+                                  }
+                                  if (pgStart3 > now) {
+                                       displayError('pgStart3', 'Future date/time not allowed.');
                                        allValid = false;
                                   }
-                             }
+                                  if (pgStop3 > now) {
+                                       displayError('pgStop3', 'Future date/time not allowed.');
+                                       allValid = false;
+                                  }
+                              } else { // If format is invalid, the field is invalid
+                                  allValid = false;
+                              }
                          }
                      }
                  }
+             } else {
+                 console.log("Option: None selected");
+                 // If no option is selected, ensure conditional fields are hidden and validation passes for them
+                 // Their errors would have been cleared at the start of the function
              }
 
+             console.log("Conditional date/time validation result:", allValid);
              return allValid;
          }
 
@@ -429,6 +458,7 @@
 
         // Basic required fields validation on blur (for text inputs)
         $('#ttNumber').on('blur', function() {
+            console.log("TT Number blur event.");
             if ($(this).closest('.card').is(':visible')) { // Only validate if visible
                validateField('ttNumber');
             } else {
@@ -439,34 +469,140 @@
          // Select2 fields validation on change
          $('#operatorName, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown, #selectOption, #siteAttend').on('change', function() {
               const fieldId = $(this).attr('id');
+               console.log(`Change event on #${fieldId}. Value: ${$(this).val()}`);
               // Check if the field's container (card or event-card) is visible
               if ($(this).closest('.card').is(':visible') || $(this).closest('#misscallTTFields').is(':visible') || $(this).closest('#pgRunFields').is(':visible')) {
+                   console.log(`${fieldId} is visible, validating standard field.`);
                   validateField(fieldId); // Validate standard required field
               } else {
+                   console.log(`${fieldId} is hidden, clearing error.`);
                   displayError(fieldId, ''); // Clear error if hidden
               }
 
               // Always re-validate conditional date/time fields when selectOption or siteAttend changes
-              if (fieldId === 'selectOption' || fieldId === 'siteAttend') {
-                   validateConditionalDateTimeFields();
+              if (fieldId === 'selectOption') {
+                   console.log("selectOption changed, re-validating conditional fields.");
+                    // Handle showing/hiding sections first
+                     if ($(this).val() === 'Misscall TT') {
+                        $('#misscallTTFields').show();
+                        $('#pgRunFields').hide();
+                         // Clear fields and errors when hiding PG Run fields
+                        $('#pgRunFields input[type="text"]').val(''); // Flatpickr inputs are type=text
+                         // Trigger change on hidden selects to clear them visually/data
+                         $('#pgRunFields select').val(null).trigger('change.select2');
+
+
+                     } else if ($(this).val() === 'PG Run') {
+                        $('#misscallTTFields').hide();
+                        $('#pgRunFields').show();
+                         // Clear fields and errors when hiding Misscall TT fields
+                         $('#misscallTTFields select').val(null).trigger('change.select2');
+                         $('#misscallTTFields input[type="text"]').val('');
+                         $('#siteAttendDateTimeField').hide(); // Ensure datetime field is hidden
+
+
+                     } else {
+                        // Hide both if neither option is selected
+                        $('#misscallTTFields').hide();
+                        $('#pgRunFields').hide();
+                         // Clear all conditional fields and errors
+                        $('#misscallTTFields select').val(null).trigger('change.select2');
+                        $('#misscallTTFields input[type="text"]').val('');
+                        $('#pgRunFields input[type="text"]').val('');
+                         $('#siteAttendDateTimeField').hide(); // Ensure datetime field is hidden
+                     }
+                   validateConditionalDateTimeFields(); // Then re-validate all conditional fields
+              } else if (fieldId === 'siteAttend') {
+                  console.log("siteAttend changed, re-validating conditional fields.");
+                   // Handle showing/hiding Site Attend DateTime field first
+                   if ($(this).val() === 'YES') {
+                       $('#siteAttendDateTimeField').show();
+                   } else {
+                       $('#siteAttendDateTimeField').hide();
+                       $('#siteAttendDateTime').val(''); // Clear date if field is hidden
+                   }
+                   validateConditionalDateTimeFields(); // Then re-validate conditional fields
               }
          });
 
         // Conditional date/time fields validation on change/blur (using Flatpickr's events)
         $('#siteAttendDateTime, #pgStart1, #pgStop1, #pgStart2, #pgStop2, #pgStart3, #pgStop3').on('change blur', function() {
+            const fieldId = $(this).attr('id');
+            console.log(`Change/Blur event on #${fieldId}. Value: ${$(this).val()}`);
              // Check if the field's container (card or event-card) is visible
             if ($(this).closest('.card').is(':visible') || $(this).closest('.event-card').is(':visible') || $(this).closest('#siteAttendDateTimeField').is(':visible')) {
+                console.log(`${fieldId} is visible, re-validating conditional fields.`);
                validateConditionalDateTimeFields(); // Re-validate all conditional date fields
             } else {
+                console.log(`${fieldId} is hidden, clearing error.`);
               displayError($(this).attr('id'), ''); // Clear its specific error if hidden
             }
         });
 
 
-        // --- Form Submission Handler ---
-        $('#pgForm').submit(function (event) {
-          event.preventDefault();
-           console.log("Form submission started.");
+         // Function to load data from CSV (Kept here as it's part of form initialization)
+        async function loadCSVData(file) {
+            console.log("Attempting to load CSV:", file);
+          try {
+             const response = await fetch(file);
+              console.log(`Fetch response for ${file}: Status ${response.status}, OK: ${response.ok}`);
+             if (!response.ok) {
+                 // Read response text even if not OK to get potential error details
+                 const errorText = await response.text();
+                  console.error(`HTTP error fetching ${file}: Status ${response.status}, Body: ${errorText}`);
+                 throw new Error(`HTTP error! status: ${response.status}`);
+             }
+             const text = await response.text();
+              console.log(`Successfully loaded ${file}. Text length: ${text.length}`);
+             const lines = text.split('\n').slice(1); // Skip header row
+              console.log(`Parsed ${lines.length} data lines from ${file}.`);
+             return lines.map(line => line.trim()).filter(line => line); // Trim whitespace and remove empty lines
+          } catch (error) {
+             console.error(`Error loading CSV data from ${file}:`, error);
+             // Display a persistent message or handle this error visibly to the user
+             alert(`Failed to load data for dropdowns from ${file}. Please check the file path and deployment. Error: ${error.message}`);
+             return []; // Return empty array on error
+          }
+        }
+
+        // Function to populate dropdowns from CSV data (Kept here)
+        async function populateDropdown(dropdownId, dataFile) {
+            console.log(`Populating dropdown #${dropdownId} from ${dataFile}`);
+          const dropdown = document.getElementById(dropdownId);
+          if (!dropdown) {
+               console.error(`Dropdown element #${dropdownId} not found.`);
+              return;
+          }
+          // Add a default blank option for required fields with select2 allowClear
+           $(dropdown).empty().append('<option value=""></option>'); // Clear existing options before populating
+
+
+          const data = await loadCSVData(dataFile);
+           console.log(`Data loaded for #${dropdownId}:`, data);
+          data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item;
+            option.textContent = item;
+            dropdown.appendChild(option);
+          });
+           console.log(`Options added to #${dropdownId}.`);
+           // Refresh select2 after populating
+           // Use val(null) and trigger('change.select2') to reset and update visual
+          $(`#${dropdownId}`).val(null).trigger('change.select2');
+           console.log(`Select2 triggered for #${dropdownId}.`);
+        }
+
+         // Populate dropdowns when the form is initialized (after login)
+        populateDropdown('siteDropdown', 'data/sites.csv'); // Assuming data/sites.csv exists
+        populateDropdown('pgOperatorDropdown', 'data/runners.csv'); // Assuming data/runners.csv exists
+        populateDropdown('teamLeaderDropdown', 'data/runners.csv'); // Assuming data/runners.csv exists
+         console.log("Dropdown data population process initiated.");
+
+
+       // --- Form Submission Handler ---
+       $('#pgForm').submit(function (event) {
+         event.preventDefault();
+          console.log("Form submission started.");
 
           // Perform full validation on all relevant fields before submitting
           let formIsValid = true;
@@ -482,7 +618,9 @@
 
           // Validate conditional fields (including PG events and Site Attend Date/Time)
           // This function handles their visibility checks internally
+           console.log("Running final conditional date/time validation before submit.");
           formIsValid = validateConditionalDateTimeFields() && formIsValid;
+           console.log("Overall form validation result:", formIsValid);
 
 
           if (!formIsValid) {
@@ -491,7 +629,7 @@
              console.log("Form validation failed before submit.");
              return;
           }
-          console.log("Form validation passed. Preparing data.");
+          console.log("Form validation passed. Preparing data for submission.");
 
 
           const formData = new FormData(this);
@@ -505,15 +643,21 @@
 
            // Only include values for fields that are currently visible in the submitted data
            // This prevents sending data for hidden fields which might cause issues on the script side
+           // However, the Google Apps Script might expect all keys, so let's include all but use empty string for hidden/empty
             allFormFields.forEach(field => {
                const fieldElement = $(`#${field}`);
-               // Check if the field exists and its relevant container is visible
-                if (fieldElement.length > 0 && (fieldElement.closest('.card').is(':visible') || fieldElement.closest('.event-card').is(':visible') || fieldElement.closest('#siteAttendDateTimeField').is(':visible'))) {
-                    // Use .val() for all jQuery elements to get their current value
-                    jsonData[field] = fieldElement.val() || ''; // Use empty string for null/undefined values
+               // Check if the element exists
+                if (fieldElement.length > 0) {
+                     // Check if the element is visible or its conditional container is visible
+                    if (fieldElement.is(':visible') || fieldElement.closest('.card').is(':visible') || fieldElement.closest('.event-card').is(':visible') || fieldElement.closest('#siteAttendDateTimeField').is(':visible')) {
+                         // Use .val() for jQuery elements to get their current value
+                        jsonData[field] = fieldElement.val() || ''; // Use empty string for null/undefined values
+                   } else {
+                       // If the field is hidden, include it with an empty string value
+                       jsonData[field] = '';
+                   }
                } else {
-                   // Include hidden fields with empty string value, or exclude them completely?
-                   // Let's include them with empty string for consistent data structure in the script
+                    // If the element doesn't exist in the HTML, include it with an empty string as a placeholder
                    jsonData[field] = '';
                }
           });
@@ -579,6 +723,7 @@
                $('#pgForm')[0].reset(); // Reset the form
 
                 // Reset Select2 dropdowns and trigger change to clear them visually and update validation
+                // Use .trigger('change.select2') for Select2 specific change event
                $('#operatorName, #selectOption, #siteAttend').val(null).trigger('change.select2');
                $('#siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').val(null).trigger('change.select2');
                 // Manually update Select2 placeholder visual for searchable ones if needed
@@ -593,8 +738,8 @@
                  });
 
                // Trigger change on conditional fields to hide/show sections and clear values/errors properly
-               $('#selectOption').trigger('change');
-               $('#siteAttend').trigger('change');
+               $('#selectOption').trigger('change'); // This will also trigger the logic to hide sections and clear their content/errors
+               $('#siteAttend').trigger('change'); // Trigger site attend change explicitly
 
 
                // Clear all validation errors and invalid classes after successful submission

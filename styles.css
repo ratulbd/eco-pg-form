@@ -375,23 +375,23 @@ input[type="datetime-local"] + .error-message {
     font-size: 0.8em;
 }
 
-/* Mobile responsiveness */
+/* Mobile responsiveness - Refined */
 @media (max-width: 600px) {
   body {
-      padding: 10px;
+      padding: 10px; /* Less padding on small screens */
   }
   .container { /* For the form container */
-    width: 98%;
+    width: 100%; /* Full width minus padding */
     margin: 10px auto;
-    padding: 15px;
+    padding: 15px; /* Less padding inside */
   }
    .login-container { /* For the login container */
-    width: 98%;
-    padding: 20px;
+    width: 100%; /* Full width minus padding */
+    padding: 20px; /* Less padding inside */
   }
 
   h2 {
-    font-size: 2em;
+    font-size: 1.8em;
     margin-bottom: 20px;
   }
    h2::after {
@@ -429,9 +429,9 @@ input[type="datetime-local"] + .error-message {
   }
 
   .login-message {
-      margin-top: 20px;
-      padding: 10px;
-      font-size: 0.9em;
+      margin-top: 20px; /* Keep some space */
+      padding: 10px; /* Less padding */
+      font-size: 0.9em; /* Slightly smaller font */
   }
 
   .footer-info {
@@ -441,4 +441,15 @@ input[type="datetime-local"] + .error-message {
    .footer-info small {
     font-size: 0.7em;
   }
+
+    /* Adjust Select2 dropdowns on small screens */
+   .select2-container--default .select2-selection--single {
+       height: 40px !important; /* Slightly smaller height */
+       padding: 6px 24px 6px 10px !important; /* Adjusted padding */
+   }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 38px !important; /* Match height */
+    }
+
+
 }
