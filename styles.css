@@ -327,30 +327,18 @@ select.is-invalid {
      box-shadow: 0 0 5px rgba(231, 76, 60, 0.4);
 }
 
-/* Style for Flatpickr inputs (which are type="text") when invalid */
-input[type="text"].is-invalid.flatpickr-input {
+/* Style for native datetime-local inputs when invalid */
+input[type="datetime-local"].is-invalid {
     border-color: #e74c3c !important;
     box-shadow: 0 0 5px rgba(231, 76, 60, 0.4);
 }
-
-/* Style for datetime-local inputs when invalid (if used without Flatpickr or fallback) */
-input[type="datetime-local"].is-invalid {
-     border-color: #e74c3c !important;
-     box-shadow: 0 0 5px rgba(231, 76, 60, 0.4);
-}
-
 
 /* Ensure error message follows the Select2 container with correct spacing */
 .select2-container + .error-message {
     margin-top: 5px;
 }
 
-/* Ensure error message follows a Flatpickr input (type="text") with correct spacing */
-input[type="text"].flatpickr-input + .error-message {
-     margin-top: 5px;
-}
-
-/* Ensure error message follows a datetime-local input with correct spacing */
+/* Ensure error message follows a native datetime-local input with correct spacing */
 input[type="datetime-local"] + .error-message {
      margin-top: 5px;
 }
