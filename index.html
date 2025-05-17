@@ -13,6 +13,27 @@
          margin-top: 5px; /* Space between the Select2 dropdown and the error message */
          /* Adjust other padding/margins if needed based on your final CSS */
     }
+     .error-message {
+        color: red;
+        font-size: 0.8em;
+        display: block; /* Ensure it takes its own line */
+        margin-top: 5px; /* Add space above the error message */
+        margin-bottom: 15px; /* Add space below the error message */
+        min-height: 1em; /* Reserve space to prevent layout shifts */
+        padding: 0 5px; /* Optional: add slight horizontal padding */
+    }
+
+    input.is-invalid,
+    select.is-invalid {
+        border-color: red !important; /* Use !important to override other border styles */
+        box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Optional: add a red shadow */
+    }
+
+    .select2-container--default .select2-selection--single.is-invalid {
+         border-color: red !important;
+         box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Optional: add a red shadow */
+    }
+
    </style>
 </head>
 <body>
@@ -473,9 +494,15 @@
             // Note: Select2 hidden fields will still trigger change if value is set programmatically (like .val(null).trigger('change'))
             // We only want to show errors for *visible* mandatory fields
             if ($(this).is(':visible') || $(this).next('.select2-container').is(':visible')) {
-                validateField(fieldId);
+                 // Check if the original select element itself is visible or if its Select2 container is visible
+                 // This is a more robust check for Select2 visibility
+                 if ($(this).is(':visible') || ($(this).next('.select2-container').length && $(this).next('.select2-container').is(':visible'))) {
+                     validateField(fieldId);
+                 } else {
+                     displayError(fieldId, ''); // Ensure error is cleared if field becomes hidden
+                 }
             } else {
-                displayError(fieldId, ''); // Ensure error is cleared if field becomes hidden
+                displayError(fieldId, ''); // Ensure error is cleared if field is not visible
             }
 
 
@@ -565,33 +592,47 @@
           body: JSON.stringify(jsonData)
         })
         .then(response => {
+            console.log("Fetch Response Status:", response.status); // Log status
+            console.log("Fetch Response OK:", response.ok);     // Log response.ok
+            console.log("Fetch Response Headers:", Array.from(response.headers.entries())); // Log headers
+
             if (!response.ok) {
-                // Handle HTTP errors (e.g., 404, 500 from proxy or Apps Script)
-                // Try to read response text for more info
+                // This block should only be for non-200 statuses, but we'll log body just in case
                 return response.text().then(text => {
+                     console.error(`HTTP error! status: ${response.status}, body: ${text}`); // Log the body on error status
                      throw new Error(`HTTP error! status: ${response.status}, body: ${text}`);
                 });
             }
-             // Check if response is actually JSON before parsing
-             const contentType = response.headers.get("content-type");
-             if (contentType && contentType.indexOf("application/json") !== -1) {
-                 return response.json();
-             } else {
-                 // Handle non-JSON response (e.g., plain text error from Apps Script)
+
+            // If response is OK (status 200-299), check content type and parse as JSON
+            const contentType = response.headers.get("content-type");
+             // Also accept 'text/plain' as Apps Script sometimes returns this with JSON content
+            if (contentType && (contentType.includes("application/json") || contentType.includes("text/plain"))) {
                  return response.text().then(text => {
-                      console.error('Received non-JSON response:', text);
-                      throw new Error('Received non-JSON response from server. Check Apps Script logs.');
+                      try {
+                         return JSON.parse(text); // Try to parse the text as JSON
+                      } catch (jsonError) {
+                         console.error('Failed to parse response as JSON:', jsonError, 'Response text:', text);
+                         throw new Error('Failed to parse JSON response from server.');
+                      }
                  });
-             }
+            } else {
+                 // If content type is unexpected, read as text and throw an error
+                 return response.text().then(text => {
+                      console.error('Received unexpected content type from server:', contentType, 'Response text:', text);
+                      throw new Error('Received unexpected response from server. Check Apps Script logs.');
+                 });
+            }
         })
         .then(result => {
           $('.loading').hide();
-          if (result && result.result === 'success') { // Check if result exists and is success
+          console.log("Fetch Response JSON Result:", result); // Log the parsed JSON result
+
+          if (result && result.result === 'success') { // Check if result is an object and has result: 'success'
               $('.success-message').show();
               $('#pgForm')[0].reset();
               // Reset select2 dropdowns and trigger change
               $('#operatorName, #selectOption, #siteAttend').val(null).trigger('change');
-               // Specific reset for CSV-populated select2s (clears text)
                $('#siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').val(null).trigger('change');
 
                // Manually reset Select2 search input visually if needed
@@ -609,16 +650,16 @@
 
               setTimeout(() => { $('.success-message').hide(); }, 3000);
           } else {
-               // Handle application-specific errors returned from script or unexpected response
-               alert('Submission failed: ' + (result ? (result.error || 'Unknown error from server') : 'Empty or invalid response from server'));
+               // Handles cases where response was OK but the JSON body didn't have {result: 'success'} or was unexpected
+               alert('Submission failed: ' + (result ? (result.error || 'Unknown response format from server') : 'Empty or invalid response from server'));
                console.error('Submission result:', result);
           }
         })
         .catch(error => {
           $('.loading').hide();
-          // Handle network errors or errors thrown in the .then chain
-          alert('Submission failed: ' + error.message);
-          console.error('Submission error:', error); // Log detailed error to browser console
+          // This catches any errors thrown in the .then chain (network errors, JSON parsing errors, errors we threw)
+          alert('Submission failed: ' + error.message); // This is the alert message
+          console.error('Fetch Error:', error); // Log the full error object to console
         });
       });
 
