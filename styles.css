@@ -1,11 +1,9 @@
-/* Basic Body and Container Styling */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* More modern font */
   background-color: #eef2f6; /* Light background */
   margin: 0;
   padding: 20px; /* Add padding around the body */
   line-height: 1.6; /* Improved readability */
-  color: #333; /* Default text color */
 }
 
 .container {
@@ -24,22 +22,19 @@ h2 {
   font-size: 2em;
 }
 
-/* Label Styling */
 label {
   display: block;
-  margin: 15px 0 5px; /* Adjusted margin-bottom for spacing with error message */
+  margin: 15px 0 8px; /* Adjusted margin */
   color: #34495e; /* Slightly darker label color */
   font-weight: bold; /* Make labels bold */
 }
 
-/* Input, Select, Button Basic Styling */
-/* Removed input[type="datetime-local"] as Flatpickr uses type="text" */
 select,
-input[type="text"],
-button {
+input[type="datetime-local"],
+input[type="text"] {
   width: 100%;
   padding: 12px 15px; /* Increased padding */
-  margin-bottom: 20px; /* Default space below fields */
+  margin-bottom: 20px;
   border: 1px solid #bdc3c7; /* Lighter border color */
   border-radius: 5px;
   box-sizing: border-box;
@@ -47,16 +42,16 @@ button {
   transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transitions */
 }
 
-/* Focus States */
 select:focus,
+input[type="datetime-local"]:focus,
 input[type="text"]:focus {
   border-color: #3498db; /* Highlight border on focus */
   box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); /* Add a subtle shadow on focus */
   outline: none; /* Remove default outline */
 }
 
-/* Button Styling */
 button {
+  width: 100%;
   padding: 12px;
   margin-top: 10px; /* Space above button */
   background-color: #2ecc71; /* Green call-to-action color */
@@ -77,7 +72,6 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Messages (Loading, Success) */
 .success-message {
   display: none;
   text-align: center;
@@ -97,7 +91,6 @@ button:disabled {
   font-style: italic;
 }
 
-/* Card Styling */
 .card,
 .event-card {
   background-color: #fdfefe; /* Very light off-white */
@@ -116,64 +109,66 @@ button:disabled {
   margin-bottom: 20px;
 }
 
-/* --- Error Message and Invalid Field Styling --- */
-
-.error-message {
-    color: red;
-    font-size: 0.8em;
-    display: block; /* Ensure it takes its own line */
-    margin-top: 5px; /* Add space above the error message */
-    margin-bottom: 15px; /* Add space below the error message */
-    min-height: 1em; /* Reserve space to prevent layout shifts */
-    padding: 0 5px; /* Optional: add slight horizontal padding */
+/* Styles for Select2 dropdowns */
+/* These override default select2 styles for better integration */
+.select2-container--default .select2-selection--single {
+    height: 44px !important; /* Match input height */
+    padding: 8px 24px 8px 15px !important; /* Adjust padding */
+    border: 1px solid #bdc3c7 !important;
+    border-radius: 5px !important;
+    font-size: 1em !important;
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-/* Style for standard input/select borders when invalid */
-input.is-invalid,
-select.is-invalid {
-    border-color: red !important; /* Use !important to override other border styles */
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Optional: add a red shadow */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 42px !important; /* Match container height */
 }
 
-/* Style for Select2 containers when the linked select is invalid */
-/* This targets the visible part of the Select2 dropdown */
-.select2-container--default .select2-selection--single.is-invalid {
-     border-color: red !important;
-     box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Optional: add a red shadow */
+.select2-container--default.select2-container--open .select2-selection--single {
+    border-color: #3498db !important;
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3) !important;
 }
 
-/* Style for Flatpickr inputs when invalid */
-input[type="text"].is-invalid.flatpickr-input {
-    border-color: red !important;
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+.select2-container--default .select2-dropdown {
+    border-color: #bdc3c7 !important;
+    border-radius: 5px !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
+/* Mobile responsiveness */
+@media (max-width: 600px) { /* Adjusted breakpoint */
+  .container {
+    width: 95%; /* Take up more width on small screens */
+    margin: 10px auto;
+    padding: 15px; /* Less padding on small screens */
+  }
 
-/* Ensure error message follows the Select2 container with correct spacing */
-.select2-container + .error-message {
-    margin-top: 5px; /* Ensure space after the select2 dropdown */
+  h2 {
+    font-size: 1.8em; /* Smaller heading */
+    margin-bottom: 20px;
+  }
+
+  select,
+  input[type="datetime-local"],
+  input[type="text"],
+  button {
+    padding: 10px; /* Smaller padding */
+    margin-bottom: 15px;
+  }
+
+   .card,
+  .event-card {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .event-card h3 {
+     margin-bottom: 15px;
+     padding-bottom: 8px;
+  }
 }
 
-/* Ensure error message follows a Flatpickr input with correct spacing */
-input.flatpickr-input + .error-message {
-     margin-top: 5px; /* Ensure space after the flatpickr input */
-}
-
-
-/* Adjust overall container margin to ensure space for the footer */
-.container {
-    /* Keep existing container styles */
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 30px;
-    background-color: #ffffff;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    margin-bottom: 60px; /* Ensure sufficient space between container and footer */
-}
-
-
-/* --- Footer Information Styling --- */
+/* Added for the footer text */
 .footer-info {
   text-align: center; /* Center the text */
   margin-top: 40px; /* Space above the text */
@@ -220,7 +215,13 @@ input.flatpickr-input + .error-message {
 }
 */
 
-/* Add some basic styling for the <small> tag in footer */
+/* Adjust container margin if needed to prevent overlap */
+.container {
+    /* ... existing styles ... */
+    margin-bottom: 40px; /* Ensure space between container and footer */
+}
+
+/* Add some basic styling for the <small> tag */
 .footer-info small {
     display: block; /* Make the title go to a new line */
     margin-top: 5px;
@@ -228,38 +229,8 @@ input.flatpickr-input + .error-message {
     font-size: 0.8em;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 600px) { /* Adjusted breakpoint */
-  .container {
-    width: 95%; /* Take up more width on small screens */
-    margin: 10px auto;
-    padding: 15px; /* Less padding on small screens */
-  }
-
-  h2 {
-    font-size: 1.8em; /* Smaller heading */
-    margin-bottom: 20px;
-  }
-
-  select,
-  input[type="text"], /* Now targets Flatpickr inputs too */
-  button {
-    padding: 10px; /* Smaller padding */
-    margin-bottom: 15px;
-  }
-
-   .card,
-  .event-card {
-    padding: 15px;
-    margin-bottom: 20px;
-  }
-
-  .event-card h3 {
-     margin-bottom: 15px;
-     padding-bottom: 8px;
-  }
-
-  /* Adjust mobile responsiveness for the footer */
+/* Adjust mobile responsiveness for the footer */
+@media (max-width: 600px) {
   .footer-info {
     margin-top: 20px;
     padding: 10px;
@@ -271,3 +242,48 @@ input.flatpickr-input + .error-message {
     font-size: 0.7em;
   }
 }
+
+/* Add this to your existing styles.css, replacing the previous error-related rules */
+
+.error-message {
+    color: red;
+    font-size: 0.8em;
+    display: block; /* Ensure it takes its own line */
+    margin-top: 5px; /* Add space above the error message */
+    margin-bottom: 15px; /* Add space below the error message */
+    min-height: 1em; /* Reserve space to prevent layout shifts */
+    /* Adjust padding or margin if needed based on your specific layout */
+    padding: 0 5px; /* Optional: add slight horizontal padding */
+}
+
+/* Style for input/select borders when invalid */
+input.is-invalid {
+    border-color: red !important; /* Use !important to override other border styles */
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Optional: add a red shadow */
+}
+
+/* Style for Select2 containers when the linked select is invalid */
+/* This targets the visible part of the Select2 dropdown */
+.select2-container--default .select2-selection--single.is-invalid {
+     border-color: red !important;
+     box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Optional: add a red shadow */
+}
+
+/* Ensure error message follows the Select2 container with correct spacing */
+.select2-container + .error-message {
+    margin-top: 5px; /* Ensure space after the select2 dropdown */
+}
+
+/* Adjust label margin if needed */
+label {
+  /* Keep your existing label styles, but ensure sufficient margin-bottom */
+   display: block;
+   margin: 15px 0 5px; /* Reduced margin-bottom slightly, error message adds spacing */
+   color: #34495e;
+   font-weight: bold;
+}
+
+/* This might be needed if your label+error combination is too tight */
+/* label + .error-message {
+     margin-top: 0px;
+} */

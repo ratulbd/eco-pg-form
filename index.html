@@ -6,7 +6,6 @@
   <title>E.CO PG Run Data Collection Form - MPL</title>
   <link rel="stylesheet" href="styles.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
    <style>
     /* Temporary style adjustments for Select2 error messages if needed */
     /* These should ideally be in your main styles.css */
@@ -34,13 +33,6 @@
          border-color: red !important;
          box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Optional: add a red shadow */
     }
-
-    /* Style for Flatpickr inputs when invalid */
-     input[type="text"].is-invalid.flatpickr-input {
-         border-color: red !important;
-         box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
-     }
-
 
    </style>
 </head>
@@ -91,7 +83,7 @@
 
         <div id="siteAttendDateTimeField" style="display: none;">
           <label for="siteAttendDateTime">Site Attend Date & Time:</label>
-          <input type="text" id="siteAttendDateTime" name="siteAttendDateTime" />
+          <input type="datetime-local" id="siteAttendDateTime" name="siteAttendDateTime" />
           <span class="error-message" id="siteAttendDateTime-error"></span>
         </div>
       </div>
@@ -100,30 +92,30 @@
         <div class="event-card">
           <h3>1st Event</h3>
           <label for="pgStart1">PG Start Date & Time:</label>
-           <input type="text" id="pgStart1" name="pgStart1" />
+          <input type="datetime-local" id="pgStart1" name="pgStart1" />
            <span class="error-message" id="pgStart1-error"></span>
           <label for="pgStop1">PG Stop Date & Time:</label>
-           <input type="text" id="pgStop1" name="pgStop1" />
+          <input type="datetime-local" id="pgStop1" name="pgStop1" />
            <span class="error-message" id="pgStop1-error"></span>
         </div>
 
         <div class="event-card">
           <h3>2nd Event</h3>
           <label for="pgStart2">PG Start Date & Time:</label>
-           <input type="text" id="pgStart2" name="pgStart2" />
+          <input type="datetime-local" id="pgStart2" name="pgStart2" />
            <span class="error-message" id="pgStart2-error"></span>
           <label for="pgStop2">PG Stop Date & Time:</label>
-           <input type="text" id="pgStop2" name="pgStop2" />
+          <input type="datetime-local" id="pgStop2" name="pgStop2" />
            <span class="error-message" id="pgStop2-error"></span>
         </div>
 
         <div class="event-card">
           <h3>3rd Event</h3>
           <label for="pgStart3">PG Start Date & Time:</label>
-           <input type="text" id="pgStart3" name="pgStart3" />
+          <input type="datetime-local" id="pgStart3" name="pgStart3" />
            <span class="error-message" id="pgStart3-error"></span>
           <label for="pgStop3">PG Stop Date & Time:</label>
-           <input type="text" id="pgStop3" name="pgStop3" />
+          <input type="datetime-local" id="pgStop3" name="pgStop3" />
            <span class="error-message" id="pgStop3-error"></span>
         </div>
       </div>
@@ -141,7 +133,6 @@
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
   <script>
     $(document).ready(function () {
@@ -155,26 +146,28 @@
            allowClear: true
       });
 
-      // --- Initialize Flatpickr Date/Time Pickers ---
-      // Configure options for date and time, using the format expected by Apps Script
-      const flatpickrOptions = {
-          enableTime: true, // Enable time selection
-          dateFormat: "Y-m-d\\TH:i", // Format as YYYY-MM-DDTHH:MM
-          maxDate: "today", // Restrict to today or earlier
-          // You might want to add closeOnSelect: false if you want to keep the picker open after selecting time
-          // closeOnSelect: false,
-      };
+      // --- Set Max Date/Time for datetime-local inputs ---
+      function setMaxDateTime() {
+          const now = new Date();
+          // Format the date and time as YYYY-MM-DDTHH:MM
+          const year = now.getFullYear();
+          const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed
+          const day = now.getDate().toString().padStart(2, '0');
+          const hours = now.getHours().toString().padStart(2, '0');
+          const minutes = now.getMinutes().toString().padStart(2, '0');
 
-      // Initialize Flatpickr on all date/time input fields
-      flatpickr("#siteAttendDateTime", flatpickrOptions);
-      flatpickr("#pgStart1", flatpickrOptions);
-      flatpickr("#pgStop1", flatpickrOptions);
-      flatpickr("#pgStart2", flatpickrOptions);
-      flatpickr("#pgStop2", flatpickrOptions);
-      flatpickr("#pgStart3", flatpickrOptions);
-      flatpickr("#pgStop3", flatpickrOptions);
+          const maxDateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`;
 
-      // --- Removed setMaxDateTime function as Flatpickr handles maxDate ---
+          // Apply the max attribute to all datetime-local inputs
+          $('input[type="datetime-local"]').attr('max', maxDateTimeString);
+          console.log("Max datetime set to:", maxDateTimeString);
+      }
+
+      // Call the function to set the max attribute when the page loads
+      setMaxDateTime();
+
+      // You might want to call this periodically if the user keeps the form open for a long time
+      // setInterval(setMaxDateTime, 60000); // Update max every minute
 
 
       // Handle conditional field display based on Select Option
@@ -288,7 +281,6 @@
 
 
       // Helper function to parse datetime-local string into a Date object (local time)
-      // Flatpickr default format YYYY-MM-DDTHH:MM matches datetime-local format, so this function is still useful
       function parseDateTimeLocal(datetimeStr) {
           if (!datetimeStr) return null;
           const [datePart, timePart] = datetimeStr.split('T');
@@ -337,21 +329,13 @@
                  // Select2 replaces the original select, apply class to its visible container
                  fieldElement.next('.select2-container').find('.select2-selection--single').addClass('is-invalid');
               }
-               // Add invalid class to the Flatpickr input wrapper if applicable
-              if (fieldElement.hasClass('flatpickr-input')) {
-                   fieldElement.addClass('is-invalid'); // already done above, but double check
-              }
-
           } else {
               errorSpan.text('');
-              // Remove invalid class from the original field AND the Select2 container AND Flatpickr input
+              // Remove invalid class from the original field AND the Select2 container
               fieldElement.removeClass('is-invalid');
                if (fieldElement.hasClass('select2-hidden-accessible')) {
                  fieldElement.next('.select2-container').find('.select2-selection--single').removeClass('is-invalid');
                }
-              if (fieldElement.hasClass('flatpickr-input')) {
-                   fieldElement.removeClass('is-invalid');
-              }
           }
       }
 
@@ -385,14 +369,12 @@
            displayError('pgStart1', '');
            displayError('pgStop1', '');
            displayError('pgStart2', '');
-           display2Error('pgStop2', ''); // Typo fixed here, was display2Error
+           displayError('pgStop2', '');
            displayError('pgStart3', '');
            displayError('pgStop3', '');
 
 
            let allValid = true; // Track validity within this group
-           // Note: Flatpickr maxDate:"today" handles *most* future date/time blocking in the UI,
-           // but this validation provides a final check and dependency logic.
             const now = new Date(); // Get current time for future date comparison
 
 
@@ -410,7 +392,7 @@
                        // Validate date format if value exists
                        const siteAttendDateTime = parseDateTimeLocal($('#siteAttendDateTime').val());
                        if (!siteAttendDateTime) {
-                            displayError('siteAttendDateTime', 'Invalid date format or value.');
+                            displayError('siteAttendDateTime', 'Invalid date format.');
                             allValid = false;
                        } else {
                            // Check if date is in the future (greater than current time)
@@ -421,6 +403,7 @@
                        }
                    }
                }
+               // PG Run fields are not needed, errors cleared above when selectOption changes
 
            } else if (selectOption === 'PG Run') {
                const pgStart1Val = $('#pgStart1').val();
@@ -448,7 +431,7 @@
                    if (!pgStart1) { displayError('pgStart1', 'Invalid format/value.'); allValid = false; }
                    if (!pgStop1) { displayError('pgStop1', 'Invalid format/value.'); allValid = false; }
 
-                   if (pgStart1 && pgStop1) { // Only check order if both are valid dates
+                   if (pgStart1 && pgStop1) { // Only check order and future if both are valid dates
                        if (pgStop1 <= pgStart1) {
                            displayError('pgStop1', 'Must be after Start time.');
                            allValid = false;
@@ -591,11 +574,9 @@
             }
        });
 
-      // Conditional date/time fields validation on change/blur (using Flatpickr's events)
-      // Flatpickr fields are text inputs, so 'change' and 'blur' events on the input element work.
+      // Conditional date/time fields validation on change/blur
       $('#siteAttendDateTime, #pgStart1, #pgStop1, #pgStart2, #pgStop2, #pgStart3, #pgStop3').on('change blur', function() {
-           // Flatpickr might add classes like flatpickr-input
-           // We need to check visibility of the containing element, not just the input itself
+          // Only validate if the date/time field's parent container is visible
           if ($(this).closest('.card').is(':visible') || $(this).closest('.event-card').is(':visible')) {
              validateConditionalDateTimeFields(); // Re-validate all conditional date fields
           } else {
@@ -645,7 +626,7 @@
          ];
          expectedFields.forEach(field => {
            // Collect values - Select2 .val() should work correctly for selected option
-           // For text/date inputs (now Flatpickr), .val() is fine
+           // For text/date inputs, .val() is fine
             if (field === 'site') {
                  jsonData[field] = $('#siteDropdown').val() || '';
             } else if (field === 'pgOperator') {
@@ -693,10 +674,7 @@
                       try {
                          // If the text is empty, parsing will fail, which is expected if the script returns nothing
                          if (!text) {
-                             // Based on previous issue, logging this specifically
-                              console.error("Received empty response body from server.");
-                             // Do NOT throw here, proceed to check for success in the next .then
-                             return {}; // Return an empty object so the next .then doesn't crash on 'result.result'
+                             throw new Error("Received empty response body from server.");
                          }
                          return JSON.parse(text); // Try to parse the text as JSON
                       } catch (jsonError) {
@@ -728,11 +706,6 @@
                // Manually reset Select2 search input visually if needed
                $('.select2-selection__rendered').empty().append('<span class="select2-selection__placeholder">Select...</span>');
 
-               // Clear Flatpickr inputs visually after reset
-               $('input[type="text"].flatpickr-input').each(function() {
-                   this._flatpickr.clear(); // Use Flatpickr's clear method
-               });
-
 
               // Trigger change on conditional fields to hide them and clear their values
               $('#selectOption').trigger('change'); // This also triggers siteAttend change if needed
@@ -741,17 +714,14 @@
               $('.error-message').text('');
               $('input, select').removeClass('is-invalid');
               $('.select2-container .select2-selection--single').removeClass('is-invalid');
-              $('input[type="text"].flatpickr-input').removeClass('is-invalid'); // Clear Flatpickr invalid class
 
 
               setTimeout(() => { $('.success-message').hide(); }, 3000);
           } else {
-               // Handles cases where response was OK but the JSON body didn't have {result: 'success'} or was unexpected (including empty body)
+               // Handles cases where response was OK but the JSON body didn't have {result: 'success'} or was unexpected
                // Log the unexpected result for debugging
                console.error('Submission result was not successful:', result);
-                // Provide a more specific message for empty body case
-               const errorMessage = (result && typeof result === 'object' && result.error) ? result.error : (result === null || result === undefined || Object.keys(result).length === 0 ? 'Received empty or null response from server.' : 'Unknown response format from server.');
-               alert('Submission failed: ' + errorMessage + ' Check browser console and Apps Script logs.');
+               alert('Submission failed: ' + (result && result.error ? result.error : 'Unknown response format from server or empty response.'));
           }
         })
         .catch(error => {
