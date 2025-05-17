@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>E.CO PG Run Data Collection Form - MPL</title>
   <link rel="stylesheet" href="styles.css" /> <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   </head>
 <body>
 
@@ -21,7 +20,7 @@
     <div class="input-group">
       <label for="password">Password:</label>
       <input type="password" id="password" name="password" required placeholder="Enter your password">
-       <span class="error-message" id="password-error"></span>
+      <span class="error-message" id="password-error"></span>
     </div>
 
     <button type="submit">Login</button>
@@ -35,31 +34,37 @@
     <h2>E.CO PG Run Data Collection Form-MPL</h2>
     <form id="pgForm" novalidate> <div class="card">
         <label for="ttNumber">TT Number:</label>
-        <input type="text" id="ttNumber" name="ttNumber" /> <span class="error-message" id="ttNumber-error"></span>
+        <input type="text" id="ttNumber" name="ttNumber" />
+        <span class="error-message" id="ttNumber-error"></span>
 
         <label for="operatorName">Operator Name:</label>
-        <select id="operatorName" name="operatorName"> <option value="" disabled selected>Select an operator</option>
+        <select id="operatorName" name="operatorName">
+          <option value="" disabled selected>Select an operator</option>
           <option value="GP">GP</option>
           <option value="BL">BL</option>
           <option value="ROBI">ROBI</option>
         </select>
-        <span class="error-message" id="operatorName-error"></span>
+         <span class="error-message" id="operatorName-error"></span>
 
         <label for="siteDropdown">Select Site:</label>
-        <select id="siteDropdown" name="site"></select> <span class="error-message" id="site-error"></span>
+        <select id="siteDropdown" name="site"></select>
+        <span class="error-message" id="site-error"></span>
       </div>
 
       <div class="card">
         <label for="pgOperatorDropdown">Select PG Operator Name:</label>
-        <select id="pgOperatorDropdown" name="pgOperator"></select> <span class="error-message" id="pgOperator-error"></span>
+        <select id="pgOperatorDropdown" name="pgOperator"></select>
+         <span class="error-message" id="pgOperator-error"></span>
 
         <label for="teamLeaderDropdown">Select Team Leader Name:</label>
-        <select id="teamLeaderDropdown" name="teamLeader"></select> <span class="error-message" id="teamLeader-error"></span>
+        <select id="teamLeaderDropdown" name="teamLeader"></select>
+         <span class="error-message" id="teamLeader-error"></span>
       </div>
 
       <div class="card">
         <label for="selectOption">Select Option:</label>
-        <select id="selectOption" name="selectOption"> <option value="" disabled selected>Select an option</option>
+        <select id="selectOption" name="selectOption">
+          <option value="" disabled selected>Select an option</option>
           <option value="Misscall TT">Misscall TT</option>
           <option value="PG Run">PG Run</option>
         </select>
@@ -69,7 +74,8 @@
       <div id="misscallTTFields" style="display: none;">
         <div class="card">
           <label for="siteAttend">Site Attend:</label>
-          <select id="siteAttend" name="siteAttend"> <option value="" disabled selected>Select an option</option>
+          <select id="siteAttend" name="siteAttend">
+            <option value="" disabled selected>Select an option</option>
             <option value="YES">YES</option>
             <option value="NO">NO</option>
           </select>
@@ -77,7 +83,8 @@
         </div>
         <div id="siteAttendDateTimeField" style="display: none;">
            <div class="card"> <label for="siteAttendDateTime">Site Attend Date & Time:</label>
-               <input type="text" id="siteAttendDateTime" name="siteAttendDateTime" /> <span class="error-message" id="siteAttendDateTime-error"></span>
+               <input type="datetime-local" id="siteAttendDateTime" name="siteAttendDateTime" />
+               <span class="error-message" id="siteAttendDateTime-error"></span>
            </div>
         </div>
       </div>
@@ -86,25 +93,31 @@
         <div class="event-card">
           <h3>1st Event</h3>
           <label for="pgStart1">PG Start Date & Time:</label>
-           <input type="text" id="pgStart1" name="pgStart1" /> <span class="error-message" id="pgStart1-error"></span>
+           <input type="datetime-local" id="pgStart1" name="pgStart1" />
+           <span class="error-message" id="pgStart1-error"></span>
           <label for="pgStop1">PG Stop Date & Time:</label>
-           <input type="text" id="pgStop1" name="pgStop1" /> <span class="error-message" id="pgStop1-error"></span>
+           <input type="datetime-local" id="pgStop1" name="pgStop1" />
+           <span class="error-message" id="pgStop1-error"></span>
         </div>
 
         <div class="event-card">
           <h3>2nd Event</h3>
           <label for="pgStart2">PG Start Date & Time:</label>
-           <input type="text" id="pgStart2" name="pgStart2" /> <span class="error-message" id="pgStart2-error"></span>
+           <input type="datetime-local" id="pgStart2" name="pgStart2" />
+           <span class="error-message" id="pgStart2-error"></span>
           <label for="pgStop2">PG Stop Date & Time:</label>
-           <input type="text" id="pgStop2" name="pgStop2" /> <span class="error-message" id="pgStop2-error"></span>
+           <input type="datetime-local" id="pgStop2" name="pgStop2" />
+           <span class="error-message" id="pgStop2-error"></span>
         </div>
 
         <div class="event-card">
           <h3>3rd Event</h3>
           <label for="pgStart3">PG Start Date & Time:</label>
-           <input type="text" id="pgStart3" name="pgStart3" /> <span class="error-message" id="pgStart3-error"></span>
+           <input type="datetime-local" id="pgStart3" name="pgStart3" />
+           <span class="error-message" id="pgStart3-error"></span>
           <label for="pgStop3">PG Stop Date & Time:</label>
-           <input type="text" id="pgStop3" name="pgStop3" /> <span class="error-message" id="pgStop3-error"></span>
+           <input type="datetime-local" id="pgStop3" name="pgStop3" />
+           <span class="error-message" id="pgStop3-error"></span>
         </div>
       </div>
 
@@ -121,59 +134,71 @@
   <strong>Rakibul Islam Ratul</strong><br>
   <small>Sr. Manager, Central Governance, Metal Plus Ltd.</small></p>
 </div>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
 <script>
   $(document).ready(function () {
     console.log("Document ready."); // Log document ready
 
+    // Helper function to get current date/time in YYYY-MM-DDTHH:MM format
+    function getCurrentDateTimeLocal() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+
     // --- Function to Initialize the Form Features (Comprehensive Validation) ---
-    // This contains the logic from the later versions with Flatpickr and detailed validation
     function initializeForm() {
         console.log("Initializing form features..."); // Log when form init starts
 
-        // Initialize Select2
-        $('#siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').select2({
-          placeholder: 'Search and select...',
-          allowClear: true,
-           dropdownParent: $('#formContainer') // Ensure dropdown is within the form container
-        });
-        $('#operatorName, #selectOption, #siteAttend').select2({
-             placeholder: 'Select...',
-             allowClear: true,
-              dropdownParent: $('#formContainer') // Ensure dropdown is within the form container
-        });
-         console.log("Select2 initialized.");
+        // Initialize Select2 - ONLY on select elements
+        $('#operatorName, #selectOption, #siteAttend, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').each(function() {
+             if (!$(this).hasClass('select2-hidden-accessible')) { // Prevent re-initialization
+                 $(this).select2({
+                      placeholder: 'Select...', // Generic placeholder for all
+                      allowClear: true,
+                      dropdownParent: $('#formContainer')[0] // Ensure dropdown is within the form container (Access DOM element)
+                 });
+                  console.log(`Select2 initialized on #${this.id}`);
+             } else {
+                  console.log(`Select2 already initialized on #${this.id}`);
+             }
+         });
+        console.log("Select2 initialization process completed.");
 
-        // --- Initialize Flatpickr Date/Time Pickers ---
-        const flatpickrOptions = {
-            enableTime: true, // Enable time selection
-            dateFormat: "Y-m-d\\TH:i", // Format asYYYY-MM-DDTHH:MM (ISO format for consistency)
-            maxDate: "today", // Restrict to today or earlier
-             // Append picker to form container to prevent z-index issues with modals/hidden elements
-            appendTo: $('#formContainer')[0]
-        };
+        // --- Removed Flatpickr Initialization ---
+        console.log("Flatpickr initialization skipped (removed).");
 
-        flatpickr("#siteAttendDateTime", flatpickrOptions);
-        flatpickr("#pgStart1", flatpickrOptions);
-        flatpickr("#pgStop1", flatpickrOptions);
-        flatpickr("#pgStart2", flatpickrOptions);
-        flatpickr("#pgStop2", flatpickrOptions);
-        flatpickr("#pgStart3", flatpickrOptions);
-        flatpickr("#pgStop3", flatpickrOptions);
-         console.log("Flatpickr initialized.");
+        // --- Set max date for native datetime-local inputs ---
+        // This will prevent selecting future dates and times
+        const nowFormatted = getCurrentDateTimeLocal();
+        $('input[type="datetime-local"]').attr('max', nowFormatted);
+        console.log(`Set max date/time for datetime-local inputs to: ${nowFormatted}`);
 
 
         // --- Helper Functions (For Validation) ---
 
-        // Helper function to parse date/time string into a Date object (handles ISO format from Flatpickr)
+        // Helper function to parse date/time string into a Date object (should work with native datetime-local)
         function parseDateTime(datetimeStr) {
-            if (!datetimeStr) return null;
+            if (!datetimeStr) {
+                console.log("parseDateTime: Received empty string, returning null.");
+                return null;
+            }
+            console.log("parseDateTime: Parsing string:", datetimeStr);
             const date = new Date(datetimeStr);
              // Check if date is valid
-            if (isNaN(date.getTime())) return null;
+            if (isNaN(date.getTime())) {
+                console.log("parseDateTime: Parsed date is invalid.");
+                return null;
+            }
+            console.log("parseDateTime: Parsed Date object:", date);
             return date;
         }
 
@@ -183,8 +208,17 @@
               const errorSpan = $(`#${fieldId}-error`); // Target the specific error span
               const fieldElement = $(`#${fieldId}`); // The original input/select element
 
+              // Ensure fieldElement exists before trying to manipulate classes
+              if (!fieldElement.length) {
+                  console.error(`Field element #${fieldId} not found.`);
+                  // If errorSpan exists but element doesn't, clear the span
+                  if (errorSpan.length) errorSpan.text('');
+                  return;
+              }
+
               if (!errorSpan.length) {
-                 console.error(`Error span not found for field: #${fieldId}-error`);
+                 // Corrected syntax error here: escaped the backtick inside the string
+                 console.warn(`Error span not found for field: #${fieldId}-error\`. This field's errors will not be displayed visually, only invalid class applied.`);
                  // Fallback: just toggle invalid class if error span is missing
                  if (message) {
                      fieldElement.addClass('is-invalid');
@@ -192,19 +226,14 @@
                      if (fieldElement.hasClass('select2-hidden-accessible')) {
                        fieldElement.next('.select2-container').find('.select2-selection--single').addClass('is-invalid');
                      }
-                     // Special handling for Flatpickr
-                      if (fieldElement.hasClass('flatpickr-input')) {
-                           fieldElement.addClass('is-invalid');
-                      }
+                      // No special handling needed for native datetime-local inputs here
 
                  } else {
                      fieldElement.removeClass('is-invalid');
                       if (fieldElement.hasClass('select2-hidden-accessible')) {
                        fieldElement.next('.select2-container').find('.select2-selection--single').removeClass('is-invalid');
                      }
-                     if (fieldElement.hasClass('flatpickr-input')) {
-                           fieldElement.removeClass('is-invalid');
-                     }
+                      // No special handling needed for native datetime-local inputs here
                  }
                  return; // Exit if no error span
               }
@@ -212,14 +241,12 @@
 
               if (message) {
                   errorSpan.text(message);
-                  // Apply invalid class to the original field AND related visible elements (Select2, Flatpickr)
+                  // Apply invalid class to the original field AND related visible elements (Select2)
                   fieldElement.addClass('is-invalid');
                   if (fieldElement.hasClass('select2-hidden-accessible')) {
                      fieldElement.next('.select2-container').find('.select2-selection--single').addClass('is-invalid');
                   }
-                   if (fieldElement.hasClass('flatpickr-input')) {
-                       fieldElement.addClass('is-invalid');
-                   }
+                   // No special handling needed for native datetime-local inputs here
 
               } else {
                   errorSpan.text('');
@@ -228,9 +255,7 @@
                    if (fieldElement.hasClass('select2-hidden-accessible')) {
                      fieldElement.next('.select2-container').find('.select2-selection--single').removeClass('is-invalid');
                    }
-                  if (fieldElement.hasClass('flatpickr-input')) {
-                       fieldElement.removeClass('is-invalid');
-                   }
+                  // No special handling needed for native datetime-local inputs here
               }
           }
 
@@ -239,12 +264,15 @@
 
         // Validate required text/select fields
         function validateField(fieldId) {
+             console.log(`Validating field: ${fieldId}`);
             const value = $(`#${fieldId}`).val();
             if (!value) {
                 displayError(fieldId, 'This field is mandatory.');
+                 console.log(`${fieldId} is mandatory and empty.`);
                 return false;
             } else {
                 displayError(fieldId, '');
+                 console.log(`${fieldId} is filled.`);
                 return true;
             }
         }
@@ -268,41 +296,58 @@
 
              let allValid = true;
              const now = new Date();
+             console.log("Current time (for future date check):", now);
 
              if (selectOption === 'Misscall TT') {
-                  console.log("Option: Misscall TT");
+                  console.log("Option: Misscall TT selected.");
                  // Validate Site Attend if Misscall TT is selected and section is visible
                  if ($('#misscallTTFields').is(':visible')) {
+                      console.log("Misscall TT fields section is visible.");
                      if (!siteAttend) {
                          displayError('siteAttend', 'This field is mandatory for Misscall TT.');
                          allValid = false;
+                         console.log("Site Attend is mandatory and empty.");
                      } else if (siteAttend === 'YES') {
-                         console.log("Site Attend: YES");
+                         console.log("Site Attend: YES.");
                          // Validate Site Attend DateTime if Site Attend is YES and field is visible
                          if ($('#siteAttendDateTimeField').is(':visible')) {
+                              console.log("Site Attend DateTime field is visible.");
                              const siteAttendDateTimeVal = $('#siteAttendDateTime').val();
                              if (!siteAttendDateTimeVal) {
                                  displayError('siteAttendDateTime', 'Date & Time is mandatory when Site Attend is YES.');
                                  allValid = false;
+                                  console.log("Site Attend DateTime is mandatory and empty.");
                              } else {
                                  const siteAttendDateTime = parseDateTime(siteAttendDateTimeVal);
-                                  console.log("Site Attend DateTime value:", siteAttendDateTimeVal, "Parsed:", siteAttendDateTime);
+                                  console.log("Site Attend DateTime value:", siteAttendDateTimeVal, "Parsed Date object:", siteAttendDateTime);
                                  if (!siteAttendDateTime) {
-                                      displayError('siteAttendDateTime', 'Invalid date format or value.');
+                                      displayError('siteAttendDateTime', 'Invalid date format or value.'); // Should not happen with native datetime-local usually
                                       allValid = false;
+                                       console.log("Site Attend DateTime has invalid format/value.");
                                  } else if (siteAttendDateTime > now) {
                                      displayError('siteAttendDateTime', 'Future date/time selection is not allowed.');
                                      allValid = false;
+                                      console.log("Site Attend DateTime is in the future.");
+                                 } else {
+                                      console.log("Site Attend DateTime is valid.");
                                  }
                              }
+                         } else {
+                              console.log("Site Attend DateTime field is NOT visible.");
                          }
+                     } else {
+                          console.log("Site Attend: NO selected.");
                      }
+                 } else {
+                      console.log("Misscall TT fields section is NOT visible.");
                  }
 
+
              } else if (selectOption === 'PG Run') {
-                 console.log("Option: PG Run");
+                 console.log("Option: PG Run selected.");
                  // Validate PG Run fields if PG Run is selected and section is visible
                  if ($('#pgRunFields').is(':visible')) {
+                      console.log("PG Run fields section is visible.");
                      const pgStart1Val = $('#pgStart1').val();
                      const pgStop1Val = $('#pgStop1').val();
                      const pgStart2Val = $('#pgStart2').val();
@@ -318,7 +363,7 @@
                      const pgStop3 = parseDateTime(pgStop3Val);
 
                      console.log("PG Run values:", {pgStart1Val, pgStop1Val, pgStart2Val, pgStop2Val, pgStart3Val, pgStop3Val});
-                     console.log("PG Run parsed:", {pgStart1, pgStop1, pgStart2, pgStop2, pgStart3, pgStop3});
+                     console.log("PG Run parsed Date objects:", {pgStart1, pgStop1, pgStart2, pgStop2, pgStart3, pgStop3});
 
 
                      // Validate 1st Event - Mandatory if PG Run is selected
@@ -326,125 +371,155 @@
                          if (!pgStart1Val) displayError('pgStart1', 'Mandatory for PG Run.');
                          if (!pgStop1Val) displayError('pgStop1', 'Mandatory for PG Run.');
                          allValid = false;
+                         console.log("1st Event is mandatory and incomplete.");
                      } else {
                           // Validate date formats
-                         if (!pgStart1) { displayError('pgStart1', 'Invalid format/value.'); allValid = false; }
-                         if (!pgStop1) { displayError('pgStop1', 'Invalid format/value.'); allValid = false; }
+                         if (!pgStart1) { displayError('pgStart1', 'Invalid format/value.'); allValid = false; console.log("1st Start has invalid format."); } // Should not happen with native datetime-local usually
+                         if (!pgStop1) { displayError('pgStop1', 'Invalid format/value.'); allValid = false; console.log("1st Stop has invalid format."); } // Should not happen with native datetime-local usually
 
                          // Validate Start < Stop and not in future for 1st event
                          if (pgStart1 && pgStop1) {
                              if (pgStop1 <= pgStart1) {
                                  displayError('pgStop1', 'Must be after Start time.');
                                  allValid = false;
+                                 console.log("1st Stop is not after 1st Start.");
                              }
                              if (pgStart1 > now) {
                                  displayError('pgStart1', 'Future date/time not allowed.');
                                  allValid = false;
+                                  console.log("1st Start is in the future.");
                              }
                              if (pgStop1 > now) {
                                   displayError('pgStop1', 'Future date/time not allowed.');
                                   allValid = false;
+                                   console.log("1st Stop is in the future.");
                              }
+                             if (allValid) console.log("1st Event validation passed.");
                          } else if (pgStart1Val || pgStop1Val) { // If one is filled but not the other, it's invalid
-                              allValid = false;
+                              allValid = false; // Already set above, but reinforce
+                               console.log("1st Event is partially filled, invalid.");
                          }
                      }
 
                      // Validate 2nd Event - Mandatory if either Start or Stop is filled
                      if (pgStart2Val || pgStop2Val) {
+                          console.log("2nd Event has values.");
                           if (!pgStart2Val || !pgStop2Val) {
                               if (!pgStart2Val) displayError('pgStart2', 'Both times mandatory if providing.');
                               if (!pgStop2Val) displayError('pgStop2', 'Both times mandatory if providing.');
                               allValid = false;
+                               console.log("2nd Event is partially filled, invalid.");
                           } else {
                                // Validate date formats
                                let currentEventValid = true;
-                               if (!pgStart2) { displayError('pgStart2', 'Invalid format/value.'); currentEventValid = false; allValid = false; }
-                               if (!pgStop2) { displayError('pgStop2', 'Invalid format/value.'); currentEventValid = false; allValid = false; }
+                               if (!pgStart2) { displayError('pgStart2', 'Invalid format/value.'); currentEventValid = false; allValid = false; console.log("2nd Start has invalid format."); } // Should not happen with native datetime-local usually
+                               if (!pgStop2) { displayError('pgStop2', 'Invalid format/value.'); currentEventValid = false; allValid = false; console.log("2nd Stop has invalid format."); } // Should not happen with native datetime-local usually
 
                                // Validate Start < Stop, not in future, and after previous event
                                if (currentEventValid) {
                                    if (pgStop2 <= pgStart2) {
                                        displayError('pgStop2', 'Must be after Start time.');
                                        allValid = false;
+                                        console.log("2nd Stop is not after 2nd Start.");
                                    }
                                    // Check against previous event only if previous event is valid AND filled
                                    if (pgStop1 && pgStart2 <= pgStop1) {
                                        displayError('pgStart2', 'Must be after 1st Stop time.');
                                        allValid = false;
+                                        console.log("2nd Start is not after 1st Stop.");
                                    }
                                    if (pgStart2 > now) {
                                        displayError('pgStart2', 'Future date/time not allowed.');
                                        allValid = false;
+                                        console.log("2nd Start is in the future.");
                                    }
                                    if (pgStop2 > now) {
                                         displayError('pgStop2', 'Future date/time not allowed.');
                                         allValid = false;
+                                         console.log("2nd Stop is in the future.");
                                    }
+                                    if (allValid) console.log("2nd Event validation passed.");
                                } else { // If format is invalid, the field is invalid
-                                    allValid = false;
+                                    allValid = false; // Already set
+                                     console.log("2nd Event format is invalid.");
                                }
                            }
+                     } else {
+                          console.log("2nd Event has no values.");
                      }
 
                      // Validate 3rd Event - Mandatory if either Start or Stop is filled
                      if (pgStart3Val || pgStop3Val) {
+                          console.log("3rd Event has values.");
                          if (!pgStart3Val || !pgStop3Val) {
                              if (!pgStart3Val) displayError('pgStart3', 'Both times mandatory if providing.');
                              if (!pgStop3Val) displayError('pgStop3', 'Both times mandatory if providing.');
                              allValid = false;
+                              console.log("3rd Event is partially filled, invalid.");
                          } else {
-                             // Check against previous event only if previous events are valid and filled
-                             if (!pgStart1Val || !pgStop1Val || !pgStart2Val || !pgStop2Val) {
+                              // Check against previous event only if previous events are valid and filled
+                              if (!pgStart1Val || !pgStop1Val || !pgStart2Val || !pgStop2Val) {
                                    // If 2nd event is not fully valid/filled, 3rd event cannot be valid.
                                    // This check is somewhat redundant if 2nd event validation runs,
-                                   // but ensures sequential filling.
+                                   // but adding here for clarity to ensure sequential filling.
                                    if (!pgStart1Val || !pgStop1Val) { // Check if 1st event is missing
                                         displayError('pgStart3', 'Requires 1st event times.');
                                         displayError('pgStop3', 'Requires 1st event times.');
                                         allValid = false;
+                                         console.log("3rd Event requires 1st event times.");
                                    } else if (!pgStart2Val || !pgStop2Val) { // Check if 2nd event is missing
                                         displayError('pgStart3', 'Requires 2nd event times.');
                                         displayError('pgStop3', 'Requires 2nd event times.');
                                         allValid = false;
+                                         console.log("3rd Event requires 2nd event times.");
                                    }
 
                                    // If previous events are missing, don't proceed with date comparisons
                                    if (!allValid) return false;
-                             }
+                              }
 
                               // Validate date formats
                               let currentEventValid = true;
-                              if (!pgStart3) { displayError('pgStart3', 'Invalid format/value.'); currentEventValid = false; allValid = false; }
-                              if (!pgStop3) { displayError('pgStop3', 'Invalid format/value.'); currentEventValid = false; allValid = false; }
+                              if (!pgStart3) { displayError('pgStart3', 'Invalid format/value.'); currentEventValid = false; allValid = false; console.log("3rd Start has invalid format."); } // Should not happen with native datetime-local usually
+                              if (!pgStop3) { displayError('pgStop3', 'Invalid format/value.'); currentEventValid = false; allValid = false; console.log("3rd Stop has invalid format."); } // Should not happen with native datetime-local usually
 
                               // Validate Start < Stop, not in future, and after previous event
                               if (currentEventValid) {
                                   if (pgStop3 <= pgStart3) {
                                       displayError('pgStop3', 'Must be after Start time.');
                                       allValid = false;
+                                       console.log("3rd Stop is not after 3rd Start.");
                                   }
                                   // Check against previous event only if previous event is valid AND filled
                                   if (pgStop2 && pgStart3 <= pgStop2) {
                                       displayError('pgStart3', 'Must be after 2nd Stop time.');
                                       allValid = false;
+                                       console.log("3rd Start is not after 2nd Stop.");
                                   }
                                   if (pgStart3 > now) {
                                        displayError('pgStart3', 'Future date/time not allowed.');
                                        allValid = false;
+                                        console.log("3rd Start is in the future.");
                                   }
                                   if (pgStop3 > now) {
                                        displayError('pgStop3', 'Future date/time not allowed.');
                                        allValid = false;
+                                        console.log("3rd Stop is in the future.");
                                   }
+                                   if (allValid) console.log("3rd Event validation passed.");
                               } else { // If format is invalid, the field is invalid
-                                  allValid = false;
+                                  allValid = false; // Already set
+                                   console.log("3rd Event format is invalid.");
                               }
                          }
+                     } else {
+                          console.log("3rd Event has no values.");
                      }
+                 } else {
+                      console.log("PG Run fields section is NOT visible.");
                  }
              } else {
-                 console.log("Option: None selected");
+                 console.log("Option: None selected or invalid.");
                  // If no option is selected, ensure conditional fields are hidden and validation passes for them
                  // Their errors would have been cleared at the start of the function
              }
@@ -458,7 +533,7 @@
 
         // Basic required fields validation on blur (for text inputs)
         $('#ttNumber').on('blur', function() {
-            console.log("TT Number blur event.");
+            console.log("TT Number blur event fired.");
             if ($(this).closest('.card').is(':visible')) { // Only validate if visible
                validateField('ttNumber');
             } else {
@@ -469,88 +544,96 @@
          // Select2 fields validation on change
          $('#operatorName, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown, #selectOption, #siteAttend').on('change', function() {
               const fieldId = $(this).attr('id');
-               console.log(`Change event on #${fieldId}. Value: ${$(this).val()}`);
+               console.log(`Change event fired on #${fieldId}. Value: ${$(this).val()}`);
               // Check if the field's container (card or event-card) is visible
               if ($(this).closest('.card').is(':visible') || $(this).closest('#misscallTTFields').is(':visible') || $(this).closest('#pgRunFields').is(':visible')) {
-                   console.log(`${fieldId} is visible, validating standard field.`);
+                   console.log(`${fieldId} is visible. Validating standard field.`);
                   validateField(fieldId); // Validate standard required field
               } else {
-                   console.log(`${fieldId} is hidden, clearing error.`);
+                   console.log(`${fieldId} is hidden. Clearing error.`);
                   displayError(fieldId, ''); // Clear error if hidden
               }
 
-              // Always re-validate conditional date/time fields when selectOption or siteAttend changes
+              // Always re-validate conditional fields when selectOption or siteAttend changes
               if (fieldId === 'selectOption') {
-                   console.log("selectOption changed, re-validating conditional fields.");
+                   console.log("selectOption changed. Handling conditional section display and re-validating.");
                     // Handle showing/hiding sections first
                      if ($(this).val() === 'Misscall TT') {
+                          console.log("Showing Misscall TT fields, hiding PG Run fields.");
                         $('#misscallTTFields').show();
                         $('#pgRunFields').hide();
                          // Clear fields and errors when hiding PG Run fields
-                        $('#pgRunFields input[type="text"]').val(''); // Flatpickr inputs are type=text
+                         // Clear native datetime-local inputs
+                        $('input[type="datetime-local"]', '#pgRunFields').val(''); // Clear native inputs
+                        $('input[type="text"]', '#pgRunFields').val(''); // Clear other text inputs if any
                          // Trigger change on hidden selects to clear them visually/data
-                         $('#pgRunFields select').val(null).trigger('change.select2');
+                         $('select', '#pgRunFields').val(null).trigger('change.select2');
 
 
                      } else if ($(this).val() === 'PG Run') {
+                          console.log("Showing PG Run fields, hiding Misscall TT fields.");
                         $('#misscallTTFields').hide();
                         $('#pgRunFields').show();
                          // Clear fields and errors when hiding Misscall TT fields
-                         $('#misscallTTFields select').val(null).trigger('change.select2');
-                         $('#misscallTTFields input[type="text"]').val('');
+                         $('select', '#misscallTTFields').val(null).trigger('change.select2');
+                         $('input[type="datetime-local"]', '#misscallTTFields').val(''); // Clear native inputs
+                         $('input[type="text"]', '#misscallTTFields').val(''); // Clear other text inputs if any
                          $('#siteAttendDateTimeField').hide(); // Ensure datetime field is hidden
 
 
-                     } else {
-                        // Hide both if neither option is selected
+                     } else { // If no option is selected
+                          console.log("Option cleared or none selected. Hiding both conditional sections.");
                         $('#misscallTTFields').hide();
                         $('#pgRunFields').hide();
                          // Clear all conditional fields and errors
-                        $('#misscallTTFields select').val(null).trigger('change.select2');
-                        $('#misscallTTFields input[type="text"]').val('');
-                        $('#pgRunFields input[type="text"]').val('');
+                        $('select', '#misscallTTFields, #pgRunFields').val(null).trigger('change.select2');
+                         $('input[type="datetime-local"]', '#misscallTTFields, #pgRunFields').val(''); // Clear native inputs
+                         $('input[type="text"]', '#misscallTTFields, #pgRunFields').val(''); // Clear other text inputs if any
                          $('#siteAttendDateTimeField').hide(); // Ensure datetime field is hidden
                      }
                    validateConditionalDateTimeFields(); // Then re-validate all conditional fields
               } else if (fieldId === 'siteAttend') {
-                  console.log("siteAttend changed, re-validating conditional fields.");
+                   console.log("siteAttend changed. Handling Site Attend DateTime display and re-validating.");
                    // Handle showing/hiding Site Attend DateTime field first
                    if ($(this).val() === 'YES') {
+                       console.log("Site Attend is YES. Showing Site Attend DateTime field.");
                        $('#siteAttendDateTimeField').show();
                    } else {
+                        console.log("Site Attend is NOT YES. Hiding Site Attend DateTime field.");
                        $('#siteAttendDateTimeField').hide();
-                       $('#siteAttendDateTime').val(''); // Clear date if field is hidden
+                       $('#siteAttendDateTime').val(''); // Clear native input
+                       console.log(`Cleared native input #${this.id} when Site Attend is not YES.`);
                    }
                    validateConditionalDateTimeFields(); // Then re-validate conditional fields
               }
          });
 
-        // Conditional date/time fields validation on change/blur (using Flatpickr's events)
+        // Conditional date/time fields validation on change/blur (using native input events)
         $('#siteAttendDateTime, #pgStart1, #pgStop1, #pgStart2, #pgStop2, #pgStart3, #pgStop3').on('change blur', function() {
             const fieldId = $(this).attr('id');
-            console.log(`Change/Blur event on #${fieldId}. Value: ${$(this).val()}`);
+            console.log(`Change/Blur event fired on date/time field #${fieldId}. Value: ${$(this).val()}`);
              // Check if the field's container (card or event-card) is visible
             if ($(this).closest('.card').is(':visible') || $(this).closest('.event-card').is(':visible') || $(this).closest('#siteAttendDateTimeField').is(':visible')) {
-                console.log(`${fieldId} is visible, re-validating conditional fields.`);
+                console.log(`${fieldId} is visible. Re-validating conditional fields.`);
                validateConditionalDateTimeFields(); // Re-validate all conditional date fields
             } else {
-                console.log(`${fieldId} is hidden, clearing error.`);
+                console.log(`${fieldId} is hidden. Clearing error.`);
               displayError($(this).attr('id'), ''); // Clear its specific error if hidden
             }
         });
 
 
-         // Function to load data from CSV (Kept here as it's part of form initialization)
+         // Function to load data from CSV
         async function loadCSVData(file) {
             console.log("Attempting to load CSV:", file);
           try {
              const response = await fetch(file);
-              console.log(`Fetch response for ${file}: Status ${response.status}, OK: ${response.ok}`);
+              console.log(`Workspace response for ${file}: Status ${response.status}, OK: ${response.ok}`);
              if (!response.ok) {
                  // Read response text even if not OK to get potential error details
                  const errorText = await response.text();
                   console.error(`HTTP error fetching ${file}: Status ${response.status}, Body: ${errorText}`);
-                 throw new Error(`HTTP error! status: ${response.status}`);
+                 throw new Error(`HTTP error! status: ${response.status} for ${file}`);
              }
              const text = await response.text();
               console.log(`Successfully loaded ${file}. Text length: ${text.length}`);
@@ -560,12 +643,13 @@
           } catch (error) {
              console.error(`Error loading CSV data from ${file}:`, error);
              // Display a persistent message or handle this error visibly to the user
+             // Consider adding a dedicated area on the form to show persistent errors
              alert(`Failed to load data for dropdowns from ${file}. Please check the file path and deployment. Error: ${error.message}`);
              return []; // Return empty array on error
           }
         }
 
-        // Function to populate dropdowns from CSV data (Kept here)
+        // Function to populate dropdowns from CSV data
         async function populateDropdown(dropdownId, dataFile) {
             console.log(`Populating dropdown #${dropdownId} from ${dataFile}`);
           const dropdown = document.getElementById(dropdownId);
@@ -573,12 +657,17 @@
                console.error(`Dropdown element #${dropdownId} not found.`);
               return;
           }
+          // Clear existing options before populating
+           $(dropdown).empty();
           // Add a default blank option for required fields with select2 allowClear
-           $(dropdown).empty().append('<option value=""></option>'); // Clear existing options before populating
+           $(dropdown).append('<option value=""></option>');
 
 
           const data = await loadCSVData(dataFile);
            console.log(`Data loaded for #${dropdownId}:`, data);
+           if (data.length === 0) {
+               console.warn(`No data loaded for dropdown #${dropdownId}. Check CSV file content.`);
+           }
           data.forEach(item => {
             const option = document.createElement('option');
             option.value = item;
@@ -586,10 +675,17 @@
             dropdown.appendChild(option);
           });
            console.log(`Options added to #${dropdownId}.`);
-           // Refresh select2 after populating
-           // Use val(null) and trigger('change.select2') to reset and update visual
-          $(`#${dropdownId}`).val(null).trigger('change.select2');
-           console.log(`Select2 triggered for #${dropdownId}.`);
+           // Trigger change.select2 to update the Select2 visual representation after populating
+           // Check if Select2 is initialized before triggering change.select2
+           if ($(dropdown).hasClass('select2-hidden-accessible')) {
+                $(dropdown).val(null).trigger('change.select2');
+                console.log(`Select2 triggered for #${dropdownId} after population.`);
+           } else {
+                console.warn(`Select2 not initialized on #${dropdownId}. Cannot trigger change.select2`);
+                // If Select2 isn't initialized, the dropdown won't look like Select2
+                // But the options should still be in the native select.
+           }
+
         }
 
          // Populate dropdowns when the form is initialized (after login)
@@ -606,14 +702,33 @@
 
           // Perform full validation on all relevant fields before submitting
           let formIsValid = true;
+          console.log("Running pre-submit validation...");
 
            // Validate mandatory fields that are currently visible
-            if ($('#ttNumber').closest('.card').is(':visible')) formIsValid = validateField('ttNumber') && formIsValid;
-            if ($('#operatorName').closest('.card').is(':visible')) formIsValid = validateField('operatorName') && formIsValid;
-            if ($('#siteDropdown').closest('.card').is(':visible')) formIsValid = validateField('siteDropdown') && formIsValid;
-            if ($('#pgOperatorDropdown').closest('.card').is(':visible')) formIsValid = validateField('pgOperatorDropdown') && formIsValid;
-            if ($('#teamLeaderDropdown').closest('.card').is(':visible')) formIsValid = validateField('teamLeaderDropdown') && formIsValid;
-            if ($('#selectOption').closest('.card').is(':visible')) formIsValid = validateField('selectOption') && formIsValid;
+            if ($('#ttNumber').closest('.card').is(':visible')) {
+                 console.log("Validating TT Number.");
+                if (!validateField('ttNumber')) formIsValid = false;
+            }
+            if ($('#operatorName').closest('.card').is(':visible')) {
+                 console.log("Validating Operator Name.");
+                if (!validateField('operatorName')) formIsValid = false;
+            }
+            if ($('#siteDropdown').closest('.card').is(':visible')) {
+                 console.log("Validating Site.");
+                if (!validateField('siteDropdown')) formIsValid = false;
+            }
+            if ($('#pgOperatorDropdown').closest('.card').is(':visible')) {
+                 console.log("Validating PG Operator.");
+                if (!validateField('pgOperatorDropdown')) formIsValid = false;
+            }
+            if ($('#teamLeaderDropdown').closest('.card').is(':visible')) {
+                 console.log("Validating Team Leader.");
+                if (!validateField('teamLeaderDropdown')) formIsValid = false;
+            }
+            if ($('#selectOption').closest('.card').is(':visible')) {
+                 console.log("Validating Select Option.");
+                if (!validateField('selectOption')) formIsValid = false;
+            }
 
 
           // Validate conditional fields (including PG events and Site Attend Date/Time)
@@ -641,21 +756,13 @@
              'pgStart1', 'pgStop1', 'pgStart2', 'pgStop2', 'pgStart3', 'pgStop3'
            ];
 
-           // Only include values for fields that are currently visible in the submitted data
-           // This prevents sending data for hidden fields which might cause issues on the script side
-           // However, the Google Apps Script might expect all keys, so let's include all but use empty string for hidden/empty
+           // Collect values for all possible fields, using empty string for hidden/empty
             allFormFields.forEach(field => {
                const fieldElement = $(`#${field}`);
                // Check if the element exists
                 if (fieldElement.length > 0) {
-                     // Check if the element is visible or its conditional container is visible
-                    if (fieldElement.is(':visible') || fieldElement.closest('.card').is(':visible') || fieldElement.closest('.event-card').is(':visible') || fieldElement.closest('#siteAttendDateTimeField').is(':visible')) {
-                         // Use .val() for jQuery elements to get their current value
-                        jsonData[field] = fieldElement.val() || ''; // Use empty string for null/undefined values
-                   } else {
-                       // If the field is hidden, include it with an empty string value
-                       jsonData[field] = '';
-                   }
+                     // Use .val() for jQuery elements to get their current value
+                    jsonData[field] = fieldElement.val() || ''; // Use empty string for null/undefined values
                } else {
                     // If the element doesn't exist in the HTML, include it with an empty string as a placeholder
                    jsonData[field] = '';
@@ -723,30 +830,28 @@
                $('#pgForm')[0].reset(); // Reset the form
 
                 // Reset Select2 dropdowns and trigger change to clear them visually and update validation
-                // Use .trigger('change.select2') for Select2 specific change event
+                // Use .val(null) and .trigger('change.select2') to reset and update visual
                $('#operatorName, #selectOption, #siteAttend').val(null).trigger('change.select2');
                $('#siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').val(null).trigger('change.select2');
                 // Manually update Select2 placeholder visual for searchable ones if needed
                 $('.select2-selection__rendered').empty().append('<span class="select2-selection__placeholder">Select...</span>');
 
 
-                // Reset Flatpickr inputs using their instance to clear them
-                 $('input[type="text"].flatpickr-input').each(function() {
-                     if(this._flatpickr) { // Check if flatpickr instance exists
-                         this._flatpickr.clear();
-                     }
-                 });
+                // Clear native datetime-local inputs
+                 $('input[type="datetime-local"]').val('');
+                 console.log("Cleared native datetime-local inputs.");
+
 
                // Trigger change on conditional fields to hide/show sections and clear values/errors properly
-               $('#selectOption').trigger('change'); // This will also trigger the logic to hide sections and clear their content/errors
-               $('#siteAttend').trigger('change'); // Trigger site attend change explicitly
+                // Trigger change.select2 for selects
+               $('#selectOption').val(null).trigger('change.select2'); // This will also trigger the logic to hide sections and clear their content/errors
+               $('#siteAttend').val(null).trigger('change.select2'); // Trigger site attend change explicitly
 
 
                // Clear all validation errors and invalid classes after successful submission
                $('.error-message').text(''); // Clear error message spans
                $('input, select').removeClass('is-invalid'); // Remove invalid class from inputs/selects
                $('.select2-container .select2-selection--single').removeClass('is-invalid'); // Remove invalid class from Select2 visuals
-                $('input[type="text"].flatpickr-input').removeClass('is-invalid'); // Remove invalid class from Flatpickr inputs
 
 
                // Hide success message after a few seconds
@@ -770,189 +875,200 @@
 
 
         // --- Initial Setup for the form when it is displayed ---
-        // Trigger change on load for selectOption to set initial display state
-        // This also cascades to siteAttend change if Misscall TT is default selected
-        $('#selectOption').trigger('change');
+        // Trigger change on selectOption and siteAttend to set initial display state and validation
+        // Use val(null) and trigger('change.select2') for selects to ensure Select2 updates and change event fires
+         $('#selectOption').val(null).trigger('change.select2');
+         $('#siteAttend').val(null).trigger('change.select2');
+
 
         // Trigger blur/change on initial required fields to show errors on load if empty (optional)
         // This uses the new validation functions
         $('#ttNumber').trigger('blur'); // Trigger blur for text input validation
          // Trigger change for Select2 inputs to ensure their validation runs
-        $('#operatorName, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').trigger('change');
+        $('#operatorName, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').trigger('change.select2');
 
 
         console.log("Form initialization complete."); // Log form init completion
 
-      } // End of initializeForm function
+    } // End of initializeForm function
 
 
-      // --- Login Page JavaScript ---
+    // --- Login Page JavaScript ---
 
-      // Helper function to display or clear error messages for the login form
-      // This is different from the form's validation output but uses the same CSS classes
-      function displayLoginError(fieldId, message) {
-          const errorSpan = $(`#${fieldId}-error`); // Target the specific error span for the login input
-          const fieldElement = $(`#${fieldId}`); // The login input element (username or password)
-           const loginStatusDiv = $('#login-status'); // The general login message div
+    // Helper function to display or clear error messages for the login form
+    function displayLoginError(fieldId, message) {
+        const errorSpan = $(`#${fieldId}-error`); // Target the specific error span for the login input
+        const fieldElement = $(`#${fieldId}`); // The login input element (username or password)
+         const loginStatusDiv = $('#login-status'); // The general login message div
 
-          // Handle input specific errors (username-error, password-error)
-          if (errorSpan.length) {
-              if (message) {
-                  errorSpan.text(message);
-                  fieldElement.addClass('is-invalid'); // Use is-invalid class for login inputs
-              } else {
-                  errorSpan.text('');
-                  fieldElement.removeClass('is-invalid');
-              }
-          }
+         // Ensure fieldElement exists
+         if (!fieldElement.length) {
+              console.error(`Login field element #${fieldId} not found.`);
+             if (errorSpan.length) errorSpan.text('');
+             return;
+         }
 
-           // Handle general login status messages (#login-status)
-           if (fieldId === 'login-status') {
-               loginStatusDiv.text(message);
-               if (message) {
-                   // Apply 'error' or 'success' class based on the message content
-                    if (message.includes('Invalid') || message.includes('failed') || message.includes('Error')) {
-                         loginStatusDiv.addClass('error').removeClass('success');
-                    } else {
-                         loginStatusDiv.addClass('success').removeClass('error');
-                    }
-                    loginStatusDiv.show(); // Show the message div
-               } else {
-                    loginStatusDiv.text('').removeClass('success error').hide(); // Hide and clear
-               }
-           }
+
+        // Handle input specific errors (username-error, password-error)
+        if (errorSpan.length) {
+            if (message) {
+                errorSpan.text(message);
+                fieldElement.addClass('is-invalid'); // Use is-invalid class for login inputs
+            } else {
+                errorSpan.text('');
+                fieldElement.removeClass('is-invalid');
+            }
+        }
+
+         // Handle general login status messages (#login-status)
+         if (fieldId === 'login-status') {
+             loginStatusDiv.text(message);
+             if (message) {
+                 // Apply 'error' or 'success' class based on the message content
+                  if (message.includes('Invalid') || message.includes('failed') || message.includes('Error')) {
+                       loginStatusDiv.addClass('error').removeClass('success');
+                  } else {
+                       loginStatusDiv.addClass('success').removeClass('error');
+                  }
+                  loginStatusDiv.show(); // Show the message div
+             } else {
+                  loginStatusDiv.text('').removeClass('success error').hide(); // Hide and clear
+             }
+         }
+    }
+
+    // Handle login form submission
+    $('#loginForm').submit(function(event) {
+      event.preventDefault(); // Prevent default form submission
+       console.log("Login form submitted."); // Log login form submission
+
+      // Clear previous errors and status messages
+      displayLoginError('username', ''); // Clear username error
+      displayLoginError('password', ''); // Clear password error
+      displayLoginError('login-status', ''); // Clear general status message
+
+      const username = $('#username').val().trim(); // Get and trim username input
+      const password = $('#password').val().trim(); // Get and trim password input
+      let formIsValid = true; // Basic client-side check for login form
+
+      // Basic validation for empty fields
+      if (!username) {
+        displayLoginError('username', 'Username is required.');
+        formIsValid = false;
+      }
+      if (!password) {
+        displayLoginError('password', 'Password is required.');
+        formIsValid = false;
       }
 
-      // Handle login form submission
-      $('#loginForm').submit(function(event) {
-        event.preventDefault(); // Prevent default form submission
-         console.log("Login form submitted."); // Log login form submission
+      // If basic client-side validation fails, stop here
+      if (!formIsValid) {
+         displayLoginError('login-status', 'Please enter username and password.');
+         console.log("Login form validation failed client-side.");
+        return;
+      }
 
-        // Clear previous errors and status messages
-        displayLoginError('username', ''); // Clear username error
-        displayLoginError('password', ''); // Clear password error
-        displayLoginError('login-status', ''); // Clear general status message
+      // Show a loading indicator using the login status div
+       displayLoginError('login-status', 'Logging in...'); // Use the status div for loading message
+       console.log("Attempting to fetch login endpoint."); // Log fetch attempt
 
-        const username = $('#username').val().trim(); // Get and trim username input
-        const password = $('#password').val().trim(); // Get and trim password input
-        let formIsValid = true; // Basic client-side check for login form
+      // Send login request to Google Apps Script via proxy
+      fetch('/.netlify/functions/proxy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login: true, username: username, password: password }) // Send login flag and credentials
+      })
+      .then(response => {
+           console.log("Login Fetch received response."); // Log receipt of response
+           // Always read the response body, even on non-OK statuses, to get potential error messages
+          return response.text().then(text => {
+               console.log("Login Fetch Raw Response Text:", text); // Log raw response text
+               console.log("Login Fetch Response Status:", response.status); // Log response status
+               console.log("Login Fetch Response OK:", response.ok); // Log response OK status
+               console.log("Login Fetch Response Headers:", Array.from(response.headers.entries())); // Log response headers
 
-        // Basic validation for empty fields
-        if (!username) {
-          displayLoginError('username', 'Username is required.');
-          formIsValid = false;
+               // Attempt to parse the response text as JSON
+               let data = null;
+               try {
+                   // If the text is not empty or null, try to parse it as JSON
+                   if (text && text.trim() !== '') {
+                       data = JSON.parse(text);
+                        console.log("Login Fetch Parsed Data:", data); // Log parsed JSON data
+                   } else {
+                       // If the text is empty, it might be an empty but successful-status response or an error with no body
+                       console.error("Received empty or null response body for login.");
+                       // If the status is OK but the body is empty, throw an error
+                       if (response.ok) {
+                           throw new Error('Received empty response body from server.');
+                       } else { // If status is not OK and body is empty, throw a status error
+                           throw new Error(`Server returned status ${response.status} with empty body.`);
+                       }
+                   }
+               } catch (jsonError) {
+                   // If JSON parsing fails, log the error and the response text
+                   console.error('Failed to parse login response as JSON:', jsonError, 'Response text:', text);
+                    // If parsing fails and the status was OK, it's an unexpected format issue
+                   if (response.ok) {
+                        throw new Error('Login failed: Invalid JSON response from server.');
+                   } else { // If parsing fails and status was not OK, the status error is more relevant
+                        throw new Error(`Server returned status ${response.status} and invalid response format.`);
+                   }
+               }
+
+               // If the response was not OK (status outside 200-299 range), even if JSON parsed, propagate the error
+               if (!response.ok) {
+                   // Use the server-provided error message if available in the parsed data, otherwise use a generic message
+                   const serverErrorMessage = (data && typeof data === 'object' && data.error) ? data.error : 'Server error occurred.';
+                   // Include the status code in the error message
+                   throw new Error(`Login failed: Status ${response.status} - ${serverErrorMessage}`);
+               }
+
+               // If response is OK and JSON is parsed successfully, return the data
+               return data;
+          });
+      })
+      .then(data => {
+        console.log("Login Response Data:", data); // Log the final data object
+        // Check if data is a valid object and explicitly check if the 'success' property is boolean true
+        if (data && typeof data === 'object' && data.success === true) {
+          displayLoginError('login-status', 'Login successful!'); // Show success message
+          console.log("Login successful, showing form."); // Log successful login
+          $('#loginContainer').hide(); // Hide the login page container
+          $('#formContainer').show(); // Show the form page container
+           initializeForm(); // Call the function to initialize all form features
+        } else {
+          // Handle login failure based on the server response (data.success is false or missing)
+          const errorMessage = (data && typeof data === 'object' && data.error) ? data.error : 'Invalid username or password.';
+          displayLoginError('login-status', errorMessage); // Show the login failure message
+           console.log("Login failed:", errorMessage); // Log the failure reason
+           $('#password').val(''); // Optionally clear the password field on failure
+          $('#username, #password').removeClass('is-invalid'); // Remove invalid classes from login inputs
         }
-        if (!password) {
-          displayLoginError('password', 'Password is required.');
-          formIsValid = false;
-        }
+      })
+      .catch(error => {
+        console.error('Login Fetch Error:', error); // Log any errors that occurred during the fetch process
+        displayLoginError('login-status', 'Login failed: ' + error.message); // Show a user-friendly error message
+         $('#username, #password').removeClass('is-invalid'); // Remove invalid classes from login inputs on fetch error
+      });
+    });
 
-        // If basic client-side validation fails, stop here
-        if (!formIsValid) {
-           displayLoginError('login-status', 'Please enter username and password.');
-           console.log("Login form validation failed client-side.");
-          return;
-        }
-
-        // Show a loading indicator using the login status div
-         displayLoginError('login-status', 'Logging in...'); // Use the status div for loading message
-         console.log("Attempting to fetch login endpoint."); // Log fetch attempt
-
-        // Send login request to Google Apps Script via proxy
-        fetch('/.netlify/functions/proxy', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ login: true, username: username, password: password }) // Send login flag and credentials
-        })
-        .then(response => {
-             console.log("Login Fetch received response."); // Log receipt of response
-             // Always read the response body, even on non-OK statuses, to get potential error messages
-            return response.text().then(text => {
-                 console.log("Login Fetch Raw Response Text:", text); // Log raw response text
-                 console.log("Login Fetch Response Status:", response.status); // Log response status
-                 console.log("Login Fetch Response OK:", response.ok); // Log response OK status
-                 console.log("Login Fetch Response Headers:", Array.from(response.headers.entries())); // Log response headers
-
-                 // Attempt to parse the response text as JSON
-                 let data = null;
-                 try {
-                     // If the text is not empty or null, try to parse it as JSON
-                     if (text && text.trim() !== '') {
-                         data = JSON.parse(text);
-                          console.log("Login Fetch Parsed Data:", data); // Log parsed JSON data
-                     } else {
-                         // If the text is empty, it might be an empty but successful-status response or an error with no body
-                         console.error("Received empty or null response body for login.");
-                         // If the status is OK but the body is empty, throw an error
-                         if (response.ok) {
-                             throw new Error('Received empty response body from server.');
-                         } else { // If status is not OK and body is empty, throw a status error
-                             throw new Error(`Server returned status ${response.status} with empty body.`);
-                         }
-                     }
-                 } catch (jsonError) {
-                     // If JSON parsing fails, log the error and the response text
-                     console.error('Failed to parse login response as JSON:', jsonError, 'Response text:', text);
-                      // If parsing fails and the status was OK, it's an unexpected format issue
-                     if (response.ok) {
-                          throw new Error('Login failed: Invalid JSON response from server.');
-                     } else { // If parsing fails and status was not OK, the status error is more relevant
-                          throw new Error(`Server returned status ${response.status} and invalid response format.`);
-                     }
-                 }
-
-                 // If the response was not OK (status outside 200-299 range), even if JSON parsed, propagate the error
-                 if (!response.ok) {
-                     // Use the server-provided error message if available in the parsed data, otherwise use a generic message
-                     const serverErrorMessage = (data && typeof data === 'object' && data.error) ? data.error : 'Server error occurred.';
-                     // Include the status code in the error message
-                     throw new Error(`Login failed: Status ${response.status} - ${serverErrorMessage}`);
-                 }
-
-                 // If response is OK and JSON is parsed successfully, return the data
-                 return data;
-            });
-        })
-        .then(data => {
-          console.log("Login Response Data:", data); // Log the final data object
-          // Check if data is a valid object and explicitly check if the 'success' property is boolean true
-          if (data && typeof data === 'object' && data.success === true) {
-            displayLoginError('login-status', 'Login successful!'); // Show success message
-            console.log("Login successful, showing form."); // Log successful login
-            $('#loginContainer').hide(); // Hide the login page container
-            $('#formContainer').show(); // Show the form page container
-             initializeForm(); // Call the function to initialize all form features
-          } else {
-            // Handle login failure based on the server response (data.success is false or missing)
-            const errorMessage = (data && typeof data === 'object' && data.error) ? data.error : 'Invalid username or password.';
-            displayLoginError('login-status', errorMessage); // Show the login failure message
-             console.log("Login failed:", errorMessage); // Log the failure reason
-             $('#password').val(''); // Optionally clear the password field on failure
-            $('#username, #password').removeClass('is-invalid'); // Remove invalid classes from login inputs
-          }
-        })
-        .catch(error => {
-          console.error('Login Fetch Error:', error); // Log any errors that occurred during the fetch process
-          displayLoginError('login-status', 'Login failed: ' + error.message); // Show a user-friendly error message
-           $('#username, #password').removeClass('is-invalid'); // Remove invalid classes from login inputs on fetch error
-        });
+     // Optional: Clear errors on input focus for login fields
+      $('#username, #password').on('focus', function() {
+          displayLoginError($(this).attr('id'), ''); // Clear specific input error on focus
+          displayLoginError('login-status', ''); // Clear general status message on focus
       });
 
-       // Optional: Clear errors on input focus for login fields
-        $('#username, #password').on('focus', function() {
-            displayLoginError($(this).attr('id'), ''); // Clear specific input error on focus
-            displayLoginError('login-status', ''); // Clear general status message on focus
-        });
+    // --- Initial Setup on document ready ---
+    // The login container is shown by default in HTML, form container is hidden.
+    // The login form submission handler is attached here.
+    // The form initialization is deferred until successful login.
+     $('#formContainer').hide();
+     $('#loginContainer').show();
+      console.log("Initial display state set: login visible, form hidden.");
 
-      // --- Initial State on document ready ---
-      // The login container is shown by default in HTML, the form container is hidden using style="display: none;"
-      // Ensure form container is hidden on page load in case style is overridden or for clarity
-       $('#formContainer').hide();
-       // Ensure login container is visible on page load (it is by default in HTML)
-       $('#loginContainer').show();
 
-    }); // End of $(document).ready
-  </script>
+  }); // End of $(document).ready
+</script>
 
 </body>
 </html>
