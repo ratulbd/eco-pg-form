@@ -199,7 +199,8 @@
               }
 
               if (!errorSpan.length) {
-                 console.warn(`Error span not found for field: #${fieldId}-error`. This field's errors will not be displayed visually, only invalid class applied.);
+                 // Corrected syntax error here: escaped the backtick inside the string
+                 console.warn(`Error span not found for field: #${fieldId}-error\`. This field's errors will not be displayed visually, only invalid class applied.`);
                  // Fallback: just toggle invalid class if error span is missing
                  if (message) {
                      fieldElement.addClass('is-invalid');
@@ -609,7 +610,7 @@
             console.log("Attempting to load CSV:", file);
           try {
              const response = await fetch(file);
-              console.log(`Fetch response for ${file}: Status ${response.status}, OK: ${response.ok}`);
+              console.log(`Workspace response for ${file}: Status ${response.status}, OK: ${response.ok}`);
              if (!response.ok) {
                  // Read response text even if not OK to get potential error details
                  const errorText = await response.text();
