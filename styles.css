@@ -1,82 +1,200 @@
+/* Basic Body and Page Layout */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* More modern font */
-  background-color: #eef2f6; /* Light background */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* Subtle gradient background */
+  background: linear-gradient(to right, #6a11cb, #2575fc); /* Login page background */
   margin: 0;
-  padding: 20px; /* Add padding around the body */
-  line-height: 1.6; /* Improved readability */
+  padding: 20px;
+  line-height: 1.6;
+  color: #333;
+  display: flex; /* Use flexbox for centering */
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
+/* Style for the main form container when visible */
+/* This should ideally be different from .login-container if possible */
+/* We will keep the .container selector as used in your HTML */
 .container {
   max-width: 600px;
   margin: 20px auto;
-  padding: 30px; /* Increased padding */
+  padding: 30px;
   background-color: #ffffff;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* More pronounced shadow */
-  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 60px; /* Space above footer */
+  /* No fade-in animation here, as login handles initial show */
 }
 
+/* Style for the login container */
+.login-container {
+  max-width: 400px; /* Smaller container for login */
+  width: 90%; /* Responsive width */
+  padding: 40px; /* Increased padding */
+  background-color: #ffffff;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); /* More prominent shadow */
+  border-radius: 12px; /* More rounded corners */
+  text-align: center;
+  margin-bottom: 30px; /* Space between login box and footer */
+  animation: fadeInUp 0.8s ease-out; /* Add fade-in-up animation */
+   /* Ensure it takes space when visible */
+   /* Removed flex properties from here, handled by body */
+}
+
+/* Animation for the login container */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Heading Styling */
 h2 {
   text-align: center;
-  color: #2c3e50; /* Darker, professional color */
-  margin-bottom: 30px; /* More space below heading */
-  font-size: 2em;
+  color: #2c3e50;
+  margin-bottom: 35px;
+  font-size: 2.2em;
+  position: relative;
+  padding-bottom: 10px;
 }
 
+/* Subtle underline effect for heading */
+h2::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  height: 3px;
+  width: 60px;
+  background-color: #3498db;
+  border-radius: 1.5px;
+}
+
+
+/* Styling for input groups (label + input + error) in login form */
+.login-container .input-group {
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+
+/* Label Styling (Applies to both login and form unless more specific) */
 label {
   display: block;
-  margin: 15px 0 8px; /* Adjusted margin */
-  color: #34495e; /* Slightly darker label color */
-  font-weight: bold; /* Make labels bold */
+  margin: 15px 0 5px; /* Adjusted margin-bottom for spacing with error message */
+  color: #34495e;
+  font-weight: bold;
 }
 
-select,
-input[type="datetime-local"],
-input[type="text"] {
+/* Styling for text and password inputs (Applies to both unless more specific) */
+/* This now includes inputs in the login form */
+input[type="text"],
+input[type="password"], /* Added password type */
+select, /* Applies to form selects */
+button {
   width: 100%;
-  padding: 12px 15px; /* Increased padding */
-  margin-bottom: 20px;
-  border: 1px solid #bdc3c7; /* Lighter border color */
+  padding: 12px 15px;
+  margin-bottom: 20px; /* Default space below fields */
+  border: 1px solid #bdc3c7;
   border-radius: 5px;
   box-sizing: border-box;
   font-size: 1em;
-  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transitions */
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-select:focus,
-input[type="datetime-local"]:focus,
-input[type="text"]:focus {
-  border-color: #3498db; /* Highlight border on focus */
-  box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); /* Add a subtle shadow on focus */
-  outline: none; /* Remove default outline */
+/* Specific style for inputs within the login container */
+.login-container input[type="text"],
+.login-container input[type="password"] {
+     padding: 14px 15px; /* Increased padding for login inputs */
+     border-radius: 6px; /* Slightly more rounded */
+     margin-bottom: 0; /* Remove default margin-bottom here, input-group handles it */
+     border: 1px solid #ddd; /* Lighter border */
 }
 
+/* Focus States for Inputs */
+input[type="text"]:focus,
+input[type="password"]:focus, /* Added password type */
+select:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+  outline: none;
+}
+
+/* Specific focus style for login inputs */
+.login-container input[type="text"]:focus,
+.login-container input[type="password"]:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.4); /* More prominent shadow */
+}
+
+
+/* Placeholder Text Styling */
+input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+
+/* Button Styling (Applies to both unless more specific) */
 button {
-  width: 100%;
   padding: 12px;
-  margin-top: 10px; /* Space above button */
-  background-color: #2ecc71; /* Green call-to-action color */
+  margin-top: 10px;
+  background-color: #2ecc71; /* Green for form submit button */
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 1.1em;
-  transition: background-color 0.3s ease-in-out; /* Smooth transition */
+  transition: background-color 0.3s ease-in-out;
 }
 
 button:hover {
-  background-color: #27ae60; /* Darker green on hover */
+  background-color: #27ae60;
 }
+
+/* Specific style for login submit button */
+button[type="submit"] {
+  padding: 14px;
+  margin-top: 15px;
+  background: linear-gradient(to right, #3498db, #2980b9); /* Gradient button */
+  font-size: 1.15em;
+  font-weight: bold;
+  transition: opacity 0.3s ease-in-out, transform 0.2s ease-in-out;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+button[type="submit"]:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  background-color: #2980b9; /* Fallback for hover */
+}
+
 
 button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+  opacity: 0.8;
 }
 
+
+/* Messages (Loading, Success, Login Status) */
 .success-message {
   display: none;
   text-align: center;
   color: #27ae60; /* Green */
-  background-color: #d4edda; /* Light green background */
+  background-color: #d4edda;
   border: 1px solid #c3e6cb;
   border-radius: 5px;
   padding: 15px;
@@ -91,37 +209,69 @@ button:disabled {
   font-style: italic;
 }
 
+/* Styling for the login status message */
+.login-message {
+  margin-top: 25px;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  display: none; /* Hidden by default, shown by JS */
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Animation for messages */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.login-message.success {
+  color: #27ae60;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  display: block;
+}
+
+.login-message.error {
+  color: #e74c3c;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  display: block;
+}
+
+
+/* Card Styling for the Form */
 .card,
 .event-card {
-  background-color: #fdfefe; /* Very light off-white */
-  padding: 20px; /* Increased padding */
-  margin-bottom: 25px; /* More space between cards */
-  border-radius: 8px; /* Slightly more rounded corners */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* Subtle shadow */
-  border: 1px solid #ecf0f1; /* Very light border */
+  background-color: #fdfefe;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  border: 1px solid #ecf0f1;
 }
 
 .event-card h3 {
   margin-top: 0;
-  color: #3498db; /* Blue for event titles */
-  border-bottom: 1px solid #ecf0f1; /* Subtle separator */
+  color: #3498db;
+  border-bottom: 1px solid #ecf0f1;
   padding-bottom: 10px;
   margin-bottom: 20px;
 }
 
 /* Styles for Select2 dropdowns */
-/* These override default select2 styles for better integration */
 .select2-container--default .select2-selection--single {
-    height: 44px !important; /* Match input height */
-    padding: 8px 24px 8px 15px !important; /* Adjust padding */
+    height: 44px !important;
+    padding: 8px 24px 8px 15px !important;
     border: 1px solid #bdc3c7 !important;
     border-radius: 5px !important;
     font-size: 1em !important;
     transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    box-sizing: border-box;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 42px !important; /* Match container height */
+    height: 42px !important;
 }
 
 .select2-container--default.select2-container--open .select2-selection--single {
@@ -135,25 +285,118 @@ button:disabled {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
+
+/* --- Error Message and Invalid Field Styling (Combined for Login and Form) --- */
+
+.error-message {
+    color: #e74c3c; /* Red for error messages */
+    font-size: 0.8em;
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 15px; /* Default margin below error */
+    min-height: 1em;
+    padding: 0 5px;
+}
+
+/* Adjust error message margin specifically within login input groups */
+.login-container .input-group .error-message {
+    margin-top: 6px;
+    margin-bottom: 5px;
+    font-size: 0.85em;
+}
+
+
+/* Style for input/select borders when invalid */
+input.is-invalid,
+select.is-invalid {
+    border-color: #e74c3c !important; /* Red border */
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.4); /* Red shadow */
+}
+
+/* Style for Select2 containers when the linked select is invalid */
+.select2-container--default .select2-selection--single.is-invalid {
+     border-color: #e74c3c !important;
+     box-shadow: 0 0 5px rgba(231, 76, 60, 0.4);
+}
+
+/* Style for Flatpickr inputs when invalid */
+/* Flatpickr inputs are type="text" */
+input[type="text"].is-invalid.flatpickr-input {
+    border-color: #e74c3c !important;
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.4);
+}
+
+
+/* Ensure error message follows the Select2 container with correct spacing */
+.select2-container + .error-message {
+    margin-top: 5px;
+}
+
+/* Ensure error message follows a Flatpickr input with correct spacing */
+input.flatpickr-input + .error-message {
+     margin-top: 5px;
+}
+
+
+/* Footer Styling */
+.footer-info {
+  text-align: center;
+  margin-top: 40px;
+  padding: 15px;
+  color: rgba(255, 255, 255, 0.8); /* Lighter color for background contrast */
+  font-size: 0.9em;
+}
+
+.footer-info strong {
+  color: #fff;
+}
+
+.footer-info small {
+    display: block;
+    margin-top: 5px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8em;
+}
+
 /* Mobile responsiveness */
-@media (max-width: 600px) { /* Adjusted breakpoint */
-  .container {
-    width: 95%; /* Take up more width on small screens */
+@media (max-width: 600px) {
+  body {
+      padding: 10px;
+  }
+  .container { /* For the form container */
+    width: 98%;
     margin: 10px auto;
-    padding: 15px; /* Less padding on small screens */
+    padding: 15px;
+  }
+   .login-container { /* For the login container */
+    width: 98%;
+    padding: 20px;
   }
 
   h2 {
-    font-size: 1.8em; /* Smaller heading */
+    font-size: 2em;
     margin-bottom: 20px;
   }
+   h2::after {
+       width: 50px;
+   }
 
   select,
-  input[type="datetime-local"],
   input[type="text"],
+  input[type="password"],
   button {
-    padding: 10px; /* Smaller padding */
+    padding: 10px;
     margin-bottom: 15px;
+  }
+
+   .login-container input[type="text"],
+   .login-container input[type="password"] {
+       padding: 12px;
+   }
+
+  button[type="submit"] {
+     font-size: 1.1em;
+     margin-top: 10px;
   }
 
    .card,
@@ -166,134 +409,18 @@ button:disabled {
      margin-bottom: 15px;
      padding-bottom: 8px;
   }
-}
 
-/* Added for the footer text */
-.footer-info {
-  text-align: center; /* Center the text */
-  margin-top: 40px; /* Space above the text */
-  padding: 20px; /* Padding around the text */
-  color: #555; /* A subtle color */
-  font-size: 0.9em; /* Smaller font size */
-  opacity: 0; /* Start hidden for animation */
-  animation: fadeIn 2s ease-in forwards; /* Apply fade-in animation */
-}
-
-.footer-info strong {
-  color: #333; /* Make the name slightly darker */
-}
-
-/* Define the fadeIn animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0; /* Start with 0 opacity */
+  .login-message {
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 0.9em;
   }
-  to {
-    opacity: 1; /* End with 1 opacity (fully visible) */
-  }
-}
 
-/* Optional: Add a subtle pulse animation on hover */
-/*
-.footer-info:hover {
-  animation: pulse 1.5s infinite ease-in-out;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.02); // Slightly larger
-    opacity: 0.9; // Slightly less opaque
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-*/
-
-/* Adjust container margin if needed to prevent overlap */
-.container {
-    /* ... existing styles ... */
-    margin-bottom: 40px; /* Ensure space between container and footer */
-}
-
-/* Add some basic styling for the <small> tag */
-.footer-info small {
-    display: block; /* Make the title go to a new line */
-    margin-top: 5px;
-    color: #777;
-    font-size: 0.8em;
-}
-
-/* Adjust mobile responsiveness for the footer */
-@media (max-width: 600px) {
   .footer-info {
-    margin-top: 20px;
-    padding: 10px;
-  }
-  .footer-info p {
+    margin-top: 30px;
     font-size: 0.8em;
   }
-  .footer-info small {
+   .footer-info small {
     font-size: 0.7em;
   }
-}
-
-/* Add this to your existing styles.css, replacing the previous error-related rules */
-
-.error-message {
-    color: red;
-    font-size: 0.8em;
-    display: block; /* Ensure it takes its own line */
-    margin-top: 5px; /* Add space above the error message */
-    margin-bottom: 15px; /* Add space below the error message */
-    min-height: 1em; /* Reserve space to prevent layout shifts */
-    /* Adjust padding or margin if needed based on your specific layout */
-    padding: 0 5px; /* Optional: add slight horizontal padding */
-}
-
-/* Style for input/select borders when invalid */
-input.is-invalid {
-    border-color: red !important; /* Use !important to override other border styles */
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Optional: add a red shadow */
-}
-
-/* Style for Select2 containers when the linked select is invalid */
-/* This targets the visible part of the Select2 dropdown */
-.select2-container--default .select2-selection--single.is-invalid {
-     border-color: red !important;
-     box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Optional: add a red shadow */
-}
-
-/* Ensure error message follows the Select2 container with correct spacing */
-.select2-container + .error-message {
-    margin-top: 5px; /* Ensure space after the select2 dropdown */
-}
-
-/* Adjust label margin if needed */
-label {
-  /* Keep your existing label styles, but ensure sufficient margin-bottom */
-   display: block;
-   margin: 15px 0 5px; /* Reduced margin-bottom slightly, error message adds spacing */
-   color: #34495e;
-   font-weight: bold;
-}
-
-/* This might be needed if your label+error combination is too tight */
-/* label + .error-message {
-     margin-top: 0px;
-} */
-
-
-#loginContainer {
-  max-width: 400px;
-  margin: 50px auto;
-  padding: 30px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
