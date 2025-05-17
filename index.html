@@ -170,7 +170,7 @@ $('#operatorName, #selectOption, #siteAttend, #siteDropdown, #pgOperatorDropdown
           $(this).select2({
             placeholder: 'Select...',
             allowClear: true,
-            dropdownParent: $(this).closest('.card') // More specific than #formContainer
+            dropdownParent: $('body')  // Fix for dropdown visibility
           });
 
                   console.log(`Select2 initialized on #${this.id}`);

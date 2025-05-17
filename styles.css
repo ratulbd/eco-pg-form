@@ -520,3 +520,8 @@ input[type="datetime-local"] + .error-message {
     overflow-y: auto !important;
   }
 }
+
+
+.select2-container--open .select2-dropdown {
+  z-index: 9999 !important;
+}
