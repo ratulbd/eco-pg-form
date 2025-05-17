@@ -469,3 +469,20 @@ input[type="datetime-local"] + .error-message {
 
 
 }
+/* Style the placeholder and selected text */
+.select2-selection__rendered {
+  line-height: 1.5 !important;
+  padding-left: 5px !important;
+  color: #333 !important; /* or #aaa for placeholder */
+}
+
+.select2-selection__placeholder {
+  color: #aaa !important;
+  font-style: italic;
+}
+
+/* Remove unwanted borders or lines */
+.select2-selection--single {
+  border-bottom: none !important;
+  background-image: none !important;
+}
