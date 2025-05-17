@@ -138,6 +138,8 @@
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
   <script>
+    $(document).ready(function () {
+
     // Function to initialize the main form's features (Select2, Flatpickr, validation)
     function initializeForm() {
         // Initialize Select2
@@ -154,9 +156,9 @@
 
         // --- Initialize Flatpickr Date/Time Pickers ---
         const flatpickrOptions = {
-            enableTime: true,
-            dateFormat: "Y-m-d\\TH:i",
-            maxDate: "today",
+            enableTime: true, // Enable time selection
+            dateFormat: "Y-m-d\\TH:i", // Format asYYYY-MM-DDTHH:MM
+            maxDate: "today", // Restrict to today or earlier
             appendTo: $('#formContainer')[0] // Append picker to form container
         };
 
@@ -167,6 +169,7 @@
         flatpickr("#pgStop2", flatpickrOptions);
         flatpickr("#pgStart3", flatpickrOptions);
         flatpickr("#pgStop3", flatpickrOptions);
+
 
         // --- Helper Functions (These were already defined and should stay) ---
 
@@ -191,16 +194,13 @@
 
               if (!errorSpan.length) {
                  console.error(`Error span not found for field: #${fieldId}-error`);
-                 // Continue without displaying error if span not found
                  if (message) {
                      fieldElement.addClass('is-invalid');
-                      // Special handling for Select2
-                     if (fieldElement.hasClass('select2-hidden-accessible')) {
+                      if (fieldElement.hasClass('select2-hidden-accessible')) {
                        fieldElement.next('.select2-container').find('.select2-selection--single').addClass('is-invalid');
                      }
-                      // Add invalid class to the Flatpickr input if applicable
                       if (fieldElement.hasClass('flatpickr-input')) {
-                           fieldElement.addClass('is-invalid'); // already done above, but double check
+                           fieldElement.addClass('is-invalid');
                       }
 
                  } else {
@@ -212,13 +212,12 @@
                            fieldElement.removeClass('is-invalid');
                      }
                  }
-                 return; // Exit if no error span
+                 return;
               }
 
 
               if (message) {
                   errorSpan.text(message);
-                  // Apply invalid class to the original field AND the Select2 container if it's a Select2
                   fieldElement.addClass('is-invalid');
                   if (fieldElement.hasClass('select2-hidden-accessible')) {
                      fieldElement.next('.select2-container').find('.select2-selection--single').addClass('is-invalid');
@@ -259,7 +258,6 @@
              const selectOption = $('#selectOption').val();
              const siteAttend = $('#siteAttend').val();
 
-             // Clear previous conditional errors first for fields that might hide/show
              displayError('siteAttend', '');
              displayError('siteAttendDateTime', '');
              displayError('pgStart1', '');
@@ -305,6 +303,7 @@
                  const pgStop2 = parseDateTimeLocal(pgStop2Val);
                  const pgStart3 = parseDateTimeLocal(pgStart3Val);
                  const pgStop3 = parseDateTimeLocal(pgStop3Val);
+
 
                  if (!pgStart1Val || !pgStop1Val) {
                      if (!pgStart1Val) displayError('pgStart1', 'Mandatory for PG Run.');
@@ -477,7 +476,6 @@
               if ($(`#${field}`).hasClass('select2-hidden-accessible')) {
                    jsonData[field] = $(`#${field}`).val() || '';
               } else if ($(`#${field}`).hasClass('flatpickr-input')) {
-                  // Get value directly from the input (Flatpickr updates this)
                   jsonData[field] = $(`#${field}`).val() || '';
               }
               else if (field === 'site') { jsonData[field] = $('#siteDropdown').val() || ''; }
@@ -517,7 +515,7 @@
                    return response.text().then(text => {
                         try {
                            if (!text) {
-                                console.error("Received empty response body from server.");
+                                console.error("Received empty or null response body from server.");
                                return {};
                            }
                            return JSON.parse(text);
@@ -541,13 +539,11 @@
                 $('.success-message').show();
                 $('#pgForm')[0].reset();
 
-                // Reset Flatpickr inputs using their instance
                  $('input[type="text"].flatpickr-input').each(function() {
                      if(this._flatpickr) {
                          this._flatpickr.clear();
                      }
                  });
-                 // Reset Select2 dropdowns and trigger change
                  $('#operatorName, #selectOption, #siteAttend').val(null).trigger('change');
                  $('#siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').val(null).trigger('change');
                  $('.select2-selection__rendered').empty().append('<span class="select2-selection__placeholder">Select...</span>');
@@ -609,15 +605,10 @@
           $(`#${dropdownId}`).val(null).trigger('change');
         }
 
-         // Populate dropdowns on form display
-        populateDropdown('siteDropdown', 'data/sites.csv');
-        populateDropdown('pgOperatorDropdown', 'data/runners.csv');
-        populateDropdown('teamLeaderDropdown', 'data/runners.csv');
-
-
          // Initial triggers for form fields when form is shown
-         $('#selectOption').trigger('change');
-         $('#ttNumber').trigger('blur');
+         // These are now called inside initializeForm()
+         // $('#selectOption').trigger('change');
+         // $('#ttNumber').trigger('blur');
 
     } // End of initializeForm function
 
@@ -626,11 +617,11 @@
 
     // Helper function to display or clear error messages for the login form
     function displayLoginError(fieldId, message) {
-        const errorSpan = $(`#${fieldId}-error`); // Assuming spans are like username-error, password-error
+        const errorSpan = $(`#${fieldId}-error`);
         const fieldElement = $(`#${fieldId}`);
          const loginStatusDiv = $('#login-status'); // The general login message div
 
-        // Handle input specific errors
+        // Handle input specific errors (username-error, password-error)
         if (errorSpan.length) {
             if (message) {
                 errorSpan.text(message);
@@ -641,20 +632,18 @@
             }
         }
 
-         // Handle general login status messages
+         // Handle general login status messages (#login-status)
          if (fieldId === 'login-status') {
              loginStatusDiv.text(message);
              if (message) {
-                 // Add 'error' or 'success' class based on context if needed
-                 // For simple login failure, we just add 'error' class
-                  if (message.includes('Invalid') || message.includes('failed')) {
+                  if (message.includes('Invalid') || message.includes('failed') || message.includes('Error')) { // Added 'Error' check
                        loginStatusDiv.addClass('error').removeClass('success');
                   } else {
                        loginStatusDiv.addClass('success').removeClass('error');
                   }
-                  loginStatusDiv.show(); // Show the message div
+                  loginStatusDiv.show();
              } else {
-                  loginStatusDiv.text('').removeClass('success error').hide(); // Hide and clear
+                  loginStatusDiv.text('').removeClass('success error').hide();
              }
          }
     }
@@ -683,14 +672,12 @@
       }
 
       if (!formIsValid) {
-        // Display a general message if basic fields are empty
          displayLoginError('login-status', 'Please enter username and password.');
-        return; // Stop if basic validation fails
+        return;
       }
 
-       // Show a loading indicator if desired
-       // $('#login-status').text('Logging in...').removeClass('success error').show();
-
+      // Show a loading indicator
+       displayLoginError('login-status', 'Logging in...'); // Use the status div for loading
 
       // Send login request to Google Apps Script via proxy
       fetch('/.netlify/functions/proxy', {
@@ -699,58 +686,72 @@
         body: JSON.stringify({ login: true, username: username, password: password }) // Send login flag and credentials
       })
       .then(response => {
-          console.log("Login Fetch Response Status:", response.status);
-          console.log("Login Fetch Response OK:", response.ok);
-           // Check if response is OK (status 200-299)
-          if (!response.ok) {
-               // If not OK, read text and throw error
-               return response.text().then(text => {
-                    console.error(`Login HTTP error! status: ${response.status}, body: ${text}`);
-                   throw new Error(`Login failed: Server returned status ${response.status}`);
-               });
-          }
-           // If OK, attempt to parse JSON
-           const contentType = response.headers.get("content-type");
-           if (contentType && (contentType.includes("application/json") || contentType.includes("text/plain"))) {
-               return response.text().then(text => {
-                   try {
-                       // If text is empty or null, treat as failed login or error
-                       if (!text || text.trim() === '') {
-                            console.error("Received empty or null response body for login.");
-                           return { success: false, error: 'Empty response from server.' }; // Simulate failed login response
+           // Always read the response body, even on non-OK statuses, to get potential error messages
+          return response.text().then(text => {
+               console.log("Login Fetch Raw Response Text:", text);
+               console.log("Login Fetch Response Status:", response.status);
+               console.log("Login Fetch Response OK:", response.ok);
+               console.log("Login Fetch Response Headers:", Array.from(response.headers.entries()));
+
+               // Attempt to parse as JSON, but handle errors
+               let data = null;
+               try {
+                   if (text && text.trim() !== '') {
+                       data = JSON.parse(text);
+                   } else {
+                       console.error("Received empty or null response body for login.");
+                       // If empty, treat as a non-successful response
+                       if (response.ok) { // If status is OK but body is empty
+                           throw new Error('Received empty response body from server.');
+                       } else { // If status is not OK and body is empty
+                           throw new Error(`Server returned status ${response.status} with empty body.`);
                        }
-                       return JSON.parse(text); // Parse the JSON
-                   } catch (jsonError) {
-                       console.error('Failed to parse login response as JSON:', jsonError, 'Response text:', text);
-                       throw new Error('Login failed: Invalid response from server.');
                    }
-               });
-           } else {
-                // Unexpected content type
-                return response.text().then(text => {
-                     console.error('Received unexpected content type for login:', contentType, 'Response text:', text);
-                     throw new Error('Login failed: Unexpected response from server.');
-                });
-           }
+               } catch (jsonError) {
+                   console.error('Failed to parse login response as JSON:', jsonError, 'Response text:', text);
+                   // If parsing fails, and status was OK, it's an unexpected format issue
+                   if (response.ok) {
+                        throw new Error('Login failed: Invalid JSON response from server.');
+                   } else { // If parsing fails and status was not OK, the status error is more relevant
+                        throw new Error(`Server returned status ${response.status} and invalid response format.`);
+                   }
+               }
+
+               // If response was not OK, even if JSON parsed, propagate the error
+               if (!response.ok) {
+                   // Use server-provided error message if available in parsed data
+                   const serverErrorMessage = (data && typeof data === 'object' && data.error) ? data.error : 'Server error occurred.';
+                    // Include status code in the error message
+                   throw new Error(`Login failed: Status ${response.status} - ${serverErrorMessage}`);
+               }
+
+               // If OK and JSON parsed, return the data
+               return data;
+          });
       })
       .then(data => {
         console.log("Login Response Data:", data);
-        if (data && data.success) { // Check if data object exists and success is true
+        // Check if data is a valid object and has the expected success property
+        if (data && typeof data === 'object' && data.success === true) { // Explicitly check for boolean true
           displayLoginError('login-status', 'Login successful!');
           $('#loginContainer').hide(); // Hide login page
           $('#formContainer').show(); // Show form page
            initializeForm(); // Initialize form elements after showing
         } else {
-          // Handle login failure based on server response (data.success is false or data.error)
-          const errorMessage = (data && data.error) ? data.error : 'Invalid username or password.';
+          // Handle login failure based on server response (data.success is false or missing)
+          const errorMessage = (data && typeof data === 'object' && data.error) ? data.error : 'Invalid username or password.';
           displayLoginError('login-status', errorMessage);
            // Optionally clear password field on failure
           $('#password').val('');
+           // Remove invalid classes from login inputs on failure
+          $('#username, #password').removeClass('is-invalid');
         }
       })
       .catch(error => {
         console.error('Login Fetch Error:', error);
         displayLoginError('login-status', 'Login failed: ' + error.message);
+         // Remove invalid classes from login inputs on fetch error
+         $('#username, #password').removeClass('is-invalid');
       });
     });
 
@@ -761,11 +762,9 @@
       });
 
     // --- Initial State ---
-    // By default, the login container is shown in HTML, form container is hidden.
-    // No need to hide/show on ready unless you want to force the initial state.
-
-    // The rest of the form's JS (Select2 init, Flatpickr init, event listeners, submit handler for pgForm, etc.)
-    // should ONLY run AFTER a successful login. This is why we moved it into initializeForm().
+    // The login container is shown by default in HTML, form container is hidden.
+    // The login form submission handler is attached here.
+    // The form initialization is deferred until successful login.
 
   }); // End of $(document).ready
   </script>
