@@ -37,6 +37,20 @@
    </style>
 </head>
 <body>
+
+<div class="container" id="loginContainer">
+  <h2>Login</h2>
+  <form id="loginForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" required />
+    <label for="password">Password:</label>
+    <input type="password" id="password" required />
+    <button type="submit">Login</button>
+    <span class="error-message" id="login-error"></span>
+  </form>
+</div>
+
+<div class="container" id="formContainer" style="display: none;">
   <div class="container">
     <h2>E.CO PG Run Data Collection Form-MPL</h2>
     <form id="pgForm" novalidate> <div class="card">
@@ -745,6 +759,34 @@
     }); // End of $(document).ready
 
   </script>
+
+
+<script>
+  $('#loginForm').submit(function (e) {
+    e.preventDefault();
+    const username = $('#username').val().trim();
+    const password = $('#password').val().trim();
+
+    fetch('/.netlify/functions/proxy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ login: true, username, password })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        $('#loginContainer').hide();
+        $('#formContainer').show();
+      } else {
+        $('#login-error').text('Invalid username or password.');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      $('#login-error').text('Login failed. Try again.');
+    });
+  });
+</script>
 
 </body>
 </html>

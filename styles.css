@@ -287,3 +287,13 @@ label {
 /* label + .error-message {
      margin-top: 0px;
 } */
+
+
+#loginContainer {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
