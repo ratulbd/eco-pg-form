@@ -142,7 +142,7 @@
   $(document).ready(function () {
     console.log("Document ready."); // Log document ready
 
-    // Helper function to get current date/time in-MM-DDTHH:MM format
+    // Helper function to get current date/time in YYYY-MM-DDTHH:MM format
     function getCurrentDateTimeLocal() {
         const now = new Date();
         const year = now.getFullYear();
@@ -579,10 +579,6 @@
                          $('input[type="datetime-local"]', '#misscallTTFields').val(''); // Clear native inputs
                          $('input[type="text"]', '#misscallTTFields').val(''); // Clear other text inputs if any
                          $('#siteAttendDateTimeField').hide(); // Ensure datetime field is hidden
-                          // Re-set the max date/time for PG Run fields when they are shown
-                          const nowFormatted = getCurrentDateTimeLocal();
-                         $('input[type="datetime-local"]', '#pgRunFields').attr('max', nowFormatted);
-                          console.log(`Re-set max date/time for PG Run fields to: ${nowFormatted}`);
 
 
                      } else { // If no option is selected
@@ -602,10 +598,6 @@
                    if ($(this).val() === 'YES') {
                        console.log("Site Attend is YES. Showing Site Attend DateTime field.");
                        $('#siteAttendDateTimeField').show();
-                        // Re-set the max date/time for Site Attend DateTime field when it is shown
-                        const nowFormatted = getCurrentDateTimeLocal();
-                       $('#siteAttendDateTime').attr('max', nowFormatted);
-                        console.log(`Re-set max date/time for Site Attend DateTime field to: ${nowFormatted}`);
                    } else {
                         console.log("Site Attend is NOT YES. Hiding Site Attend DateTime field.");
                        $('#siteAttendDateTimeField').hide();
@@ -1066,7 +1058,7 @@
           displayLoginError('login-status', ''); // Clear general status message on focus
       });
 
-    // --- Initial State on document ready ---
+    // --- Initial Setup on document ready ---
     // The login container is shown by default in HTML, form container is hidden.
     // The login form submission handler is attached here.
     // The form initialization is deferred until successful login.
