@@ -152,7 +152,7 @@
                  $(this).select2({
                       placeholder: 'Select...', // Generic placeholder for all
                       allowClear: true,
-                      dropdownParent: $('#formContainer') // Ensure dropdown is within the form container
+                      dropdownParent: $('#formContainer')[0] // Ensure dropdown is within the form container (Access DOM element)
                  });
                   console.log(`Select2 initialized on #${this.id}`);
              } else {
@@ -302,7 +302,7 @@
                                  const siteAttendDateTime = parseDateTime(siteAttendDateTimeVal);
                                   console.log("Site Attend DateTime value:", siteAttendDateTimeVal, "Parsed Date object:", siteAttendDateTime);
                                  if (!siteAttendDateTime) {
-                                      displayError('siteAttendDateTime', 'Invalid date format or value."); // Should not happen with native datetime-local usually
+                                      displayError('siteAttendDateTime', 'Invalid date format or value.'); // Should not happen with native datetime-local usually
                                       allValid = false;
                                        console.log("Site Attend DateTime has invalid format/value.");
                                  } else if (siteAttendDateTime > now) {
@@ -544,7 +544,9 @@
                         $('#misscallTTFields').show();
                         $('#pgRunFields').hide();
                          // Clear fields and errors when hiding PG Run fields
+                         // Clear native datetime-local inputs
                         $('input[type="datetime-local"]', '#pgRunFields').val(''); // Clear native inputs
+                        $('input[type="text"]', '#pgRunFields').val(''); // Clear other text inputs if any
                          // Trigger change on hidden selects to clear them visually/data
                          $('select', '#pgRunFields').val(null).trigger('change.select2');
 
@@ -556,6 +558,7 @@
                          // Clear fields and errors when hiding Misscall TT fields
                          $('select', '#misscallTTFields').val(null).trigger('change.select2');
                          $('input[type="datetime-local"]', '#misscallTTFields').val(''); // Clear native inputs
+                         $('input[type="text"]', '#misscallTTFields').val(''); // Clear other text inputs if any
                          $('#siteAttendDateTimeField').hide(); // Ensure datetime field is hidden
 
 
@@ -566,6 +569,7 @@
                          // Clear all conditional fields and errors
                         $('select', '#misscallTTFields, #pgRunFields').val(null).trigger('change.select2');
                          $('input[type="datetime-local"]', '#misscallTTFields, #pgRunFields').val(''); // Clear native inputs
+                         $('input[type="text"]', '#misscallTTFields, #pgRunFields').val(''); // Clear other text inputs if any
                          $('#siteAttendDateTimeField').hide(); // Ensure datetime field is hidden
                      }
                    validateConditionalDateTimeFields(); // Then re-validate all conditional fields
@@ -605,7 +609,7 @@
             console.log("Attempting to load CSV:", file);
           try {
              const response = await fetch(file);
-              console.log(`Workspace response for ${file}: Status ${response.status}, OK: ${response.ok}`);
+              console.log(`Fetch response for ${file}: Status ${response.status}, OK: ${response.ok}`);
              if (!response.ok) {
                  // Read response text even if not OK to get potential error details
                  const errorText = await response.text();
