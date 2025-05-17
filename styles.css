@@ -525,3 +525,16 @@ input[type="datetime-local"] + .error-message {
 .select2-container--open .select2-dropdown {
   z-index: 9999 !important;
 }
+
+/* Ensure dropdowns are not clipped */
+body, html, .container, .card, .event-card {
+  overflow: visible !important;
+  position: relative !important;
+  z-index: auto;
+}
+
+/* Force Select2 dropdown to appear above everything */
+.select2-container--open .select2-dropdown {
+  z-index: 99999 !important;
+  position: absolute !important;
+}
