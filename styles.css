@@ -461,3 +461,18 @@ input[type="datetime-local"] + .error-message {
 
 
 }
+<style>
+    .mandatory::after {
+        content: '*';
+        color: red;
+        margin-left: 5px;
+    }
+    .error-message {
+        color: red;
+        font-size: 0.9em;
+        display: none;
+    }
+    input.is-invalid, select.is-invalid {
+        border-color: red;
+    }
+</style>
