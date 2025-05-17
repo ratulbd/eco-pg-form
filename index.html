@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>E.CO PG Run Data Collection Form - MPL</title>
   <link rel="stylesheet" href="styles.css" /> <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
   </head>
@@ -136,12 +136,17 @@
 </div>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
 <script>
   $(document).ready(function () {
     console.log("Document ready."); // Log document ready
 
+  
+  
+  
+  
     // Helper function to get current date/time in YYYY-MM-DDTHH:MM format
     function getCurrentDateTimeLocal() {
         const now = new Date();
@@ -159,13 +164,15 @@
         console.log("Initializing form features..."); // Log when form init starts
 
         // Initialize Select2 - ONLY on select elements
-        $('#operatorName, #selectOption, #siteAttend, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').each(function() {
-             if (!$(this).hasClass('select2-hidden-accessible')) { // Prevent re-initialization
-                 $(this).select2({
-                      placeholder: 'Select...', // Generic placeholder for all
-                      allowClear: true,
-                      dropdownParent: $('#formContainer')[0] // Ensure dropdown is within the form container (Access DOM element)
-                 });
+       
+$('#operatorName, #selectOption, #siteAttend, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').each(function () {
+        if (!$(this).hasClass('select2-hidden-accessible')) {
+          $(this).select2({
+            placeholder: 'Select...',
+            allowClear: true,
+            dropdownParent: $(this).closest('.card') // More specific than #formContainer
+          });
+
                   console.log(`Select2 initialized on #${this.id}`);
              } else {
                   console.log(`Select2 already initialized on #${this.id}`);
