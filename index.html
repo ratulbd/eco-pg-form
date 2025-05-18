@@ -576,7 +576,7 @@
                         $('#pgRunFields').show();
                          // Clear fields and errors when hiding Misscall TT fields
                          $('select', '#misscallTTFields').val(null).trigger('change.select2');
-                         $('input[type="datetime-local"]', '#misscallTTFields').val(''); // Clear native inputs
+                         $('input[type="datetime-local']', '#misscallTTFields').val(''); // Clear native inputs
                          $('input[type="text"]', '#misscallTTFields').val(''); // Clear other text inputs if any
                          $('#siteAttendDateTimeField').hide(); // Ensure datetime field is hidden
                           // Re-set the max date/time for PG Run fields when they are shown
@@ -631,76 +631,85 @@
         });
 
 
-         // Function to load data from CSV
-        async function loadCSVData(file) {
-            console.log("Attempting to load CSV:", file);
-          try {
-             const response = await fetch(file);
-              console.log(`Workspace response for ${file}: Status ${response.status}, OK: ${response.ok}`);
-             if (!response.ok) {
-                 // Read response text even if not OK to get potential error details
-                 const errorText = await response.text();
-                  console.error(`HTTP error fetching ${file}: Status ${response.status}, Body: ${errorText}`);
-                 throw new Error(`HTTP error! status: ${response.status} for ${file}`);
-             }
-             const text = await response.text();
-              console.log(`Successfully loaded ${file}. Text length: ${text.length}`);
-             const lines = text.split('\n').slice(1); // Skip header row
-              console.log(`Parsed 6 data lines from data/runners.csv.`, lines); // Log lines for runners
-              console.log(`Parsed 3 data lines from data/sites.csv.`, lines); // Log lines for sites (Corrected)
-             return lines.map(line => line.trim()).filter(line => line); // Trim whitespace and remove empty lines
-          } catch (error) {
-             console.error(`Error loading CSV data from ${file}:`, error);
-             // Display a persistent message or handle this error visibly to the user
-             // Consider adding a dedicated area on the form to show persistent errors
-             alert(`Failed to load data for dropdowns from ${file}. Please check the file path and deployment. Error: ${error.message}`);
-             return []; // Return empty array on error
-          }
+         // --- Function to fetch and populate dropdowns from Google Sheet via Proxy ---
+        async function fetchAndPopulateDropdown(dropdownId, sheetName, columnName) {
+            console.log(`Attempting to fetch and populate dropdown #${dropdownId} from sheet "${sheetName}" column "${columnName}"`);
+            const dropdown = document.getElementById(dropdownId);
+            if (!dropdown) {
+                console.error(`Dropdown element #${dropdownId} not found.`);
+                return;
+            }
+
+            // Clear existing options before populating
+            $(dropdown).empty();
+            // Add a default blank option for required fields with select2 allowClear
+            $(dropdown).append('<option value=""></option>');
+
+            try {
+                // Send a request to the proxy to get dropdown data
+                const response = await fetch('/.netlify/functions/proxy', {
+                    method: 'POST', // Use POST as per the existing proxy
+                    headers: { 'Content-Type': 'application/json' },
+                    // Send a specific payload to indicate data fetch request
+                    body: JSON.stringify({
+                        type: 'getDropdownData', // Custom request type
+                        sheet: sheetName,
+                        column: columnName
+                    })
+                });
+
+                console.log(`Dropdown data fetch response status for ${sheetName}/${columnName}: ${response.status}`);
+
+                if (!response.ok) {
+                     const errorText = await response.text();
+                     console.error(`HTTP error fetching dropdown data for ${sheetName}/${columnName}: Status ${response.status}, Body: ${errorText}`);
+                     throw new Error(`Failed to fetch data for ${sheetName}/${columnName}. Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(`Data received for #${dropdownId}:`, data);
+
+                // Assuming the Google Apps Script returns an array of values in the 'data' property
+                if (data && Array.isArray(data.data)) {
+                     if (data.data.length === 0) {
+                          console.warn(`No data received for dropdown #${dropdownId}. Sheet "${sheetName}", column "${columnName}" might be empty or not found.`);
+                     }
+                    data.data.forEach(item => {
+                        if (item) { // Add option only if item is not null or empty
+                            const option = document.createElement('option');
+                            option.value = item;
+                            option.textContent = item;
+                            dropdown.appendChild(option);
+                        }
+                    });
+                    console.log(`Options added to #${dropdownId}.`);
+                } else {
+                    console.error(`Invalid data format received for #${dropdownId}. Expected an object with an array 'data'. Received:`, data);
+                    throw new Error('Invalid data format received from server for dropdowns.');
+                }
+
+            } catch (error) {
+                console.error(`Error fetching or populating dropdown data for #${dropdownId}:`, error);
+                // Display a persistent message or handle this error visibly to the user
+                alert(`Failed to load data for dropdown "${dropdownId}". Please ensure the Google Sheet, sheet names, and column names are correct, and the Apps Script and proxy are configured to handle data requests. Error: ${error.message}`);
+                // Keep the dropdown empty and Select2 initialized if possible
+            } finally {
+                 // Trigger change.select2 to update the Select2 visual representation after populating
+                 // Check if Select2 is initialized before triggering change.select2
+                 if ($(dropdown).hasClass('select2-hidden-accessible')) {
+                      $(dropdown).val(null).trigger('change.select2');
+                      console.log(`Select2 triggered for #${dropdownId} after population attempt.`);
+                 } else {
+                      console.warn(`Select2 not initialized on #${dropdownId}. Cannot trigger change.select2`);
+                 }
+            }
         }
 
-        // Function to populate dropdowns from CSV data
-        async function populateDropdown(dropdownId, dataFile) {
-            console.log(`Populating dropdown #${dropdownId} from ${dataFile}`);
-          const dropdown = document.getElementById(dropdownId);
-          if (!dropdown) {
-               console.error(`Dropdown element #${dropdownId} not found.`);
-              return;
-          }
-          // Clear existing options before populating
-           $(dropdown).empty();
-          // Add a default blank option for required fields with select2 allowClear
-           $(dropdown).append('<option value=""></option>');
-
-
-          const data = await loadCSVData(dataFile);
-           console.log(`Data loaded for #${dropdownId}:`, data);
-           if (data.length === 0) {
-               console.warn(`No data loaded for dropdown #${dropdownId}. Check CSV file content.`);
-           }
-          data.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item;
-            option.textContent = item;
-            dropdown.appendChild(option);
-          });
-           console.log(`Options added to #${dropdownId}.`);
-           // Trigger change.select2 to update the Select2 visual representation after populating
-           // Check if Select2 is initialized before triggering change.select2
-           if ($(dropdown).hasClass('select2-hidden-accessible')) {
-                $(dropdown).val(null).trigger('change.select2');
-                console.log(`Select2 triggered for #${dropdownId} after population.`);
-           } else {
-                console.warn(`Select2 not initialized on #${dropdownId}. Cannot trigger change.select2`);
-                // If Select2 isn't initialized, the dropdown won't look like Select2
-                // But the options should still be in the native select.
-           }
-
-        }
 
          // Populate dropdowns when the form is initialized (after login)
-        populateDropdown('siteDropdown', 'data/sites.csv'); // Assuming data/sites.csv exists
-        populateDropdown('pgOperatorDropdown', 'data/runners.csv'); // Assuming data/runners.csv exists
-        populateDropdown('teamLeaderDropdown', 'data/runners.csv'); // Assuming data/runners.csv exists
+        fetchAndPopulateDropdown('siteDropdown', 'Sites', 'Site_Code'); // Fetch Site Codes from 'Sites' sheet
+        fetchAndPopulateDropdown('pgOperatorDropdown', 'Employees', 'Employee_Code'); // Fetch Employee Codes from 'Employees' sheet for PG Operator
+        fetchAndPopulateDropdown('teamLeaderDropdown', 'Employees', 'Employee_Code'); // Fetch Employee Codes from 'Employees' sheet for Team Leader
          console.log("Dropdown data population process initiated.");
 
 
