@@ -118,6 +118,7 @@
 
     const MAX_EVENTS = 10; // Set the maximum number of events allowed
     let eventCount = 0; // Counter for dynamic events
+    let loggedInUsername = ''; // Variable to store the logged-in username - ADDED
 
     // Helper function to get current date/time inYYYY-MM-DDTHH:MM format
     function getCurrentDateTimeLocal() {
@@ -633,7 +634,7 @@
                          $('input[type="datetime-local"]', '#misscallTTFields, #pgRunFields').val('');
                          $('#siteAttendDateTimeField').hide();
                          $('#pgEventsContainer').empty(); // Remove all dynamic event cards
-                         eventCount = 0; // Reset event counter
+                         eventCount = 0; // Reset counter
                          $('#addEventBtn').hide(); // Hide add button
                     }
               } else if (fieldId === 'siteAttend') {
@@ -814,6 +815,11 @@
           jsonData['siteAttend'] = $('#siteAttend').val() || '';
           jsonData['siteAttendDateTime'] = $('#siteAttendDateTime').val() || '';
 
+           // ADDED: Include the logged-in username in the submission data
+           jsonData['entryBy'] = loggedInUsername;
+           console.log("Adding EntryBy to submission data:", loggedInUsername);
+           // END ADDED
+
            // Collect PG Run events dynamically
            if (jsonData['selectOption'] === 'PG Run') {
                jsonData.pgEvents = []; // Initialize an array to hold PG events
@@ -889,7 +895,7 @@
                   });
              }
          })
-         .then(result => {
+        .then(result => {
            $('.loading').hide(); // Hide loading message
            console.log("Form Response JSON Result:", result);
 
@@ -918,11 +924,61 @@
 
 
                setTimeout(() => { $('.success-message').hide(); }, 3000);
-           } else {
-                console.error('Submission result was not successful:', result);
-               const errorMessage = (result && typeof result === 'object' && result.error) ? result.error : (result === null || result === undefined || Object.keys(result).length === 0 ? 'Received empty or null response from server.' : 'Unknown response format from server.');
-               alert('Submission failed: ' + errorMessage + ' Check browser console and Apps Script logs.');
+           } else if (result && typeof result === 'object' && result.success === false && result.error) {
+               // Handle specific server-side errors, including duplicates (TT Number and now Overlap)
+               alert('Submission failed: ' + (result.error.message || result.error)); // Display the error message from the server
+               console.error('Submission failed:', result.error);
+               $('.success-message').hide(); // Ensure success message is hidden
+
+               // ADDED: Highlight the conflicting event if the script returns conflictingEventNumber
+               if (typeof result.error === 'object' && result.error.conflictingEventNumber) {
+                   const conflictingEventNumber = result.error.conflictingEventNumber;
+                   const conflictCard = $(`#pgEventsContainer`).find(`.event-card[data-event-number="${conflictingEventNumber}"]`);
+
+                   if (conflictCard.length) {
+                       // Clear existing validation errors on all event fields first (optional but clean)
+                       $('#pgEventsContainer').find('.error-message').text('');
+                       $('#pgEventsContainer').find('input').removeClass('is-invalid');
+
+                       // Highlight the specific start and stop inputs in the conflicting card
+                       const startInput = conflictCard.find(`input[id="pgStart${conflictingEventNumber}"]`);
+                       const stopInput = conflictCard.find(`input[id="pgStop${conflictingEventNumber}"]`);
+
+                       if (startInput.length) {
+                           startInput.addClass('is-invalid');
+                           // Optionally add a specific error message span next to it if it doesn't exist or update it
+                           const startErrorSpan = $(`#pgStart${conflictingEventNumber}-error`);
+                           if (startErrorSpan.length) {
+                               startErrorSpan.text('Conflicts with existing entry.');
+                           }
+                       }
+                        if (stopInput.length) {
+                           stopInput.addClass('is-invalid');
+                           const stopErrorSpan = $(`#pgStop${conflictingEventNumber}-error`);
+                            if (stopErrorSpan.length) {
+                               stopErrorSpan.text('Conflicts with existing entry.');
+                           }
+                       }
+
+                       // Scroll to the conflicting event card (optional)
+                       $('html, body').animate({
+                          scrollTop: conflictCard.offset().top - 100 // Adjust offset as needed
+                       }, 500);
+
+                   } else {
+                       console.warn(`Conflicting event card with number ${conflictingEventNumber} not found on the page.`);
+                   }
+               }
+               // END ADDED
+
            }
+           else {
+                // Handle other non-success results or unexpected formats
+                 console.error('Submission result was not successful or unexpected:', result);
+                const errorMessage = (result && typeof result === 'object' && result.error) ? result.error : (result === null || result === undefined || Object.keys(result).length === 0 ? 'Received empty or null response from server.' : 'Unknown response format from server.');
+                alert('Submission failed: ' + errorMessage + ' Check browser console and Apps Script logs.');
+                $('.success-message').hide(); // Ensure success message is hidden
+            }
          })
          .catch(error => {
            $('.loading').hide();
@@ -1076,6 +1132,12 @@
         if (data && typeof data === 'object' && data.success === true) {
           displayLoginError('login-status', 'Login successful!'); // Show success message
           console.log("Login successful, showing form."); // Log successful login
+
+          // ADDED: Store the logged-in username here
+          loggedInUsername = $('#username').val().trim();
+          console.log("Stored username:", loggedInUsername);
+          // END ADDED
+
           $('#loginContainer').hide(); // Hide the login page container
           $('#formContainer').show(); // Show the form page container
            initializeForm(); // Call the function to initialize all form features
