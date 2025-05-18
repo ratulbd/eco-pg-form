@@ -8,7 +8,7 @@ export async function handler(event, context) {
 
   try {
     const data = JSON.parse(event.body);
-    const googleScriptURL = 'https://script.google.com/macros/s/AKfycbxHezU8woORkxIrhHZz8C8uFhi4Q5FDvzwhFGetAe1c3HQk3ucjFt_iWxoKHXEK0jWc/exec';
+    const googleScriptURL = 'https://script.google.com/macros/s/AKfycbycZc71d-LGBzCKn7LgNQ9trN4B8sf9hse55lnQvFal_r2DdbzY-CpiRSh1rUgNIqfv/exec';
 
     const response = await fetch(googleScriptURL, {
       method: 'POST',
