@@ -267,7 +267,6 @@
         // Check if at least the first event exists and is filled if PG Run is selected
         if (eventCards.length === 0) {
              console.warn("PG Run selected but no event cards found for validation.");
-             // If PG Run is selected and no events are added, the form is invalid.
              formIsValid = false; // At least one event is mandatory for PG Run
         } else {
             // Iterate over all dynamic event cards for validation
@@ -285,102 +284,156 @@
 
                  let currentEventValid = true; // Flag for the current event pair's internal validity
 
-                 // --- Validation for Each Event ---
+                 // --- Validation Logic for Each Event ---
 
-                 // Case 1: Partially filled (INVALID - Mandatory if providing any time)
-                 if ((pgStartVal && !pgStopVal) || (!pgStartVal && pgStopVal)) {
-                      displayError(pgStartId, `Both times mandatory if providing any time for Event ${eventNumber}.`);
-                      displayError(pgStopId, `Both times mandatory if providing any time for Event ${eventNumber}.`);
-                      formIsValid = false;
-                      currentEventValid = false;
-                      previousEventStop = null; // Break sequence
-                      console.log(`Event ${eventNumber} is partially filled, invalid.`);
-                 }
-                 // Case 2: Both fields have data (Proceed with detailed date/time validation)
-                 else if (pgStartVal && pgStopVal) {
-                      displayError(pgStartId, ''); // Clear partial mandatory error
-                      displayError(pgStopId, '');
-
-                      // Validate date formats
-                      if (!pgStart) { displayError(pgStartId, 'Invalid format/value.'); currentEventValid = false; formIsValid = false; console.log(`Event ${eventNumber} Start has invalid format.`); }
-                      if (!pgStop) { displayError(pgStopId, 'Invalid format/value.'); currentEventValid = false; formIsValid = false; console.log(`Event ${eventNumber} Stop has invalid format.`); }
-
-                      // If formats are valid, perform date/time comparisons
-                      if (currentEventValid) { // Check currentEventValid again after format check
-                           // Validate Start < Stop (PG Stop cannot be equal or smaller to PG Start)
-                           if (pgStop <= pgStart) { // This is the rule check!
-                               displayError(pgStopId, 'Must be after Start time.');
-                               formIsValid = false;
-                               currentEventValid = false;
-                                console.log(`Event ${eventNumber} Stop is not after Start.`);
-                           } else {
-                               displayError(pgStopId, ''); // Clear if valid
-                           }
-
-                           // Validate not in future
-                           if (pgStart > now) {
-                               displayError(pgStartId, 'Future date/time not allowed.');
-                               formIsValid = false;
-                               currentEventValid = false;
-                                console.log(`Event ${eventNumber} Start is in the future.`);
-                           } else {
-                               displayError(pgStartId, ''); // Clear if valid
-                           }
-                           if (pgStop > now) {
-                               displayError(pgStopId, 'Future date/time not allowed.');
-                               formIsValid = false;
-                               currentEventValid = false;
-                                console.log(`Event ${eventNumber} Stop is in the future.`);
-                           } else {
-                               displayError(pgStopId, ''); // Clear if valid
-                           }
-
-                           // Validate Start time is after previous event's Stop time (if previous event exists and was valid)
-                           if (previousEventStop && pgStart <= previousEventStop) {
-                               displayError(pgStartId, `Must be after Event ${eventNumber - 1}'s Stop time.`);
-                               formIsValid = false;
-                               currentEventValid = false;
-                                console.log(`Event ${eventNumber} Start is not after previous Stop.`);
-                           } else if (previousEventStop) { // Only clear if a previous event existed and the current start is after it
-                                displayError(pgStartId, ''); // Clear if valid and previous existed
-                           }
-
-                          // If this event pair is valid internally and sequentially valid, update previousEventStop
-                           if (currentEventValid) {
-                               previousEventStop = pgStop;
-                                console.log(`Event ${eventNumber} is valid. Setting previousEventStop for next event.`);
-                           } else {
-                               // If the current event is invalid, break the sequence
-                               previousEventStop = null;
-                                console.log(`Event ${eventNumber} has validation issues. Breaking sequence.`);
-                           }
-                      } else { // If format is invalid
-                             formIsValid = false;
-                             previousEventStop = null; // Break sequence
-                             console.log(`Event ${eventNumber} format is invalid.`);
-                      }
-                 }
-                 // Case 3: Both fields are empty (VALID for optional skip, but breaks sequence)
-                 else { // This 'else' now correctly follows the 'else if (pgStartVal && pgStopVal)'
-                      displayError(pgStartId, ''); // Clear errors
-                      displayError(pgStopId, '');
-                      previousEventStop = null; // Break the sequence for the next event
-                      currentEventValid = true; // It's valid in its empty state (for optional events)
-                      console.log(`Event ${eventNumber} is empty and valid (optional skip).`);
-                 }
-
-                 // --- Override for the 1st event: it's mandatory if PG Run is selected ---
+                 // For the 1st event, both Start and Stop are mandatory if PG Run is selected
                  if (eventNumber === 1) {
-                      if (!pgStartVal || !pgStopVal) {
-                           console.log("1st Event is mandatory and incomplete.");
+                      if (!pgStartVal) {
+                           displayError(pgStartId, 'Mandatory for 1st event (PG Run).');
                            formIsValid = false;
-                           // currentEventValid = false; // Already set by partial fill check or remains true if both empty (shouldn't happen for 1st)
-                           if (!pgStartVal) displayError(pgStartId, 'Mandatory for PG Run.');
-                           if (!pgStopVal) displayError(pgStopId, 'Mandatory for PG Run.');
-                           previousEventStop = null; // Break sequence if 1st event is invalid
+                           currentEventValid = false;
                       } else {
-                          // If 1st event is filled, its validity is determined by the date/time checks above.
-                          // No need to re-evaluate currentEventValid here.
+                           displayError(pgStartId, ''); // Clear mandatory error if filled
+                      }
+                      if (!pgStopVal) {
+                           displayError(pgStopId, 'Mandatory for 1st event (PG Run).');
+                           formIsValid = false;
+                           currentEventValid = false;
+                      } else {
+                           displayError(pgStopId, ''); // Clear mandatory error if filled
+                      }
+
+                      // If 1st event is filled, perform date/time validation
+                      if (pgStartVal && pgStopVal) {
+                           // Validate date formats
+                           if (!pgStart) { displayError(pgStartId, 'Invalid format/value.'); currentEventValid = false; formIsValid = false; }
+                           if (!pgStop) { displayError(pgStopId, 'Invalid format/value.'); currentEventValid = false; formIsValid = false; }
+
+                           if (currentEventValid) { // Check currentEventValid after format check
+                                // Validate Start < Stop
+                                if (pgStop <= pgStart) {
+                                     displayError(pgStopId, 'Must be after Start time.');
+                                     formIsValid = false;
+                                     currentEventValid = false;
+                                } else {
+                                     displayError(pgStopId, '');
+                                }
+                                // Validate not in future
+                                if (pgStart > now) {
+                                     displayError(pgStartId, 'Future date/time not allowed.');
+                                     formIsValid = false;
+                                     currentEventValid = false;
+                                } else {
+                                     displayError(pgStartId, '');
+                                }
+                                if (pgStop > now) {
+                                     displayError(pgStopId, 'Future date/time not allowed.');
+                                     formIsValid = false;
+                                     currentEventValid = false;
+                                } else {
+                                     displayError(pgStopId, '');
+                                }
+
+                                // If 1st event is valid, set previousEventStop for the next event
+                                if (currentEventValid) {
+                                     previousEventStop = pgStop;
+                                     console.log(`1st Event is valid. Setting previousEventStop for next event.`);
+                                } else {
+                                     previousEventStop = null; // Break sequence
+                                     console.log(`1st Event has validation issues. Breaking sequence.`);
+                                }
+                           } else { // Invalid format in 1st event
+                               formIsValid = false;
+                               previousEventStop = null; // Break sequence
+                                console.log(`1st Event format invalid. Breaking sequence.`);
+                           }
+                      } else { // 1st event is incomplete (caught above), break sequence
+                           previousEventStop = null;
+                           console.log(`1st Event is incomplete. Breaking sequence.`);
+                      }
+
+                 } else { // For subsequent events (2nd, 3rd, etc.)
+
+                      // Case 1: Partially filled (INVALID - Mandatory if providing any time)
+                      if ((pgStartVal && !pgStopVal) || (!pgStartVal && pgStopVal)) {
+                           displayError(pgStartId, `Both times mandatory if providing any time for Event ${eventNumber}.`);
+                           displayError(pgStopId, `Both times mandatory if providing any time for Event ${eventNumber}.`);
+                           formIsValid = false;
+                           currentEventValid = false;
+                           previousEventStop = null; // Break sequence
+                           console.log(`Event ${eventNumber} is partially filled, invalid.`);
+                      }
+                      // Case 2: Both fields have data (Proceed with detailed date/time validation)
+                      else if (pgStartVal && pgStopVal) {
+                           displayError(pgStartId, ''); // Clear partial mandatory error
+                           displayError(pgStopId, '');
+
+                           // Validate date formats
+                           if (!pgStart) { displayError(pgStartId, 'Invalid format/value.'); currentEventValid = false; formIsValid = false; console.log(`Event ${eventNumber} Start has invalid format.`); }
+                           if (!pgStop) { displayError(pgStopId, 'Invalid format/value.'); currentEventValid = false; formIsValid = false; console.log(`Event ${eventNumber} Stop has invalid format.`); }
+
+                           // If formats are valid, perform date/time comparisons
+                           if (currentEventValid) { // Check currentEventValid after format check
+                                // Validate Start < Stop
+                                if (pgStop <= pgStart) {
+                                    displayError(pgStopId, 'Must be after Start time.');
+                                    formIsValid = false;
+                                    currentEventValid = false;
+                                     console.log(`Event ${eventNumber} Stop is not after Start.`);
+                                } else {
+                                    displayError(pgStopId, ''); // Clear if valid
+                                }
+
+                                // Validate not in future
+                                if (pgStart > now) {
+                                    displayError(pgStartId, 'Future date/time not allowed.');
+                                    formIsValid = false;
+                                    currentEventValid = false;
+                                     console.log(`Event ${eventNumber} Start is in the future.`);
+                                } else {
+                                    displayError(pgStartId, ''); // Clear if valid
+                                }
+                                if (pgStop > now) {
+                                    displayError(pgStopId, 'Future date/time not allowed.');
+                                    formIsValid = false;
+                                    currentEventValid = false;
+                                     console.log(`Event ${eventNumber} Stop is in the future.`);
+                                } else {
+                                    displayError(pgStopId, ''); // Clear if valid
+                                }
+
+                                // Validate Start time is after previous event's Stop time (if previous event exists and was valid)
+                                if (previousEventStop && pgStart <= previousEventStop) {
+                                    displayError(pgStartId, `Must be after Event ${eventNumber - 1}'s Stop time.`);
+                                    formIsValid = false;
+                                    currentEventValid = false;
+                                     console.log(`Event ${eventNumber} Start is not after previous Stop.`);
+                                } else if (previousEventStop) { // Only clear if a previous event existed and the current start is after it
+                                     displayError(pgStartId, ''); // Clear if valid and previous existed
+                                }
+
+                                // If this event pair is valid internally and sequentially valid, update previousEventStop
+                                if (currentEventValid) {
+                                    previousEventStop = pgStop;
+                                     console.log(`Event ${eventNumber} is valid. Setting previousEventStop for next event.`);
+                                } else {
+                                    // If the current event is invalid, break the sequence
+                                    previousEventStop = null;
+                                     console.log(`Event ${eventNumber} has validation issues. Breaking sequence.`);
+                                }
+                           } else { // If format is invalid
+                               formIsValid = false;
+                               previousEventStop = null; // Break sequence
+                               console.log(`Event ${eventNumber} format is invalid.`);
+                           }
+                      }
+                      // Case 3: Both fields are empty (VALID for optional skip, but breaks sequence)
+                      else { // This 'else' now correctly follows the 'else if (pgStartVal && pgStopVal)'
+                           displayError(pgStartId, ''); // Clear errors
+                           displayError(pgStopId, '');
+                           previousEventStop = null; // Break the sequence for the next event
+                           currentEventValid = true; // It's valid in its empty state (for optional events)
+                           console.log(`Event ${eventNumber} is empty and valid (optional skip).`);
                       }
                  }
 
@@ -409,7 +462,7 @@
            const lastPgStopVal = $(`#${lastPgStopId}`).val();
 
            // An event is "complete and valid" for adding the next IF:
-           // 1. It's completely empty (allowed for optional subsequent events)
+           // 1. It's completely empty (allowed for optional subsequent events) AND it's NOT the 1st event.
            // 2. OR, both fields are filled AND pass their internal and sequential validation checks.
 
            // Check if the last event has any validation errors currently displayed
@@ -420,9 +473,16 @@
                 lastEventCompleteAndValid = false; // Cannot add if last event has errors
                 console.log("Last event has errors, disabling Add button.");
             } else if (!lastPgStartVal && !lastPgStopVal) {
-                // If the last event is completely empty, it's valid to add the next (optional skip)
-                 lastEventCompleteAndValid = true;
-                 console.log("Last event is empty, enabling Add button.");
+                // If the last event is completely empty, it's valid to add the next ONLY IF it's NOT the 1st event
+                 if (lastEventNumber > 1) {
+                      lastEventCompleteAndValid = true;
+                       console.log("Last event is empty (optional), enabling Add button.");
+                 } else {
+                      // 1st event is empty, which is invalid for PG Run
+                      lastEventCompleteAndValid = false;
+                       console.log("1st event is mandatory and empty, disabling Add button.");
+                 }
+
             } else if (lastPgStartVal && lastPgStopVal) {
                  // If the last event is fully filled, check its validity based on date/time comparisons
                  const lastPgStart = parseDateTime(lastPgStartVal);
@@ -435,40 +495,28 @@
                  }
 
                  if (lastEventNumber > 1) {
-                     // Need to get the stop time of the previous VALID event.
-                     // Iterate backwards to find the last valid stop time.
-                     let effectivePreviousEventStop = null;
-                      $('#pgEventsContainer').children('.event-card').each(function(index) {
-                         if (index < lastEventNumber - 1) { // Iterate through events before the last one
-                              const currentCheckEventNumber = index + 1;
-                              const checkPgStartVal = $(`#pgStart${currentCheckEventNumber}`).val();
-                              const checkPgStopVal = $(`#pgStop${currentCheckEventNumber}`).val();
-                              const checkPgStart = parseDateTime(checkPgStartVal);
-                              const checkPgStop = parseDateTime(checkPgStopVal);
-                              const checkNow = new Date();
+                     // Check sequential validity against the previous *valid* stop time
+                      let effectivePreviousEventStop = null;
+                       $('#pgEventsContainer').children('.event-card').each(function(index) {
+                           if (index < lastEventNumber - 1) { // Iterate through events before the last one
+                                const currentCheckEventNumber = index + 1;
+                                const checkPgStartVal = $(`#pgStart${currentCheckEventNumber}`).val();
+                                const checkPgStopVal = $(`#pgStop${currentCheckEventNumber}`).val();
+                                const checkPgStart = parseDateTime(checkPgStartVal);
+                                const checkPgStop = parseDateTime(checkPgStopVal);
+                                const checkNow = new Date();
 
-                               // Check if the previous event being checked is itself valid
-                               // A previous event is "valid" for determining the sequence point if it's fully filled AND
-                               // its own Start < Stop, not in future, AND after its *own* previous valid stop.
-                                let checkEventItselfValid = false;
-                                if (checkPgStartVal && checkPgStopVal && checkPgStart && checkPgStop) {
-                                     if (checkPgStop > checkPgStart && checkPgStart <= checkNow && checkPgStop <= checkNow) {
-                                          // Now check against the effectivePreviousEventStop found so far in this *backwards* check loop
-                                           if (!effectivePreviousEventStop || checkPgStart > effectivePreviousEventStop) {
-                                                checkEventItselfValid = true;
-                                           }
-                                     }
-                                }
+                                // Consider a previous event valid for the sequence if it's fully filled and passes its own time checks
+                                 if (checkPgStartVal && checkPgStopVal && checkPgStart && checkPgStop && checkPgStop > checkPgStart && checkPgStart <= checkNow && checkPgStop <= checkNow) {
+                                      // If the current check event is fully valid, update the effective previous stop time
+                                       effectivePreviousEventStop = checkPgStop;
+                                 } else {
+                                      // If a previous event is invalid or empty, the sequence is broken from this point onwards
+                                       effectivePreviousEventStop = null; // Setting to null will make subsequent checks fail
+                                 }
+                           }
+                       });
 
-
-                              if (checkEventItselfValid) {
-                                   effectivePreviousEventStop = checkPgStop;
-                              } else {
-                                   // If a previous event in the chain is invalid or empty, break the sequence from here
-                                    effectivePreviousEventStop = null; // Setting to null will make subsequent checks fail
-                               }
-                         }
-                      });
 
                        if (effectivePreviousEventStop && lastPgStart <= effectivePreviousEventStop) {
                             sequentialValid = false; // Sequential error
@@ -492,14 +540,14 @@
               console.log("No events added yet, enabling Add button for the first event.");
        } else {
             // If not PG Run, the button isn't relevant, keep it enabled conceptually or hide it
-             lastEventCompleteAndValid = true; // Button should be hidden anyway
+             lastEventCompleteAndValid = true; // Button should be hidden anyway if section is hidden
        }
 
 
        // Disable the add button if the last event is not complete and valid, or if max events reached
        if (!lastEventCompleteAndValid || eventCount >= MAX_EVENTS) {
            $('#addEventBtn').prop('disabled', true);
-            console.log("Add button disabled. Last event valid:", lastEventCompleteAndValid, "Event count:", eventCount);
+            console.log("Add button disabled. Last event valid for add:", lastEventCompleteAndValid, "Event count:", eventCount);
        } else {
            $('#addEventBtn').prop('disabled', false);
             console.log("Add button enabled.");
@@ -735,7 +783,7 @@
         // --- Populate dropdowns after login ---
         fetchAndPopulateDropdown('siteDropdown', 'Sites', 'Site_Code');
         fetchAndPopulateDropdown('pgOperatorDropdown', 'Employees', 'Employee_Code');
-        fetchAndPopulateDropdown('teamLeaderDropdown', 'Employees', 'Employee_Code');
+        fetchAndPopdown('teamLeaderDropdown', 'Employees', 'Employee_Code');
         console.log("Dropdown data population process initiated after form initialization.");
 
 
@@ -799,7 +847,7 @@
                          eventCount = 0;
                          $('#addEventBtn').hide();
                          $('select', '#misscallTTFields, #pgRunFields').val(null).trigger('change.select2');
-                         $('input[type="datetime-local"]', '#misscallTTFields, #pgRunFields').val('');
+                         $('input[type="datetime-local']', '#misscallTTFields, #pgRunFields').val('');
                          $('#siteAttendDateTimeField').hide();
                     }
               } else if (fieldId === 'siteAttend') {
@@ -1103,7 +1151,6 @@
                 errorSpan.text(message);
                 fieldElement.addClass('is-invalid'); // Use is-invalid class for login inputs
             } else {
-                errorSpan.text('');
                 fieldElement.removeClass('is-invalid');
             }
         }
@@ -1224,11 +1271,10 @@
           $('#loginContainer').hide(); // Hide the login page container
           $('#formContainer').show(); // Show the form page container
            initializeForm(); // Call the function to initialize all form features
-           // triggerInitialValidation is called at the end of initializeForm
-        } else {
-          // Handle login failure based on the server response (data.success is false or missing)
-          const errorMessage = (data && typeof data === 'object' && data.error) ? data.error : 'Invalid username or password.';
-          displayLoginError('login-status', errorMessage); // Show the login failure message
+          } else {
+            // Handle login failure based on the server response (data.success is false or missing)
+            const errorMessage = (data && typeof data === 'object' && data.error) ? data.error : 'Invalid username or password.';
+            displayLoginError('login-status', errorMessage); // Show the login failure message
             console.log("Login failed:", errorMessage); // Log the failure reason
             $('#password').val(''); // Optionally clear the password field on failure
             $('#username, #password').removeClass('is-invalid'); // Remove invalid classes from login inputs
