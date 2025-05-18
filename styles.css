@@ -478,3 +478,63 @@ input[type="datetime-local"] + .error-message {
     max-width: 100vw !important;
   }
 }
+
+/* Style for the Add Another Event and Remove Event buttons */
+.add-button,
+.remove-button {
+  display: inline-block; /* Allows padding and margin */
+  width: auto; /* Auto width based on content */
+  padding: 8px 15px; /* Smaller padding */
+  margin-top: 10px; /* Space above */
+  font-size: 0.9em; /* Smaller font size */
+  border-radius: 4px; /* Slightly less rounded corners */
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  box-shadow: none; /* Remove the larger shadow */
+  transform: none; /* Remove transform effect on hover */
+}
+
+/* Specific style for the Add button */
+.add-button {
+  background-color: #3498db; /* Blue color */
+  color: #fff;
+  border: none;
+   margin-right: 10px; /* Space between add button and card below */
+}
+
+.add-button:hover {
+  background-color: #2980b9; /* Darker blue on hover */
+  opacity: 1; /* Ensure full opacity */
+}
+
+/* Specific style for the Remove button */
+.remove-button {
+  background-color: #e74c3c; /* Red color */
+  color: #fff;
+  border: none;
+   margin-left: 10px; /* Space from date inputs */
+   float: right; /* Float to the right within the event card */
+}
+
+.remove-button:hover {
+  background-color: #c0392b; /* Darker red on hover */
+  opacity: 1; /* Ensure full opacity */
+}
+
+/* Clear float for elements following the remove button */
+.event-card::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+
+/* Adjust margin-bottom for date inputs within event cards that have a remove button */
+.event-card input[type="datetime-local"] {
+     margin-bottom: 10px; /* Reduce space if needed */
+}
+
+/* You might need to adjust the margin-bottom of the last date input before the remove button */
+.event-card .remove-button {
+     margin-bottom: 5px; /* Ensure some space below the button */
+}

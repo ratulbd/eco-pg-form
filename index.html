@@ -237,22 +237,23 @@
         // Validate PG Run fields if visible
         if (selectOption === 'PG Run' && $('#pgRunFields').is(':visible')) {
              console.log("Validating PG Run fields...");
-            // Get all current event cards
             const eventCards = $('#pgEventsContainer').children('.event-card');
             let previousEventStop = null; // To track the stop time of the previous valid event
 
             if (eventCards.length === 0) {
-                 // If PG Run is selected but no event cards exist (shouldn't happen if 1st is added on select),
-                 // consider it invalid or handle appropriately.
-                 // For now, assuming at least one event is always present if PG Run is selected.
-                 // If you allow 0 events, adjust validation.
-                 console.warn("PG Run selected but no event cards found.");
-                 // Decide if this state is valid or not. Let's assume at least one event must be attempted.
-                 // If at least one event is mandatory, you'd set allValid = false here or ensure the first event is added/validated.
+                 // If PG Run is selected, at least the first event should be added.
+                 // This state should ideally not be reachable if addEventField(1) is called on selecting PG Run.
+                 console.warn("PG Run selected but no event cards found for validation.");
+                 // If the first event is mandatory, you might want to set allValid = false here
+                 // if eventCount is 0 and selectOption is PG Run.
+                 if (eventCount === 0) {
+                      // Decide if having 0 events when PG Run is selected is an error
+                      // For now, let's assume the first event is always added.
+                 }
             }
 
             eventCards.each(function(index) {
-                const eventNumber = index + 1;
+                const eventNumber = $(this).data('event-number'); // Get the dynamic event number
                 const pgStartId = `pgStart${eventNumber}`;
                 const pgStopId = `pgStop${eventNumber}`;
 
@@ -261,24 +262,28 @@
 
                 const pgStart = parseDateTime(pgStartVal);
                 const pgStop = parseDateTime(pgStopVal);
-                 const now = new Date();
+                const now = new Date();
 
+                let currentEventValid = true; // Track validation for this specific event card
 
-                // Check if the current event pair has any data
+                // If either field has data, BOTH are mandatory
                 if (pgStartVal || pgStopVal) {
                      console.log(`Validating Event ${eventNumber}: Start=${pgStartVal}, Stop=${pgStopVal}`);
-                    // If either field has data, BOTH are mandatory
                     if (!pgStartVal) {
                         displayError(pgStartId, 'Mandatory if providing Stop time.');
                         allValid = false;
+                        currentEventValid = false;
                     } else {
-                         displayError(pgStartId, ''); // Clear error if filled
+                         // Only clear if the specific error is present
+                         if ($(`#${pgStartId}-error`).text() === 'Mandatory if providing Stop time.') displayError(pgStartId, '');
                     }
                     if (!pgStopVal) {
                         displayError(pgStopId, 'Mandatory if providing Start time.');
                         allValid = false;
+                        currentEventValid = false;
                     } else {
-                         displayError(pgStopId, ''); // Clear error if filled
+                         // Only clear if the specific error is present
+                         if ($(`#${pgStopId}-error`).text() === 'Mandatory if providing Start time.') displayError(pgStopId, '');
                     }
 
                     // If both fields have data, perform date/time comparisons
@@ -287,89 +292,84 @@
                          if (pgStop <= pgStart) {
                              displayError(pgStopId, 'Must be after Start time.');
                              allValid = false;
+                             currentEventValid = false;
                          } else {
-                              displayError(pgStopId, ''); // Clear error if valid
+                              // Only clear if the specific error is present
+                             if ($(`#${pgStopId}-error`).text() === 'Must be after Start time.') displayError(pgStopId, '');
                          }
 
                          // Validate not in future
                          if (pgStart > now) {
                              displayError(pgStartId, 'Future date/time not allowed.');
                              allValid = false;
+                             currentEventValid = false;
                          } else {
-                              // Don't clear if another error is present
+                              // Only clear if the specific error is present
                              if ($(`#${pgStartId}-error`).text() === 'Future date/time not allowed.') displayError(pgStartId, '');
                          }
                          if (pgStop > now) {
                               displayError(pgStopId, 'Future date/time not allowed.');
                               allValid = false;
+                              currentEventValid = false;
                          } else {
-                              // Don't clear if another error is present
+                              // Only clear if the specific error is present
                              if ($(`#${pgStopId}-error`).text() === 'Future date/time not allowed.') displayError(pgStopId, '');
                          }
 
 
                          // Validate Start time is after previous event's Stop time (if previous event exists and was valid)
                          if (previousEventStop && pgStart <= previousEventStop) {
-                             displayError(pgStartId, `Must be after Event ${index}'s Stop time.`);
+                             displayError(pgStartId, `Must be after Event ${eventNumber - 1}'s Stop time.`);
                              allValid = false;
+                             currentEventValid = false;
                          } else {
-                             // Don't clear if another error is present
-                              const previousEventError = `Must be after Event ${index}'s Stop time.`;
+                             // Only clear if the specific error is present
+                             const previousEventError = `Must be after Event ${eventNumber - 1}'s Stop time.`;
                              if ($(`#${pgStartId}-error`).text() === previousEventError) displayError(pgStartId, '');
                          }
 
-                        // If this event pair is valid, update previousEventStop for the next iteration
-                         if (allValid && pgStart && pgStop && pgStop > pgStart && pgStop <= now && (!previousEventStop || pgStart > previousEventStop)) {
+                        // If this event pair is valid and sequentially valid, update previousEventStop for the next iteration
+                         if (currentEventValid) {
                              previousEventStop = pgStop;
                               console.log(`Event ${eventNumber} is valid. Setting previousEventStop to ${previousEventStop}`);
                          } else {
-                              console.log(`Event ${eventNumber} has validation issues or is not sequentially valid.`);
-                              // If the current event is invalid or out of sequence, break the sequence for subsequent validations
+                              console.log(`Event ${eventNumber} has validation issues.`);
+                              // If the current event is invalid, break the sequence for subsequent validations
                               previousEventStop = null;
                          }
 
-                    } else if (pgStartVal || pgStopVal) {
-                         // If one field is filled but the other is not, it's an incomplete pair (already handled above)
-                         allValid = false; // Ensure overall validity is false
-                    } else {
-                         // If neither field has data, this event is empty and valid (no error to display)
-                          displayError(pgStartId, '');
-                          displayError(pgStopId, '');
+                    } else { // If both fields are empty for this event
+                         displayError(pgStartId, '');
+                         displayError(pgStopId, '');
                          console.log(`Event ${eventNumber} is empty.`);
-                          // If an event is completely empty, it breaks the sequence for the next event
-                          previousEventStop = null;
+                         // If an event is completely empty, it breaks the sequence for the next event
+                         previousEventStop = null;
                     }
-                } else {
-                     // If neither field has data, this event is empty and valid (no error to display)
-                      displayError(pgStartId, '');
-                      displayError(pgStopId, '');
-                     console.log(`Event ${eventNumber} is empty.`);
-                      // If an event is completely empty, it breaks the sequence for the next event
-                      previousEventStop = null;
+                } else { // If neither field has data for this event
+                     displayError(pgStartId, '');
+                     displayError(pgStopId, '');
+                    console.log(`Event ${eventNumber} is empty.`);
+                     // If an event is completely empty, it breaks the sequence for the next event
+                     previousEventStop = null;
                 }
             });
 
-             // After iterating through all events, check if at least the first event was filled if PG Run is selected
-            if (eventCards.length > 0) {
+             // Final check: if PG Run is selected, at least the first event (if added) must be fully filled.
+             // This is already covered by the loop's validation, but adding a log for clarity.
+             if (selectOption === 'PG Run' && eventCards.length > 0) {
                  const firstEventStartVal = $(`#pgStart1`).val();
                  const firstEventStopVal = $(`#pgStop1`).val();
                  if (!firstEventStartVal || !firstEventStopVal) {
-                      // If PG Run is selected, the first event is mandatory.
-                      // The individual field validation already handles this, but this is a final check.
-                      // No need to set allValid = false again if the individual checks already did it.
+                      console.log("First PG Run event is mandatory but incomplete.");
+                      // allValid will already be false from the loop's check.
                  }
-            } else {
-                 // This state shouldn't be reachable if initializeForm correctly adds the first event.
-                 // If it were possible to have 0 events when PG Run is selected, you'd handle that validation here.
-                 console.warn("No event cards found for PG Run validation check.");
-                 // If 0 events for PG Run is invalid: allValid = false;
-            }
+             }
 
 
         } else {
              // Clear PG Run errors if section is hidden
              $('#pgEventsContainer').children('.event-card').each(function() {
-                 const eventNumber = $(this).index() + 1;
+                 const eventNumber = $(this).data('event-number');
                  displayError(`pgStart${eventNumber}`, '');
                  displayError(`pgStop${eventNumber}`, '');
              });
@@ -387,7 +387,7 @@
          const nowFormatted = getCurrentDateTimeLocal();
          const eventCardHtml = `
             <div class="event-card" data-event-number="${eventNumber}">
-              <h3>${eventNumber}nd Event</h3> <label for="pgStart${eventNumber}">PG Start Date & Time:</label>
+              <h3>${eventNumber} Event</h3> <label for="pgStart${eventNumber}">PG Start Date & Time:</label>
                <input type="datetime-local" id="pgStart${eventNumber}" name="pgStart${eventNumber}" max="${nowFormatted}" />
                <span class="error-message" id="pgStart${eventNumber}-error"></span>
               <label for="pgStop${eventNumber}">PG Stop Date & Time:</label>
@@ -399,13 +399,16 @@
          $('#pgEventsContainer').append(eventCardHtml);
          eventCount++; // Increment the counter
 
-         // Update the heading text (e.g., 1st Event, 2nd Event)
-         const eventCard = $('#pgEventsContainer').children().last();
+         // Update the heading text (e.g., 1st Event, 2nd Event) and data attribute
+         const eventCard = $(`[data-event-number="${eventNumber}"]`); // Select the added card using data attribute
          const suffix = (eventNumber === 1) ? 'st' : (eventNumber === 2) ? 'nd' : (eventNumber === 3) ? 'rd' : 'th';
          eventCard.find('h3').text(`${eventNumber}${suffix} Event`);
 
-         // Attach event listeners for validation to the new inputs
-         $(`#pgStart${eventNumber}, #pgStop${eventNumber}`).on('change blur', validateAllConditionalFields);
+
+         // Attach event listeners for validation to the new inputs using event delegation for robustness
+         // Use delegation from the container for dynamically added elements
+          $('#pgEventsContainer').on('change blur', `#pgStart${eventNumber}, #pgStop${eventNumber}`, validateAllConditionalFields);
+
 
          // Attach listener for the remove button
          if (eventNumber > 1) {
@@ -429,22 +432,41 @@
      // Function to update event numbers and IDs after removal
      function updateEventNumbers() {
           $('#pgEventsContainer').children('.event-card').each(function(index) {
-              const eventNumber = index + 1;
-              const suffix = (eventNumber === 1) ? 'st' : (eventNumber === 2) ? 'nd' : (eventNumber === 3) ? 'rd' : 'th';
-              $(this).find('h3').text(`${eventNumber}${suffix} Event`);
+              const oldEventNumber = $(this).data('event-number'); // Get the old number
+              const newEventNumber = index + 1;
+              const suffix = (newEventNumber === 1) ? 'st' : (newEventNumber === 2) ? 'nd' : (newEventNumber === 3) ? 'rd' : 'th';
+              $(this).find('h3').text(`${newEventNumber}${suffix} Event`);
                // Update input and span IDs and names
               $(this).find('input[type="datetime-local"]').each(function() {
                   const oldId = $(this).attr('id');
-                  const newId = oldId.replace(/\d+$/, eventNumber);
+                  const newId = oldId.replace(/\d+$/, newEventNumber);
                   $(this).attr('id', newId).attr('name', newId);
                    // Update the corresponding error span ID
                   $(`#${oldId}-error`).attr('id', `${newId}-error`);
               });
-              // Update the remove button if it exists
-              if (eventNumber === 1) {
-                  $(this).find('.remove-button').remove(); // Remove button from the first event
+
+              // Update the remove button if it exists and remove from the first event
+              const removeButton = $(this).find('.remove-button');
+              if (removeButton.length) {
+                  if (newEventNumber === 1) {
+                      removeButton.remove(); // Remove button from the first event
+                  }
+                   // No need to re-attach click listener here as it was delegated or attached on add
+              } else {
+                   // If a new remove button is needed (e.g., after removing event 2, event 3 becomes event 2)
+                   if (newEventNumber > 1 && !removeButton.length) {
+                        $(this).append('<button type="button" class="remove-button">Remove Event</button>');
+                         // Re-attach listener for the newly added remove button
+                         $(this).find('.remove-button').on('click', function() {
+                             $(this).closest('.event-card').remove();
+                             eventCount--;
+                             updateEventNumbers();
+                              validateAllConditionalFields();
+                         });
+                   }
               }
-               $(this).attr('data-event-number', eventNumber); // Update data attribute
+
+               $(this).attr('data-event-number', newEventNumber); // Update data attribute
           });
            // Manage "Add Event" button visibility after renumbering
          if (eventCount < MAX_EVENTS) {
@@ -454,17 +476,86 @@
      }
 
 
-    // --- Function to Initialize the Form Features (Comprehensive Validation) ---
-    function initializeForm() {
-        console.log("Initializing form features..."); // Log when form init starts
+    // --- Function to fetch and populate dropdowns from Google Sheet via Proxy ---
+    async function fetchAndPopulateDropdown(dropdownId, sheetName, columnName) {
+        console.log(`Attempting to fetch and populate dropdown #${dropdownId} from sheet "${sheetName}" column "${columnName}"`);
+        const dropdown = document.getElementById(dropdownId);
+        if (!dropdown) {
+            console.error(`Dropdown element #${dropdownId} not found.`);
+            return;
+        }
 
-        // Initialize Select2 - ONLY on select elements
+        // Clear existing options before populating
+        $(dropdown).empty();
+        // Add a default blank option for required fields with select2 allowClear
+        $(dropdown).append('<option value=""></option>');
+
+        try {
+            const response = await fetch('/.netlify/functions/proxy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: 'getDropdownData',
+                    sheet: sheetName,
+                    column: columnName
+                })
+            });
+
+            console.log(`Dropdown data fetch response status for ${sheetName}/${columnName}: ${response.status}`);
+
+            if (!response.ok) {
+                 const errorText = await response.text();
+                 console.error(`HTTP error fetching dropdown data for ${sheetName}/${columnName}: Status ${response.status}, Body: ${errorText}`);
+                 throw new Error(`Failed to fetch data for ${sheetName}/${columnName}. Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log(`Data received for #${dropdownId}:`, data);
+
+            if (data && Array.isArray(data.data)) {
+                 if (data.data.length === 0) {
+                      console.warn(`No data received for dropdown #${dropdownId}. Sheet "${sheetName}", column "${columnName}" might be empty or not found.`);
+                 }
+                data.data.forEach(item => {
+                    if (item) {
+                        const option = document.createElement('option');
+                        option.value = item;
+                        option.textContent = item;
+                        dropdown.appendChild(option);
+                    }
+                });
+                console.log(`Options added to #${dropdownId}.`);
+            } else {
+                console.error(`Invalid data format received for #${dropdownId}. Expected an object with an array 'data'. Received:`, data);
+                throw new Error('Invalid data format received from server for dropdowns.');
+            }
+
+        } catch (error) {
+            console.error(`Error fetching or populating dropdown data for #${dropdownId}:`, error);
+            alert(`Failed to load data for dropdown "${dropdownId}". Please ensure the Google Sheet, sheet names, and column names are correct, and the Apps Script and proxy are configured to handle data requests. Error: ${error.message}`);
+        } finally {
+             if ($(dropdown).hasClass('select2-hidden-accessible')) {
+                  $(dropdown).val(null).trigger('change.select2');
+                  console.log(`Select2 triggered for #${dropdownId} after population attempt.`);
+             } else {
+                  console.warn(`Select2 not initialized on #${dropdownId}. Cannot trigger change.select2`);
+             }
+        }
+    }
+
+
+    // --- Function to Initialize the Form Features (Comprehensive Validation) ---
+    // This function is called AFTER successful login
+    function initializeForm() {
+        console.log("Initializing form features...");
+
+        // Initialize Select2
         $('#operatorName, #selectOption, #siteAttend, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').each(function() {
-             if (!$(this).hasClass('select2-hidden-accessible')) { // Prevent re-initialization
+             if (!$(this).hasClass('select2-hidden-accessible')) {
                  $(this).select2({
-                      placeholder: 'Select...', // Generic placeholder for all
+                      placeholder: 'Select...',
                       allowClear: true,
-                      dropdownParent: $('#formContainer')[0] // Ensure dropdown is within the form container (Access DOM element)
+                      dropdownParent: $('#formContainer')[0]
                  });
                   console.log(`Select2 initialized on #${this.id}`);
              } else {
@@ -473,10 +564,16 @@
          });
         console.log("Select2 initialization process completed.");
 
-        // --- Set max date for native datetime-local inputs ---
+        // Set max date for native datetime-local inputs initially
         const nowFormatted = getCurrentDateTimeLocal();
         $('input[type="datetime-local"]').attr('max', nowFormatted);
         console.log(`Set max date/time for datetime-local inputs to: ${nowFormatted}`);
+
+        // --- IMPORTANT: Populate dropdowns after login ---
+        fetchAndPopulateDropdown('siteDropdown', 'Sites', 'Site_Code');
+        fetchAndPopulateDropdown('pgOperatorDropdown', 'Employees', 'Employee_Code');
+        fetchAndPopulateDropdown('teamLeaderDropdown', 'Employees', 'Employee_Code');
+        console.log("Dropdown data population process initiated after form initialization.");
 
 
         // --- Event Listeners ---
@@ -491,7 +588,7 @@
             }
          });
 
-         // Select2 fields validation on change
+         // Select2 fields validation on change and handling conditional sections
          $('#operatorName, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown, #selectOption, #siteAttend').on('change', function() {
               const fieldId = $(this).attr('id');
                console.log(`Change event fired on #${fieldId}. Value: ${$(this).val()}`);
@@ -507,8 +604,7 @@
                          eventCount = 0; // Reset event counter
                          $('#addEventBtn').hide(); // Hide add button
                          // Clear errors for removed PG fields
-                         // Need a way to clear errors for dynamically added fields when removed.
-                         // The validateAllConditionalFields call below will handle clearing visible errors.
+                         // validateAllConditionalFields() call below will handle clearing visible errors.
 
                     } else if ($(this).val() === 'PG Run') {
                         $('#misscallTTFields').hide();
@@ -521,7 +617,13 @@
                          if (eventCount === 0) {
                              addEventField(1);
                          }
-                         $('#addEventBtn').show(); // Show add button
+                         // Manage visibility of add button based on initial state
+                         if (eventCount < MAX_EVENTS) {
+                             $('#addEventBtn').show();
+                         } else {
+                             $('#addEventBtn').hide();
+                         }
+
                     } else { // If no option is selected
                         $('#misscallTTFields').hide();
                         $('#pgRunFields').hide();
@@ -551,75 +653,87 @@
              } else {
                   displayError(fieldId, ''); // Clear error if hidden
              }
-             validateAllConditionalFields(); // Always re-validate conditional fields state
+             // Always re-validate all conditional fields after changes in selectOption or siteAttend
+             validateAllConditionalFields();
          });
-
-        // Attach validation listener to the initial TT Number field
-        $('#ttNumber').on('blur', function() {
-            validateField('ttNumber');
-        });
-
-
-        // Attach event listeners for validation to datetime-local inputs
-        // These listeners are attached when the inputs are added (dynamic or initial)
-        // Initial inputs (pgStart1, pgStop1, etc. if not dynamic initially)
-        // Removed fixed listeners here, handled by addEventField or initial add below.
 
 
          // --- Add Event Button Listener ---
          $('#addEventBtn').on('click', function() {
              // Before adding a new event, validate the LAST event's start and stop times
-             const lastEventNumber = eventCount;
+             const lastEventNumber = eventCount; // eventCount is the number of events currently displayed
              const lastPgStartId = `pgStart${lastEventNumber}`;
              const lastPgStopId = `pgStop${lastEventNumber}`;
 
               let lastEventValid = true;
 
-              // Only validate the last event if it exists (i.e., eventCount > 0)
+              // Only validate the last event if at least one event exists
               if (lastEventNumber > 0) {
                    const lastPgStartVal = $(`#${lastPgStartId}`).val();
                    const lastPgStopVal = $(`#${lastPgStopId}`).val();
 
-                   if (!lastPgStartVal || !lastPgStopVal) {
-                        alert("Please fill in the Start and Stop times for the current event before adding a new one.");
-                        // Trigger validation for the last event to highlight errors
-                         validateAllConditionalFields(); // This will validate the last event and show specific errors
-                        lastEventValid = false;
-                   } else {
-                         // Perform sequential date validation for the last event specifically before adding the next
-                          const lastPgStart = parseDateTime(lastPgStartVal);
-                          const lastPgStop = parseDateTime(lastPgStopVal);
-                          const now = new Date();
-                          let previousEventStop = null;
+                   // Check if the last event is completely empty. If so, prevent adding a new one
+                   if (!lastPgStartVal && !lastPgStopVal) {
+                        // The last event is empty, which is fine IF it's not the first event.
+                        // If it's the first event and PG Run is selected, it's mandatory.
+                        // The validateAllConditionalFields already handles the mandatory first event check.
+                        // Here, we only prevent adding if the LAST event added was partially filled or invalid based on sequential time.
+                         const lastEventCard = $(`[data-event-number="${lastEventNumber}"]`);
+                          const lastStartError = lastEventCard.find(`#${lastPgStartId}-error`).text();
+                          const lastStopError = lastEventCard.find(`#${lastPgStopId}-error`).text();
 
-                          // Find the stop time of the second-to-last valid event, if it exists
-                          if (lastEventNumber > 1) {
-                               const previousEventCard = $(`[data-event-number="${lastEventNumber - 1}"]`);
-                               const previousPgStopVal = previousEventCard.find(`input[name="pgStop${lastEventNumber - 1}"]`).val();
-                               if (previousPgStopVal) {
-                                     previousEventStop = parseDateTime(previousPgStopVal);
-                               }
-                          }
-
-
-                          if (!lastPgStart || !lastPgStop || lastPgStop <= lastPgStart || lastPgStop > now || (previousEventStop && lastPgStart <= previousEventStop)) {
-                                alert("Please fix the date/time errors in the current event before adding a new one.");
-                                 validateAllConditionalFields(); // Validate all to show specific errors for the last event
-                                lastEventValid = false;
+                          if (lastStartError || lastStopError) {
+                              // There are errors on the last event, prevent adding a new one
+                               alert("Please fix the errors in the current (last) event before adding a new one.");
+                               lastEventValid = false; // Prevent adding
                           } else {
-                               // Last event is valid, proceed to add the next
-                                validateAllConditionalFields(); // Clear any lingering errors on the last event
+                               // The last event is empty and has no validation errors, meaning it's optionally skipped.
+                               // We can allow adding a new event.
+                                lastEventValid = true; // Allow adding
                           }
+
+
+                   } else if (!lastPgStartVal || !lastPgStopVal) {
+                        // If the last event is partially filled, prevent adding and trigger validation
+                        alert("Please fill in both Start and Stop times for the current event before adding a new one.");
+                         validateAllConditionalFields(); // This will highlight the incomplete last event
+                        lastEventValid = false; // Prevent adding
+                   } else {
+                        // If the last event is fully filled, perform sequential date validation specifically
+                        const lastPgStart = parseDateTime(lastPgStartVal);
+                        const lastPgStop = parseDateTime(lastPgStopVal);
+                        const now = new Date();
+                        let previousEventStop = null;
+
+                        // Find the stop time of the second-to-last valid event, if it exists
+                        if (lastEventNumber > 1) {
+                             const previousEventCard = $(`[data-event-number="${lastEventNumber - 1}"]`);
+                             // Find the stop time of the second-to-last event based on its current ID after renumbering
+                             const previousPgStopVal = previousEventCard.find(`input[id="pgStop${lastEventNumber - 1}"]`).val();
+                             if (previousPgStopVal) {
+                                   previousEventStop = parseDateTime(previousPgStopVal);
+                             }
+                        }
+
+                         let sequentialValidationPasses = true;
+                         if (lastPgStop <= lastPgStart) sequentialValidationPasses = false;
+                         if (lastPgStart > now || lastPgStop > now) sequentialValidationPasses = false;
+                         if (previousEventStop && lastPgStart <= previousEventStop) sequentialValidationPasses = false;
+
+                        if (!sequentialValidationPasses) {
+                              alert("Please fix the date/time errors in the current event before adding a new one.");
+                               validateAllConditionalFields(); // Validate all to show specific errors for the last event
+                              lastEventValid = false; // Prevent adding
+                        } else {
+                             // Last event is valid, proceed to add the next
+                              validateAllConditionalFields(); // Clear any lingering errors on the last event
+                             lastEventValid = true; // Allow adding
+                        }
                    }
-              } else {
-                   // If eventCount is 0, this means the first event hasn't been added yet.
-                   // The first event is added when 'PG Run' is selected.
-                   // This case should ideally not be reached if the selectOption change handler works correctly.
-                   console.warn("Add Event button clicked but eventCount is 0.");
               }
 
 
-             // Only add the new event if the last event was valid AND we are under the limit
+             // Only add the new event if the last event was valid (or no events existed yet) AND we are under the limit
              if (lastEventValid && eventCount < MAX_EVENTS) {
                  addEventField(eventCount + 1);
                  // Scroll to the newly added event (optional)
@@ -717,6 +831,16 @@
                     }
                 });
                console.log("Collected PG Events:", jsonData.pgEvents);
+                // Add a check here: if PG Run is selected but no valid events were collected,
+                // you might want to prevent submission or handle this case.
+                // Current validation should prevent reaching here if the first event isn't filled,
+                // but this adds an extra layer.
+                if (jsonData['selectOption'] === 'PG Run' && jsonData.pgEvents.length === 0) {
+                     alert("Please enter at least the first PG Run event times.");
+                     $('.loading').hide();
+                     console.log("PG Run selected but no valid events collected for submission.");
+                     return; // Stop the submission process
+                }
            }
 
 
@@ -806,26 +930,6 @@
          });
        });
         console.log("Form submission handler set up.");
-
-
-        // --- Initial Setup for the form when it is displayed ---
-        // Trigger change on selectOption and siteAttend to set initial display state and validation
-        // Ensure PG Run fields are cleared initially
-        $('#selectOption').val(null).trigger('change.select2');
-        $('#siteAttend').val(null).trigger('change.select2');
-
-         // Initially hide the add event button
-        $('#addEventBtn').hide();
-
-
-        // Trigger initial validation for required fields on load (optional)
-        $('#ttNumber').trigger('blur');
-        $('#operatorName, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').trigger('change.select2');
-
-
-        console.log("Form initialization complete.");
-
-    } // End of initializeForm function
 
 
     // --- Login Page JavaScript --- (remains the same)
@@ -918,7 +1022,7 @@
                        if (response.ok) {
                            throw new Error('Received empty response body from server.');
                        } else {
-                           throw new Error(`Server returned status ${response.status} with empty body.`);
+                           throw new Error(`Server returned status ${response.status} and empty body.`);
                        }
                    }
                } catch (jsonError) {
