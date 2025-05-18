@@ -933,57 +933,68 @@
         console.log("Form submission handler set up.");
 
 
-    // --- Login Page JavaScript --- (remains the same)
+    } // End of initializeForm function
 
+
+    // --- Login Page JavaScript ---
+
+    // Helper function to display or clear error messages for the login form
     function displayLoginError(fieldId, message) {
-        const errorSpan = $(`#${fieldId}-error`);
-        const fieldElement = $(`#${fieldId}`);
-        const loginStatusDiv = $('#login-status');
+        const errorSpan = $(`#${fieldId}-error`); // Target the specific error span for the login input
+        const fieldElement = $(`#${fieldId}`); // The login input element (username or password)
+         const loginStatusDiv = $('#login-status'); // The general login message div
 
-        if (!fieldElement.length) {
-            console.error(`Login field element #${fieldId} not found.`);
-            if (errorSpan.length) errorSpan.text('');
-            return;
-        }
+         // Ensure fieldElement exists
+         if (!fieldElement.length) {
+              console.error(`Login field element #${fieldId} not found.`);
+             if (errorSpan.length) errorSpan.text('');
+             return;
+         }
 
+
+        // Handle input specific errors (username-error, password-error)
         if (errorSpan.length) {
             if (message) {
                 errorSpan.text(message);
-                fieldElement.addClass('is-invalid');
+                fieldElement.addClass('is-invalid'); // Use is-invalid class for login inputs
             } else {
                 errorSpan.text('');
                 fieldElement.removeClass('is-invalid');
             }
         }
 
-        if (fieldId === 'login-status') {
-            loginStatusDiv.text(message);
-            if (message) {
-                 if (message.includes('Invalid') || message.includes('failed') || message.includes('Error')) {
-                      loginStatusDiv.addClass('error').removeClass('success');
-                 } else {
-                      loginStatusDiv.addClass('success').removeClass('error');
-                 }
-                 loginStatusDiv.show();
-            } else {
-                 loginStatusDiv.text('').removeClass('success error').hide();
-            }
-        }
+         // Handle general login status messages (#login-status)
+         if (fieldId === 'login-status') {
+             loginStatusDiv.text(message);
+             if (message) {
+                 // Apply 'error' or 'success' class based on the message content
+                  if (message.includes('Invalid') || message.includes('failed') || message.includes('Error')) {
+                       loginStatusDiv.addClass('error').removeClass('success');
+                  } else {
+                       loginStatusDiv.addClass('success').removeClass('error');
+                  }
+                  loginStatusDiv.show(); // Show the message div
+             } else {
+                  loginStatusDiv.text('').removeClass('success error').hide(); // Hide and clear
+             }
+         }
     }
 
     // Handle login form submission
     $('#loginForm').submit(function(event) {
-      event.preventDefault();
-       console.log("Login form submitted.");
+      event.preventDefault(); // Prevent default form submission
+       console.log("Login form submitted."); // Log login form submission
 
-      displayLoginError('username', '');
-      displayLoginError('password', '');
-      displayLoginError('login-status', '');
+      // Clear previous errors and status messages
+      displayLoginError('username', ''); // Clear username error
+      displayLoginError('password', ''); // Clear password error
+      displayLoginError('login-status', ''); // Clear general status message
 
-      const username = $('#username').val().trim();
-      const password = $('#password').val().trim();
-      let formIsValid = true;
+      const username = $('#username').val().trim(); // Get and trim username input
+      const password = $('#password').val().trim(); // Get and trim password input
+      let formIsValid = true; // Basic client-side check for login form
 
+      // Basic validation for empty fields
       if (!username) {
         displayLoginError('username', 'Username is required.');
         formIsValid = false;
@@ -993,84 +1004,101 @@
         formIsValid = false;
       }
 
+      // If basic client-side validation fails, stop here
       if (!formIsValid) {
          displayLoginError('login-status', 'Please enter username and password.');
          console.log("Login form validation failed client-side.");
         return;
       }
 
-       displayLoginError('login-status', 'Logging in...');
-       console.log("Attempting to fetch login endpoint.");
+      // Show a loading indicator using the login status div
+       displayLoginError('login-status', 'Logging in...'); // Use the status div for loading message
+       console.log("Attempting to fetch login endpoint."); // Log fetch attempt
 
+      // Send login request to Google Apps Script via proxy
       fetch('/.netlify/functions/proxy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ login: true, username: username, password: password })
+        body: JSON.stringify({ login: true, username: username, password: password }) // Send login flag and credentials
       })
       .then(response => {
-           console.log("Login Fetch received response.");
+           console.log("Login Fetch received response."); // Log receipt of response
+           // Always read the response body, even on non-OK statuses, to get potential error messages
           return response.text().then(text => {
-               console.log("Login Fetch Raw Response Text:", text);
-               console.log("Login Fetch Response Status:", response.status);
-               console.log("Login Fetch Response OK:", response.ok);
+               console.log("Login Fetch Raw Response Text:", text); // Log raw response text
+               console.log("Login Fetch Response Status:", response.status); // Log response status
+               console.log("Login Fetch Response OK:", response.ok); // Log response OK status
+               console.log("Login Fetch Response Headers:", Array.from(response.headers.entries())); // Log response headers
 
+               // Attempt to parse the response text as JSON
                let data = null;
                try {
+                   // If the text is not empty or null, try to parse it as JSON
                    if (text && text.trim() !== '') {
                        data = JSON.parse(text);
-                        console.log("Login Fetch Parsed Data:", data);
+                        console.log("Login Fetch Parsed Data:", data); // Log parsed JSON data
                    } else {
+                       // If the text is empty, it might be an empty but successful-status response or an error with no body
                        console.error("Received empty or null response body for login.");
+                       // If the status is OK but the body is empty, throw an error
                        if (response.ok) {
                            throw new Error('Received empty response body from server.');
-                       } else {
+                       } else { // If status is not OK and body is empty, throw a status error
                            throw new Error(`Server returned status ${response.status} with empty body.`);
                        }
                    }
                } catch (jsonError) {
+                   // If JSON parsing fails, log the error and the response text
                    console.error('Failed to parse login response as JSON:', jsonError, 'Response text:', text);
+                    // If parsing fails and the status was OK, it's an unexpected format issue
                    if (response.ok) {
                         throw new Error('Login failed: Invalid JSON response from server.');
-                   } else {
+                   } else { // If parsing fails and status was not OK, the status error is more relevant
                         throw new Error(`Server returned status ${response.status} and invalid response format.`);
                    }
                }
 
+               // If the response was not OK (status outside 200-299 range), even if JSON parsed, propagate the error
                if (!response.ok) {
+                   // Use the server-provided error message if available in the parsed data, otherwise use a generic message
                    const serverErrorMessage = (data && typeof data === 'object' && data.error) ? data.error : 'Server error occurred.';
+                   // Include the status code in the error message
                    throw new Error(`Login failed: Status ${response.status} - ${serverErrorMessage}`);
                }
 
+               // If response is OK and JSON is parsed successfully, return the data
                return data;
           });
       })
       .then(data => {
-        console.log("Login Response Data:", data);
+        console.log("Login Response Data:", data); // Log the final data object
+        // Check if data is a valid object and explicitly check if the 'success' property is boolean true
         if (data && typeof data === 'object' && data.success === true) {
-          displayLoginError('login-status', 'Login successful!');
-          console.log("Login successful, showing form.");
-          $('#loginContainer').hide();
-          $('#formContainer').show();
+          displayLoginError('login-status', 'Login successful!'); // Show success message
+          console.log("Login successful, showing form."); // Log successful login
+          $('#loginContainer').hide(); // Hide the login page container
+          $('#formContainer').show(); // Show the form page container
            initializeForm(); // Call the function to initialize all form features
         } else {
+          // Handle login failure based on the server response (data.success is false or missing)
           const errorMessage = (data && typeof data === 'object' && data.error) ? data.error : 'Invalid username or password.';
-          displayLoginError('login-status', errorMessage);
-           console.log("Login failed:", errorMessage);
-           $('#password').val('');
-          $('#username, #password').removeClass('is-invalid');
+          displayLoginError('login-status', errorMessage); // Show the login failure message
+           console.log("Login failed:", errorMessage); // Log the failure reason
+           $('#password').val(''); // Optionally clear the password field on failure
+          $('#username, #password').removeClass('is-invalid'); // Remove invalid classes from login inputs
         }
       })
       .catch(error => {
-        console.error('Login Fetch Error:', error);
-        displayLoginError('login-status', 'Login failed: ' + error.message);
-         $('#username, #password').removeClass('is-invalid');
+        console.error('Login Fetch Error:', error); // Log any errors that occurred during the fetch process
+        displayLoginError('login-status', 'Login failed: ' + error.message); // Show a user-friendly error message
+         $('#username, #password').removeClass('is-invalid'); // Remove invalid classes from login inputs on fetch error
       });
     });
 
      // Optional: Clear errors on input focus for login fields
       $('#username, #password').on('focus', function() {
-          displayLoginError($(this).attr('id'), '');
-          displayLoginError('login-status', '');
+          displayLoginError($(this).attr('id'), ''); // Clear specific input error on focus
+          displayLoginError('login-status', ''); // Clear general status message on focus
       });
 
     // --- Initial State on document ready ---
