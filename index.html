@@ -48,17 +48,17 @@
 
         <label for="siteDropdown">Select Site:</label>
         <select id="siteDropdown" name="site"></select>
-        <span class="error-message" id="site-error"></span>
+        <span class="error-message" id="siteDropdown-error"></span>
       </div>
 
       <div class="card">
         <label for="pgOperatorDropdown">Select PG Operator Name:</label>
         <select id="pgOperatorDropdown" name="pgOperator"></select>
-         <span class="error-message" id="pgOperator-error"></span>
+         <span class="error-message" id="pgOperatorDropdown-error"></span>
 
         <label for="teamLeaderDropdown">Select Team Leader Name:</label>
         <select id="teamLeaderDropdown" name="teamLeader"></select>
-         <span class="error-message" id="teamLeader-error"></span>
+         <span class="error-message" id="teamLeaderDropdown-error"></span>
       </div>
 
       <div class="card">
@@ -142,7 +142,7 @@
   $(document).ready(function () {
     console.log("Document ready."); // Log document ready
 
-    // Helper function to get current date/time in YYYY-MM-DDTHH:MM format
+    // Helper function to get current date/time inYYYY-MM-DDTHH:MM format
     function getCurrentDateTimeLocal() {
         const now = new Date();
         const year = now.getFullYear();
@@ -579,6 +579,10 @@
                          $('input[type="datetime-local"]', '#misscallTTFields').val(''); // Clear native inputs
                          $('input[type="text"]', '#misscallTTFields').val(''); // Clear other text inputs if any
                          $('#siteAttendDateTimeField').hide(); // Ensure datetime field is hidden
+                          // Re-set the max date/time for PG Run fields when they are shown
+                          const nowFormatted = getCurrentDateTimeLocal();
+                         $('input[type="datetime-local"]', '#pgRunFields').attr('max', nowFormatted);
+                          console.log(`Re-set max date/time for PG Run fields to: ${nowFormatted}`);
 
 
                      } else { // If no option is selected
@@ -598,6 +602,10 @@
                    if ($(this).val() === 'YES') {
                        console.log("Site Attend is YES. Showing Site Attend DateTime field.");
                        $('#siteAttendDateTimeField').show();
+                        // Re-set the max date/time for Site Attend DateTime field when it is shown
+                        const nowFormatted = getCurrentDateTimeLocal();
+                       $('#siteAttendDateTime').attr('max', nowFormatted);
+                        console.log(`Re-set max date/time for Site Attend DateTime field to: ${nowFormatted}`);
                    } else {
                         console.log("Site Attend is NOT YES. Hiding Site Attend DateTime field.");
                        $('#siteAttendDateTimeField').hide();
@@ -638,7 +646,8 @@
              const text = await response.text();
               console.log(`Successfully loaded ${file}. Text length: ${text.length}`);
              const lines = text.split('\n').slice(1); // Skip header row
-              console.log(`Parsed ${lines.length} data lines from ${file}.`);
+              console.log(`Parsed 6 data lines from data/runners.csv.`, lines); // Log lines for runners
+              console.log(`Parsed 3 data lines from data/sites.csv.`, lines); // Log lines for sites (Corrected)
              return lines.map(line => line.trim()).filter(line => line); // Trim whitespace and remove empty lines
           } catch (error) {
              console.error(`Error loading CSV data from ${file}:`, error);
@@ -713,14 +722,17 @@
                  console.log("Validating Operator Name.");
                 if (!validateField('operatorName')) formIsValid = false;
             }
+             // Corrected field IDs for validation check
             if ($('#siteDropdown').closest('.card').is(':visible')) {
                  console.log("Validating Site.");
                 if (!validateField('siteDropdown')) formIsValid = false;
             }
+             // Corrected field IDs for validation check
             if ($('#pgOperatorDropdown').closest('.card').is(':visible')) {
                  console.log("Validating PG Operator.");
                 if (!validateField('pgOperatorDropdown')) formIsValid = false;
             }
+             // Corrected field IDs for validation check
             if ($('#teamLeaderDropdown').closest('.card').is(':visible')) {
                  console.log("Validating Team Leader.");
                 if (!validateField('teamLeaderDropdown')) formIsValid = false;
@@ -747,27 +759,31 @@
           console.log("Form validation passed. Preparing data for submission.");
 
 
-          const formData = new FormData(this);
-          const jsonData = {};
-          // List all possible form fields
-          const allFormFields = [
+          // Use a fixed list of keys that match the backend expectation
+           // Ensure these keys match the column headers in your Google Sheet or backend processing
+           const finalDataKeys = [
              'ttNumber', 'operatorName', 'site', 'pgOperator', 'teamLeader',
              'selectOption', 'siteAttend', 'siteAttendDateTime',
              'pgStart1', 'pgStop1', 'pgStart2', 'pgStop2', 'pgStart3', 'pgStop3'
            ];
 
-           // Collect values for all possible fields, using empty string for hidden/empty
-            allFormFields.forEach(field => {
-               const fieldElement = $(`#${field}`);
-               // Check if the element exists
-                if (fieldElement.length > 0) {
-                     // Use .val() for jQuery elements to get their current value
-                    jsonData[field] = fieldElement.val() || ''; // Use empty string for null/undefined values
-               } else {
-                    // If the element doesn't exist in the HTML, include it with an empty string as a placeholder
-                   jsonData[field] = '';
-               }
-          });
+           const jsonData = {};
+
+           // Manually collect values by element ID and map to the final data keys
+            jsonData['ttNumber'] = $('#ttNumber').val() || '';
+            jsonData['operatorName'] = $('#operatorName').val() || '';
+            jsonData['site'] = $('#siteDropdown').val() || ''; // Get value from #siteDropdown, map to 'site' key
+            jsonData['pgOperator'] = $('#pgOperatorDropdown').val() || ''; // Get value from #pgOperatorDropdown, map to 'pgOperator' key
+            jsonData['teamLeader'] = $('#teamLeaderDropdown').val() || ''; // Get value from #teamLeaderDropdown, map to 'teamLeader' key
+            jsonData['selectOption'] = $('#selectOption').val() || '';
+            jsonData['siteAttend'] = $('#siteAttend').val() || '';
+            jsonData['siteAttendDateTime'] = $('#siteAttendDateTime').val() || '';
+            jsonData['pgStart1'] = $('#pgStart1').val() || '';
+            jsonData['pgStop1'] = $('#pgStop1').val() || '';
+            jsonData['pgStart2'] = $('#pgStart2').val() || '';
+            jsonData['pgStop2'] = $('#pgStop2').val() || '';
+            jsonData['pgStart3'] = $('#pgStart3').val() || '';
+            jsonData['pgStop3'] = $('#pgStop3').val() || '';
 
 
          jsonData.timestamp = new Date().toISOString(); // Add timestamp
@@ -832,6 +848,7 @@
                 // Reset Select2 dropdowns and trigger change to clear them visually and update validation
                 // Use .val(null) and .trigger('change.select2') to reset and update visual
                $('#operatorName, #selectOption, #siteAttend').val(null).trigger('change.select2');
+                // Corrected IDs for reset
                $('#siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').val(null).trigger('change.select2');
                 // Manually update Select2 placeholder visual for searchable ones if needed
                 $('.select2-selection__rendered').empty().append('<span class="select2-selection__placeholder">Select...</span>');
@@ -1058,7 +1075,7 @@
           displayLoginError('login-status', ''); // Clear general status message on focus
       });
 
-    // --- Initial Setup on document ready ---
+    // --- Initial State on document ready ---
     // The login container is shown by default in HTML, form container is hidden.
     // The login form submission handler is attached here.
     // The form initialization is deferred until successful login.
