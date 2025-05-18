@@ -218,7 +218,7 @@
           } else {
             const siteAttendDateTime = parseDateTime(siteAttendDateTimeVal);
             const now = new Date();
-            if (!siteAttendDateTime || siteAttendDateTime > now) {
+            if (!siteAttendDateTime || siteAttendDateTime > now) {displayError('siteAttendDateTime', 'Invalid or future date/time.');formIsValid = false;} else {displayError('siteAttendDateTime', '');}
               displayError('siteAttendDateTime', 'Invalid or future date/time.');
               formIsValid = false;
             } else {
