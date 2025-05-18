@@ -190,6 +190,7 @@
     // --- Validation Functions ---
 
     function validateField(fieldId) {
+        console.log(`Validating field: ${fieldId}`);
         const value = $(`#${fieldId}`).val();
         if (!value) {
             displayError(fieldId, 'This field is mandatory.');
@@ -242,13 +243,13 @@
 
             if (eventCards.length === 0) {
                  // If PG Run is selected, at least the first event should be added.
-                 // This state should ideally not be reachable if addEventField(1) is called on selecting PG Run.
                  console.warn("PG Run selected but no event cards found for validation.");
-                 // If the first event is mandatory, you might want to set allValid = false here
-                 // if eventCount is 0 and selectOption is PG Run.
-                 if (eventCount === 0) {
-                      // Decide if having 0 events when PG Run is selected is an error
-                      // For now, let's assume the first event is always added.
+                 // Decide if having 0 events when PG Run is selected is an error
+                 if (eventCount === 0) { // Use eventCount to check if any were added
+                      // If the first event is mandatory, and none were added, it's invalid.
+                      // If you reach here when PG Run is selected and eventCount is 0,
+                      // it means addEventField(1) wasn't called or failed.
+                      // For now, the check in the submit handler is the final gatekeeper.
                  }
             }
 
@@ -451,10 +452,9 @@
                   if (newEventNumber === 1) {
                       removeButton.remove(); // Remove button from the first event
                   }
-                   // No need to re-attach click listener here as it was delegated or attached on add
               } else {
                    // If a new remove button is needed (e.g., after removing event 2, event 3 becomes event 2)
-                   if (newEventNumber > 1 && !removeButton.length) {
+                   if (newEventNumber > 1) { // Check if a remove button *should* exist for this new number
                         $(this).append('<button type="button" class="remove-button">Remove Event</button>');
                          // Re-attach listener for the newly added remove button
                          $(this).find('.remove-button').on('click', function() {
@@ -465,6 +465,7 @@
                          });
                    }
               }
+
 
                $(this).attr('data-event-number', newEventNumber); // Update data attribute
           });
@@ -970,6 +971,7 @@
         }
     }
 
+    // Handle login form submission
     $('#loginForm').submit(function(event) {
       event.preventDefault();
        console.log("Login form submitted.");
@@ -1022,7 +1024,7 @@
                        if (response.ok) {
                            throw new Error('Received empty response body from server.');
                        } else {
-                           throw new Error(`Server returned status ${response.status} and empty body.`);
+                           throw new Error(`Server returned status ${response.status} with empty body.`);
                        }
                    }
                } catch (jsonError) {
@@ -1049,7 +1051,7 @@
           console.log("Login successful, showing form.");
           $('#loginContainer').hide();
           $('#formContainer').show();
-           initializeForm(); // Initialize form features after successful login
+           initializeForm(); // Call the function to initialize all form features
         } else {
           const errorMessage = (data && typeof data === 'object' && data.error) ? data.error : 'Invalid username or password.';
           displayLoginError('login-status', errorMessage);
@@ -1065,16 +1067,20 @@
       });
     });
 
+     // Optional: Clear errors on input focus for login fields
       $('#username, #password').on('focus', function() {
           displayLoginError($(this).attr('id'), '');
           displayLoginError('login-status', '');
       });
 
     // --- Initial State on document ready ---
+    // The login container is shown by default in HTML, form container is hidden.
+    // The login form submission handler is attached here.
+    // The form initialization is deferred until successful login.
      $('#formContainer').hide();
      $('#loginContainer').show();
       console.log("Initial display state set: login visible, form hidden.");
-}
+
 
   }); // End of $(document).ready
 </script>
