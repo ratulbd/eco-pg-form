@@ -143,6 +143,7 @@
     const MAX_EVENTS = 10;
     let eventCount = 0;
     let loggedInUsername = '';
+    let employeeData = []; // *** NEW: Store employee data globally ***
 
     function getCurrentDateTimeLocal() {
         const now = new Date();
@@ -293,10 +294,14 @@
          const eventCard = $(`[data-event-number="${eventNumber}"]`);
          const newFuelDropdown = $(`#fuelUsedFrom${eventNumber}`);
 
-         // *** CORRECTION: Populate from pgOperatorDropdown HTML ***
-         const pgOperatorOptions = $('#pgOperatorDropdown').html();
-         newFuelDropdown.html(pgOperatorOptions); // Copy options
+         // *** CORRECTION: Populate from stored data, not HTML ***
+         newFuelDropdown.empty().append('<option value=""></option>'); // Clear & add blank
+         employeeData.forEach(item => {
+             if (item) newFuelDropdown.append(new Option(item, item));
+         });
+         console.log(`Populated #fuelUsedFrom${eventNumber} from stored data.`);
 
+         // Now initialize Select2 on the freshly populated dropdown
          newFuelDropdown.select2({
               placeholder: 'Select...',
               allowClear: true,
@@ -324,31 +329,56 @@
               const newEventNumber = index + 1;
               const suffix = (newEventNumber === 1) ? 'st' : (newEventNumber === 2) ? 'nd' : (newEventNumber === 3) ? 'rd' : 'th';
               const card = $(this);
+              const oldEventNumber = card.data('event-number'); // Get old number before changing
+
               card.data('event-number', newEventNumber);
               card.attr('data-event-number', newEventNumber);
               card.find('h3').text(`${newEventNumber}${suffix} Event`);
+
+              let selectNeedsReinit = false;
+
               card.find('input, select, span').each(function() {
                   const el = $(this);
                   ['id', 'name', 'for'].forEach(attr => {
                       const oldVal = el.attr(attr);
-                      if (oldVal && /\d+$/.test(oldVal)) {
-                          el.attr(attr, oldVal.replace(/\d+$/, newEventNumber));
+                      if (oldVal && oldVal.includes(oldEventNumber)) {
+                          const newVal = oldVal.replace(oldEventNumber, newEventNumber);
+                          el.attr(attr, newVal);
+                          if (el.is('select') && oldVal.startsWith('fuelUsedFrom')) {
+                             selectNeedsReinit = true; // Mark that this select needs re-initialization
+                          }
                       }
                   });
               });
-              // Ensure only the first event lacks a remove button
+
+              // *** NEW: Re-initialize Select2 if its ID changed ***
+              if (selectNeedsReinit) {
+                  const fuelSelect = card.find(`select[id^="fuelUsedFrom"]`);
+                  if (fuelSelect.hasClass('select2-hidden-accessible')) {
+                      fuelSelect.select2('destroy');
+                      console.log(`Destroyed Select2 on #fuelUsedFrom${oldEventNumber}`);
+                  }
+                  fuelSelect.select2({
+                      placeholder: 'Select...',
+                      allowClear: true,
+                      dropdownParent: card[0]
+                  });
+                  console.log(`Re-initialized Select2 on #fuelUsedFrom${newEventNumber}`);
+              }
+
+
               card.find('.remove-button').remove();
               if (newEventNumber > 1) {
                   card.append('<button type="button" class="remove-button">Remove Event</button>');
                   card.find('.remove-button').on('click', function() {
                        $(this).closest('.event-card').remove();
                        eventCount--;
-                       updateEventNumbers();
+                       updateEventNumbers(); // Recursive call
                        validateAllConditionalFields();
                    });
               }
           });
-          $('#addEventBtn').show();
+          $('#addEventBtn').toggle(eventCount < MAX_EVENTS); // Use toggle
           console.log("Event numbers updated.");
      }
 
@@ -360,7 +390,7 @@
             return;
         }
 
-        dropdown.empty().append('<option value=""></option>'); // Clear and add blank
+        dropdown.empty().append('<option value=""></option>');
 
         try {
             const response = await fetch('/.netlify/functions/proxy', {
@@ -373,6 +403,12 @@
             const data = await response.json();
 
             if (data && Array.isArray(data.data)) {
+                // *** CORRECTION: Store employee data if fetching Employees ***
+                if (sheetName === 'Employees' && columnName === 'Employee_Code' && employeeData.length === 0) {
+                     employeeData = data.data; // Store the data
+                     console.log("Stored Employee Data:", employeeData);
+                }
+
                 data.data.forEach(item => {
                     if (item) dropdown.append(new Option(item, item));
                 });
@@ -391,7 +427,6 @@
         }
     }
 
-    // *** CORRECTION: Made initializeForm async and added await ***
     async function initializeForm() {
         console.log("Initializing form features...");
 
@@ -428,7 +463,7 @@
                    const val = $(this).val();
                    $('#misscallTTFields').toggle(val === 'Misscall TT');
                    $('#pgRunFields').toggle(val === 'PG Run');
-                   $('#addEventBtn').hide(); // Always hide first
+                   $('#addEventBtn').hide();
 
                    if (val === 'PG Run') {
                        $('#misscallTTFields select').val(null).trigger('change');
@@ -536,7 +571,6 @@
            } else {
                const errorMsg = (result && result.error) ? (result.error.message || result.error) : 'Unknown submission error.';
                alert('Submission failed: ' + errorMsg);
-               // Handle specific conflict errors if needed
            }
          })
          .catch(error => {
@@ -593,7 +627,7 @@
             loggedInUsername = username;
             $('#loginContainer').hide();
             $('#formContainer').show();
-            initializeForm(); // Call the (now async) form initializer
+            initializeForm();
         })
         .catch(error => {
             console.error('Login Error:', error);
