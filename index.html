@@ -4,49 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>E.CO PG Run Data Collection Form - MPL</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-  <style>
-    /* Add some basic styling for clarity if styles.css isn't present */
-    body { font-family: sans-serif; margin: 20px; }
-    .container, .login-container { max-width: 800px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
-    .card { border: 1px solid #eee; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
-    .input-group, .card > label { display: block; margin-bottom: 10px; }
-    label { font-weight: bold; margin-bottom: 5px; display: inline-block; }
-    input[type="text"], input[type="password"], input[type="datetime-local"], select { width: 100%; padding: 8px; margin-bottom: 5px; box-sizing: border-box; }
-    .error-message { color: red; font-size: 0.8em; display: block; margin-bottom: 10px; }
-    .is-invalid { border-color: red !important; }
-    .select2-container .select2-selection--single.is-invalid { border: 1px solid red !important; }
-    button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    button:hover { background-color: #0056b3; }
-    .add-button, .remove-button { background-color: #28a745; margin-top: 10px; }
-    .remove-button { background-color: #dc3545; }
-    .loading, .success-message, .login-message { display: none; margin-top: 10px; }
-    .success-message { color: green; }
-    .login-message.error { color: red; }
-    .footer-info { text-align: center; margin-top: 30px; font-size: 0.9em; color: #555; }
-    .select2-container { width: 100% !important; }
-  </style>
 </head>
 <body>
 
 <div class="login-container" id="loginContainer">
   <h2>Login</h2>
   <form id="loginForm">
-    <div class="input-group">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required placeholder="Enter your username">
+    <div class="input-field">
+      <input type="text" id="username" name="username" required>
+      <label for="username">Username</label>
       <span class="error-message" id="username-error"></span>
     </div>
 
-    <div class="input-group">
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required placeholder="Enter your password">
+    <div class="input-field">
+      <input type="password" id="password" name="password" required>
+      <label for="password">Password</label>
       <span class="error-message" id="password-error"></span>
     </div>
 
-    <button type="submit">Login</button>
-
+    <button type="submit" class="btn waves-effect waves-light">Login</button>
     <div class="login-message" id="login-status"></div>
   </form>
 </div>
@@ -56,83 +36,109 @@
     <h2>E.CO PG Run Data Collection Form-MPL</h2>
     <form id="pgForm" novalidate>
       <div class="card">
-        <label for="ttNumber">TT Number:</label>
-        <input type="text" id="ttNumber" name="ttNumber" />
-        <span class="error-message" id="ttNumber-error"></span>
+        <div class="card-content">
+          <div class="input-field">
+            <input type="text" id="ttNumber" name="ttNumber" maxlength="7" inputmode="numeric">
+            <label for="ttNumber">TT Number (7 digits)</label>
+            <span class="error-message" id="ttNumber-error"></span>
+          </div>
 
-        <label for="operatorName">Operator Name:</label>
-        <select id="operatorName" name="operatorName">
-          <option value="" disabled selected>Select an operator</option>
-          <option value="GP">GP</option>
-          <option value="BL">BL</option>
-          <option value="ROBI">ROBI</option>
-        </select>
-         <span class="error-message" id="operatorName-error"></span>
+          <div class="input-field">
+            <select id="operatorName" name="operatorName">
+              <option value="" disabled selected>Select an operator</option>
+              <option value="GP">GP</option>
+              <option value="BL">BL</option>
+              <option value="ROBI">ROBI</option>
+            </select>
+            <label for="operatorName" class="active">Operator Name</label> {/* Label needs to be active for pre-filled selects or use a placeholder approach */}
+            <span class="error-message" id="operatorName-error"></span>
+          </div>
 
-        <label for="siteDropdown">Select Site:</label>
-        <select id="siteDropdown" name="site"></select>
-        <span class="error-message" id="siteDropdown-error"></span>
+          <div class="input-field">
+            <select id="siteDropdown" name="site"></select>
+            <label for="siteDropdown" class="active">Select Site</label>
+            <span class="error-message" id="siteDropdown-error"></span>
+          </div>
+        </div>
       </div>
 
       <div class="card">
-        <label for="pgOperatorDropdown">Select PG Operator Name:</label>
-        <select id="pgOperatorDropdown" name="pgOperator"></select>
-         <span class="error-message" id="pgOperatorDropdown-error"></span>
+        <div class="card-content">
+          <div class="input-field">
+            <select id="pgOperatorDropdown" name="pgOperator"></select>
+            <label for="pgOperatorDropdown" class="active">Select PG Operator Name</label>
+            <span class="error-message" id="pgOperatorDropdown-error"></span>
+          </div>
 
-        <label for="teamLeaderDropdown">Select Team Leader Name:</label>
-        <select id="teamLeaderDropdown" name="teamLeader"></select>
-         <span class="error-message" id="teamLeaderDropdown-error"></span>
+          <div class="input-field">
+            <select id="teamLeaderDropdown" name="teamLeader"></select>
+            <label for="teamLeaderDropdown" class="active">Select Team Leader Name</label>
+            <span class="error-message" id="teamLeaderDropdown-error"></span>
+          </div>
+        </div>
       </div>
 
       <div class="card">
-        <label for="selectOption">Select Option:</label>
-        <select id="selectOption" name="selectOption">
-          <option value="" disabled selected>Select an option</option>
-          <option value="Misscall TT">Misscall TT</option>
-          <option value="PG Run">PG Run</option>
-        </select>
-        <span class="error-message" id="selectOption-error"></span>
+        <div class="card-content">
+          <div class="input-field">
+            <select id="selectOption" name="selectOption">
+              <option value="" disabled selected>Select an option</option>
+              <option value="Misscall TT">Misscall TT</option>
+              <option value="PG Run">PG Run</option>
+            </select>
+            <label for="selectOption" class="active">Select Option</label>
+            <span class="error-message" id="selectOption-error"></span>
+          </div>
+        </div>
       </div>
 
       <div id="misscallTTFields" style="display: none;">
         <div class="card">
-          <label for="siteAttend">Site Attend:</label>
-          <select id="siteAttend" name="siteAttend">
-            <option value="" disabled selected>Select an option</option>
-            <option value="YES">YES</option>
-            <option value="NO">NO</option>
-          </select>
-           <span class="error-message" id="siteAttend-error"></span>
+          <div class="card-content">
+            <div class="input-field">
+              <select id="siteAttend" name="siteAttend">
+                <option value="" disabled selected>Select an option</option>
+                <option value="YES">YES</option>
+                <option value="NO">NO</option>
+              </select>
+              <label for="siteAttend" class="active">Site Attend</label>
+              <span class="error-message" id="siteAttend-error"></span>
+            </div>
+          </div>
         </div>
         <div id="siteAttendDateTimeField" style="display: none;">
            <div class="card">
-             <label for="siteAttendDateTime">Site Attend Date & Time:</label>
-               <input type="datetime-local" id="siteAttendDateTime" name="siteAttendDateTime" />
-               <span class="error-message" id="siteAttendDateTime-error"></span>
+             <div class="card-content">
+               <div class="input-field">
+                 <input type="datetime-local" id="siteAttendDateTime" name="siteAttendDateTime" class="input-material" />
+                 <label for="siteAttendDateTime" class="active">Site Attend Date & Time</label>
+                 <span class="error-message" id="siteAttendDateTime-error"></span>
+               </div>
+             </div>
            </div>
         </div>
       </div>
 
       <div id="pgRunFields" style="display: none;">
         <div id="pgEventsContainer">
-             </div>
-        <button type="button" id="addEventBtn" class="add-button" style="display: none;">Add Another Event</button>
+          </div>
+        <button type="button" id="addEventBtn" class="btn waves-effect waves-light add-button" style="display: none;"><i class="material-icons left">add_circle_outline</i>Add Event</button>
       </div>
 
-       <button type="submit">Submit</button>
-        <div class="loading">Submitting...</div>
-        <div class="success-message">Submission successful!</div>
+       <button type="submit" class="btn waves-effect waves-light primary-submit-btn"><i class="material-icons left">send</i>Submit</button>
+        <div class="progress-bar loading" style="display: none;">
+            <div class="indeterminate"></div>
+        </div>
+        <div class="success-message card-panel green lighten-4 green-text text-darken-2" style="display: none;">Submission successful!</div>
     </form>
   </div>
-  </div>
-
+</div>
 
 <div class="footer-info">
   <p>Powered and Developed By<br>
   <strong>Rakibul Islam Ratul</strong><br>
   <small>Sr. Manager, Central Governance, Metal Plus Ltd.</small></p>
 </div>
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
@@ -143,7 +149,26 @@
     const MAX_EVENTS = 10;
     let eventCount = 0;
     let loggedInUsername = '';
-    let employeeData = []; // *** NEW: Store employee data globally ***
+    let employeeData = [];
+
+    // Helper to make labels active for pre-filled/focused Materialize inputs
+    function M_updateTextFields() {
+        $('input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea').each(function (index, element) {
+            if ($(element).val().length > 0 || $(element).attr('placeholder') !== undefined || $(element).is(':focus')) {
+                $(this).siblings('label').addClass('active');
+            } else {
+                $(this).siblings('label').removeClass('active');
+            }
+        });
+        // For select elements that are not browser defaults (like Select2)
+        $('select').each(function() {
+            const $this = $(this);
+            if ($this.val() && $this.val() !== "" && !$this.find('option[value=""][disabled]').length) {
+                 $this.siblings('label').addClass('active');
+            }
+        });
+    }
+
 
     function getCurrentDateTimeLocal() {
         const now = new Date();
@@ -166,20 +191,37 @@
         const fieldElement = $(`#${fieldId}`);
         if (!fieldElement.length) return;
 
-        const container = fieldElement.next('.select2-container');
+        const inputParent = fieldElement.closest('.input-field'); // Materialize structure
 
         if (message) {
-            if (errorSpan.length) errorSpan.text(message);
-            fieldElement.addClass('is-invalid');
-            if (container.length) container.find('.select2-selection--single').addClass('is-invalid');
+            if (errorSpan.length) errorSpan.text(message).show();
+            fieldElement.addClass('invalid'); // Materialize class for invalid
+            if (fieldElement.is('select') && fieldElement.data('select2')) {
+                 fieldElement.next('.select2-container').find('.select2-selection--single').addClass('invalid-select2');
+            }
         } else {
-            if (errorSpan.length) errorSpan.text('');
-            fieldElement.removeClass('is-invalid');
-            if (container.length) container.find('.select2-selection--single').removeClass('is-invalid');
+            if (errorSpan.length) errorSpan.text('').hide();
+            fieldElement.removeClass('invalid');
+            if (fieldElement.is('select') && fieldElement.data('select2')) {
+                 fieldElement.next('.select2-container').find('.select2-selection--single').removeClass('invalid-select2');
+            }
         }
     }
+    
+    // TT Number specific input handling
+    $('#ttNumber').on('input', function() {
+        let value = $(this).val();
+        value = value.replace(/[^0-9]/g, ''); // Allow only numbers
+        if (value.length > 7) {
+            value = value.slice(0, 7); // Enforce 7 digit limit
+        }
+        $(this).val(value);
+        // Trigger validation on input for immediate feedback if desired, or rely on blur/submit
+        // For example: validateTtNumberField(); 
+    });
 
-    function validateField(fieldId) {
+
+    function validateField(fieldId) { // Generic validator for non-empty
         const value = $(`#${fieldId}`).val();
         if (!value) {
             displayError(fieldId, 'This field is mandatory.');
@@ -189,7 +231,7 @@
             return true;
         }
     }
-
+    
     function validateAllConditionalFields() {
         const selectOption = $('#selectOption').val();
         let allValid = true;
@@ -213,15 +255,20 @@
                     }
                 }
             } else {
-                 displayError('siteAttendDateTime', '');
+                 displayError('siteAttendDateTime', ''); // Clear error if not applicable
             }
-        } else {
+        } else { // Clear errors if Misscall TT section is not active
             displayError('siteAttend', '');
             displayError('siteAttendDateTime', '');
         }
 
         if (selectOption === 'PG Run' && $('#pgRunFields').is(':visible')) {
             let previousEventStop = null;
+            if ($('#pgEventsContainer .event-card').length === 0) { // If PG Run is selected but no events added
+                // This might be an issue if at least one event is mandatory for PG Run.
+                // For now, this function only validates existing event cards.
+                // The submit handler will check if pgEvents array is empty.
+            }
             $('#pgEventsContainer .event-card').each(function(index) {
                 const eventNumber = $(this).data('event-number');
                 const pgStartId = `pgStart${eventNumber}`;
@@ -235,7 +282,8 @@
                 const now = new Date();
                 let currentEventValid = true;
 
-                if (pgStartVal || pgStopVal || fuelUsedFromVal) {
+                // Validate only if any field in the event card has a value, or if it's the first event (implicitly required)
+                if (pgStartVal || pgStopVal || fuelUsedFromVal || eventCount === 1) {
                     if (!pgStartVal) { displayError(pgStartId, 'Mandatory.'); allValid = false; currentEventValid = false; } else { displayError(pgStartId, ''); }
                     if (!pgStopVal) { displayError(pgStopId, 'Mandatory.'); allValid = false; currentEventValid = false; } else { displayError(pgStopId, ''); }
                     if (!fuelUsedFromVal) { displayError(fuelUsedFromId, 'Mandatory.'); allValid = false; currentEventValid = false; } else { displayError(fuelUsedFromId, ''); }
@@ -247,16 +295,16 @@
                          if (previousEventStop && pgStart <= previousEventStop) { displayError(pgStartId, `Must be after Event ${eventNumber - 1}'s Stop.`); allValid = false; currentEventValid = false; }
 
                          if (currentEventValid) { previousEventStop = pgStop; }
-                         else { previousEventStop = null; }
-                    } else { previousEventStop = null; }
-                } else {
+                         else { previousEventStop = null; } // Reset if current event is invalid
+                    } else { previousEventStop = null; } // Reset if dates are not parsable
+                } else { // Clear errors if all fields are empty and it's not the only event
                      displayError(pgStartId, '');
                      displayError(pgStopId, '');
                      displayError(fuelUsedFromId, '');
-                     previousEventStop = null;
+                     // previousEventStop remains from the last valid event
                 }
             });
-        } else {
+        } else { // Clear errors if PG Run section is not active
              $('#pgEventsContainer .event-card').each(function() {
                  const eventNumber = $(this).data('event-number');
                  displayError(`pgStart${eventNumber}`, '');
@@ -271,21 +319,26 @@
          const nowFormatted = getCurrentDateTimeLocal();
          const suffix = (eventNumber === 1) ? 'st' : (eventNumber === 2) ? 'nd' : (eventNumber === 3) ? 'rd' : 'th';
          const eventCardHtml = `
-            <div class="event-card" data-event-number="${eventNumber}">
-              <h3>${eventNumber}${suffix} Event</h3>
-               <label for="pgStart${eventNumber}">PG Start Date & Time:</label>
-               <input type="datetime-local" id="pgStart${eventNumber}" name="pgStart${eventNumber}" max="${nowFormatted}" />
-               <span class="error-message" id="pgStart${eventNumber}-error"></span>
-
-              <label for="pgStop${eventNumber}">PG Stop Date & Time:</label>
-               <input type="datetime-local" id="pgStop${eventNumber}" name="pgStop${eventNumber}" max="${nowFormatted}" />
-               <span class="error-message" id="pgStop${eventNumber}-error"></span>
-
-               <label for="fuelUsedFrom${eventNumber}">Fuel Used From:</label>
-               <select id="fuelUsedFrom${eventNumber}" name="fuelUsedFrom${eventNumber}"></select>
-               <span class="error-message" id="fuelUsedFrom${eventNumber}-error"></span>
-
-               ${eventNumber > 1 ? '<button type="button" class="remove-button">Remove Event</button>' : ''}
+            <div class="card event-card" data-event-number="${eventNumber}">
+              <div class="card-content">
+                <span class="card-title">${eventNumber}${suffix} Event</span>
+                <div class="input-field">
+                   <input type="datetime-local" id="pgStart${eventNumber}" name="pgStart${eventNumber}" class="input-material" max="${nowFormatted}" />
+                   <label for="pgStart${eventNumber}" class="active">PG Start Date & Time</label>
+                   <span class="error-message" id="pgStart${eventNumber}-error"></span>
+                </div>
+                <div class="input-field">
+                   <input type="datetime-local" id="pgStop${eventNumber}" name="pgStop${eventNumber}" class="input-material" max="${nowFormatted}" />
+                   <label for="pgStop${eventNumber}" class="active">PG Stop Date & Time</label>
+                   <span class="error-message" id="pgStop${eventNumber}-error"></span>
+                </div>
+                <div class="input-field">
+                   <select id="fuelUsedFrom${eventNumber}" name="fuelUsedFrom${eventNumber}"></select>
+                   <label for="fuelUsedFrom${eventNumber}" class="active">Fuel Used From</label>
+                   <span class="error-message" id="fuelUsedFrom${eventNumber}-error"></span>
+                </div>
+                ${eventNumber > 1 ? '<button type="button" class="btn-floating waves-effect waves-light red right remove-event-btn"><i class="material-icons">remove_circle_outline</i></button>' : ''}
+              </div>
             </div>
           `;
          $('#pgEventsContainer').append(eventCardHtml);
@@ -294,34 +347,33 @@
          const eventCard = $(`[data-event-number="${eventNumber}"]`);
          const newFuelDropdown = $(`#fuelUsedFrom${eventNumber}`);
 
-         // *** CORRECTION: Populate from stored data, not HTML ***
-         newFuelDropdown.empty().append('<option value=""></option>'); // Clear & add blank
+         newFuelDropdown.empty().append('<option value="" disabled selected>Select fuel source</option>');
          employeeData.forEach(item => {
              if (item) newFuelDropdown.append(new Option(item, item));
          });
-         console.log(`Populated #fuelUsedFrom${eventNumber} from stored data.`);
-
-         // Now initialize Select2 on the freshly populated dropdown
+         
+         // Initialize Select2 on the new dropdown
          newFuelDropdown.select2({
-              placeholder: 'Select...',
+              placeholder: 'Select fuel source...',
               allowClear: true,
-              dropdownParent: eventCard[0]
-         }).val(null).trigger('change'); // Set to blank initially
+              dropdownParent: eventCard.find('.card-content') // Attach to a visible parent
+         }).val(null).trigger('change');
+         
+         M_updateTextFields(); // Update labels for new fields
 
-         $('#pgEventsContainer').on('change blur', `#pgStart${eventNumber}, #pgStop${eventNumber}`, validateAllConditionalFields);
-         $('#pgEventsContainer').on('change', `#fuelUsedFrom${eventNumber}`, validateAllConditionalFields);
+         $(`#pgStart${eventNumber}, #pgStop${eventNumber}, #fuelUsedFrom${eventNumber}`).on('change blur', validateAllConditionalFields);
 
          if (eventNumber > 1) {
-              eventCard.find('.remove-button').on('click', function() {
-                  $(this).closest('.event-card').remove();
-                  eventCount--;
-                  updateEventNumbers();
-                  validateAllConditionalFields();
+              eventCard.find('.remove-event-btn').on('click', function() {
+                  $(this).closest('.event-card').fadeOut(300, function() { 
+                    $(this).remove(); 
+                    eventCount--;
+                    updateEventNumbers();
+                    validateAllConditionalFields();
+                  });
               });
          }
-
          $('#addEventBtn').toggle(eventCount < MAX_EVENTS);
-         console.log(`Added Event ${eventNumber}. Total events: ${eventCount}`);
      }
 
      function updateEventNumbers() {
@@ -329,195 +381,230 @@
               const newEventNumber = index + 1;
               const suffix = (newEventNumber === 1) ? 'st' : (newEventNumber === 2) ? 'nd' : (newEventNumber === 3) ? 'rd' : 'th';
               const card = $(this);
-              const oldEventNumber = card.data('event-number'); // Get old number before changing
+              const oldEventNumber = card.data('event-number');
+
+              if (oldEventNumber === newEventNumber) return; // No change needed
 
               card.data('event-number', newEventNumber);
-              card.attr('data-event-number', newEventNumber);
-              card.find('h3').text(`${newEventNumber}${suffix} Event`);
+              card.attr('data-event-number', newEventNumber); // Also update attribute for CSS if needed
+              card.find('.card-title').text(`${newEventNumber}${suffix} Event`);
 
-              let selectNeedsReinit = false;
-
-              card.find('input, select, span').each(function() {
+              card.find('input, select, label, span.error-message').each(function() {
                   const el = $(this);
                   ['id', 'name', 'for'].forEach(attr => {
                       const oldVal = el.attr(attr);
                       if (oldVal && oldVal.includes(oldEventNumber)) {
-                          const newVal = oldVal.replace(oldEventNumber, newEventNumber);
+                          const newVal = oldVal.replace(new RegExp(oldEventNumber + '$', 'g'), newEventNumber); // More specific replace
                           el.attr(attr, newVal);
-                          if (el.is('select') && oldVal.startsWith('fuelUsedFrom')) {
-                             selectNeedsReinit = true; // Mark that this select needs re-initialization
-                          }
                       }
                   });
               });
-
-              // *** NEW: Re-initialize Select2 if its ID changed ***
-              if (selectNeedsReinit) {
-                  const fuelSelect = card.find(`select[id^="fuelUsedFrom"]`);
-                  if (fuelSelect.hasClass('select2-hidden-accessible')) {
-                      fuelSelect.select2('destroy');
-                      console.log(`Destroyed Select2 on #fuelUsedFrom${oldEventNumber}`);
-                  }
-                  fuelSelect.select2({
-                      placeholder: 'Select...',
-                      allowClear: true,
-                      dropdownParent: card[0]
-                  });
-                  console.log(`Re-initialized Select2 on #fuelUsedFrom${newEventNumber}`);
+              
+              // Re-initialize Select2 for fuelUsedFrom if its ID changed
+              const fuelSelect = card.find(`select[id^="fuelUsedFrom"]`);
+              if (fuelSelect.data('select2')) { // Check if select2 was initialized
+                  fuelSelect.select2('destroy');
               }
+              fuelSelect.select2({
+                  placeholder: 'Select fuel source...',
+                  allowClear: true,
+                  dropdownParent: card.find('.card-content')
+              });
 
 
-              card.find('.remove-button').remove();
-              if (newEventNumber > 1) {
-                  card.append('<button type="button" class="remove-button">Remove Event</button>');
-                  card.find('.remove-button').on('click', function() {
-                       $(this).closest('.event-card').remove();
-                       eventCount--;
-                       updateEventNumbers(); // Recursive call
-                       validateAllConditionalFields();
+              const removeBtn = card.find('.remove-event-btn');
+              if (newEventNumber > 1 && !removeBtn.length) {
+                  card.find('.card-content').append('<button type="button" class="btn-floating waves-effect waves-light red right remove-event-btn"><i class="material-icons">remove_circle_outline</i></button>');
+                  card.find('.remove-event-btn').on('click', function() {
+                       $(this).closest('.event-card').fadeOut(300, function() { 
+                           $(this).remove(); 
+                           eventCount--;
+                           updateEventNumbers(); 
+                           validateAllConditionalFields();
+                       });
                    });
+              } else if (newEventNumber === 1 && removeBtn.length) {
+                  removeBtn.remove();
               }
           });
-          $('#addEventBtn').toggle(eventCount < MAX_EVENTS); // Use toggle
-          console.log("Event numbers updated.");
+          $('#addEventBtn').toggle(eventCount < MAX_EVENTS);
+          M_updateTextFields();
      }
 
-    async function fetchAndPopulateDropdown(dropdownId, sheetName, columnName) {
-        console.log(`Workspaceing for #${dropdownId} from ${sheetName}/${columnName}`);
+    async function fetchAndPopulateDropdown(dropdownId, sheetName, columnName, placeholderText) {
         const dropdown = $(`#${dropdownId}`);
-        if (!dropdown.length) {
-            console.error(`#${dropdownId} not found.`);
-            return;
-        }
+        if (!dropdown.length) return;
 
-        dropdown.empty().append('<option value=""></option>');
+        // Add a default disabled option for placeholder behavior with Materialize
+        dropdown.empty().append(`<option value="" disabled selected>${placeholderText}</option>`);
 
         try {
-            const response = await fetch('/.netlify/functions/proxy', {
+            const response = await fetch('/.netlify/functions/proxy', { // Update with your actual API endpoint
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ type: 'getDropdownData', sheet: sheetName, column: columnName })
             });
 
-            if (!response.ok) throw new Error(`Workspace failed: ${response.status}`);
-            const data = await response.json();
+            if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
+            const result = await response.json();
 
-            if (data && Array.isArray(data.data)) {
-                // *** CORRECTION: Store employee data if fetching Employees ***
+            if (result && result.success && Array.isArray(result.data)) {
                 if (sheetName === 'Employees' && columnName === 'Employee_Code' && employeeData.length === 0) {
-                     employeeData = data.data; // Store the data
-                     console.log("Stored Employee Data:", employeeData);
+                     employeeData = result.data.filter(item => item); // Filter out null/empty items
                 }
-
-                data.data.forEach(item => {
+                result.data.forEach(item => {
                     if (item) dropdown.append(new Option(item, item));
                 });
-                console.log(`Populated #${dropdownId}.`);
-            } else { throw new Error('Invalid data format.'); }
-
+            } else { throw new Error(result.error || 'Invalid data format.'); }
         } catch (error) {
             console.error(`Error for #${dropdownId}:`, error);
-            alert(`Failed to load data for ${dropdownId}.`);
+            // Materialize toast for error: M.toast({html: `Failed to load ${columnName}.`});
         } finally {
-             if (dropdown.hasClass('select2-hidden-accessible')) {
-                  dropdown.val(null).trigger('change.select2');
-             } else {
-                  dropdown.val('');
-             }
+            // Re-initialize select2 if it was already initialized
+            if (dropdown.hasClass('select2-hidden-accessible')) {
+                dropdown.select2('destroy');
+            }
+            dropdown.select2({
+                placeholder: placeholderText,
+                allowClear: true,
+                dropdownParent: dropdown.closest('.input-field') // Or specific parent
+            });
+            M_updateTextFields(); // Ensure label behaves correctly
         }
     }
 
     async function initializeForm() {
-        console.log("Initializing form features...");
-
-        $('#operatorName, #selectOption, #siteAttend, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown').each(function() {
-             if (!$(this).hasClass('select2-hidden-accessible')) {
-                 $(this).select2({ placeholder: 'Select...', allowClear: true, dropdownParent: $('#formContainer') });
-             }
+        // Initialize Select2 for static selects first
+        $('#operatorName, #selectOption, #siteAttend').each(function() {
+             $(this).select2({
+                 placeholder: $(this).find('option[disabled][selected]').text() || 'Select...',
+                 allowClear: true,
+                 dropdownParent: $(this).closest('.input-field')
+             });
          });
-        console.log("Select2 initialized.");
 
         const nowFormatted = getCurrentDateTimeLocal();
         $('input[type="datetime-local"]').attr('max', nowFormatted);
 
-        console.log("Fetching dropdown data...");
         try {
-            await fetchAndPopulateDropdown('siteDropdown', 'Sites', 'Site_Code');
-            await fetchAndPopulateDropdown('pgOperatorDropdown', 'Employees', 'Employee_Code');
-            await fetchAndPopulateDropdown('teamLeaderDropdown', 'Employees', 'Employee_Code');
-            console.log("Dropdown data fetch complete.");
+            await fetchAndPopulateDropdown('siteDropdown', 'Sites', 'Site_Code', 'Select Site Code');
+            await fetchAndPopulateDropdown('pgOperatorDropdown', 'Employees', 'Employee_Code', 'Select PG Operator');
+            await fetchAndPopulateDropdown('teamLeaderDropdown', 'Employees', 'Employee_Code', 'Select Team Leader');
         } catch (error) {
             console.error("Critical error fetching dropdowns:", error);
-            alert("Could not load form data. Please refresh.");
+            // M.toast({html: 'Could not load essential form data. Please refresh.'});
+            alert('Could not load essential form data. Please refresh.');
             return;
         }
+        
+        // Event Listeners
+        $('#ttNumber').on('blur', function() { // Validate TT Number on blur
+            const ttVal = $(this).val().trim();
+            const currentSelectOption = $('#selectOption').val();
+            if (currentSelectOption !== 'PG Run') {
+                if (!ttVal) displayError('ttNumber', 'TT Number is mandatory.');
+                else if (!/^\d{7}$/.test(ttVal)) displayError('ttNumber', 'TT Number must be 7 digits.');
+                else displayError('ttNumber', '');
+            } else {
+                if (ttVal && !/^\d{1,7}$/.test(ttVal)) displayError('ttNumber', 'If provided, TT Number must be 1-7 digits.');
+                else displayError('ttNumber', '');
+            }
+        });
 
-        // --- Event Listeners ---
-        $('#ttNumber').on('blur', () => validateField('ttNumber'));
 
          $('#operatorName, #siteDropdown, #pgOperatorDropdown, #teamLeaderDropdown, #selectOption, #siteAttend').on('change', function() {
               const fieldId = $(this).attr('id');
-              validateField(fieldId);
+              validateField(fieldId); // Basic non-empty validation
 
               if (fieldId === 'selectOption') {
                    const val = $(this).val();
-                   $('#misscallTTFields').toggle(val === 'Misscall TT');
-                   $('#pgRunFields').toggle(val === 'PG Run');
-                   $('#addEventBtn').hide();
+                   const misscallFields = $('#misscallTTFields');
+                   const pgRunFields = $('#pgRunFields');
 
-                   if (val === 'PG Run') {
-                       $('#misscallTTFields select').val(null).trigger('change');
-                       $('#misscallTTFields input').val('');
-                       $('#siteAttendDateTimeField').hide();
+                   if (val === 'Misscall TT') {
+                       misscallFields.slideDown();
+                       pgRunFields.slideUp();
+                       $('#pgEventsContainer').empty(); eventCount = 0;
+                       $('#addEventBtn').hide();
+                   } else if (val === 'PG Run') {
+                       misscallFields.slideUp();
+                       pgRunFields.slideDown();
+                       $('#siteAttend').val(null).trigger('change.select2'); // Reset misscall fields
+                       $('#siteAttendDateTime').val('');
+                       $('#siteAttendDateTimeField').slideUp();
                        if (eventCount === 0) addEventField(1);
-                       $('#addEventBtn').toggle(eventCount < MAX_EVENTS);
-                   } else if (val === 'Misscall TT') {
-                       $('#pgEventsContainer').empty(); eventCount = 0;
+                       $('#addEventBtn').toggle(eventCount < MAX_EVENTS).css('display', eventCount < MAX_EVENTS ? 'inline-flex' : 'none');
                    } else {
-                       $('#misscallTTFields, #pgRunFields').hide();
+                       misscallFields.slideUp();
+                       pgRunFields.slideUp();
                        $('#pgEventsContainer').empty(); eventCount = 0;
-                       $('#misscallTTFields select').val(null).trigger('change');
-                       $('#misscallTTFields input').val('');
+                       $('#addEventBtn').hide();
                    }
               } else if (fieldId === 'siteAttend') {
                    $('#siteAttendDateTimeField').toggle($(this).val() === 'YES');
                    if ($(this).val() !== 'YES') $('#siteAttendDateTime').val('');
               }
               validateAllConditionalFields();
+              M_updateTextFields();
          });
 
          $('#addEventBtn').on('click', function() {
              if (eventCount > 0 && !validateAllConditionalFields()) {
-                 alert("Please fix errors in the current event before adding a new one.");
+                 // M.toast({html: 'Please fix errors in the current event(s).'});
+                 alert('Please fix errors in the current event(s).');
                  return;
              }
              if (eventCount < MAX_EVENTS) {
                  addEventField(eventCount + 1);
-                 $('html, body').animate({ scrollTop: $(`[data-event-number="${eventCount}"]`).offset().top - 100 }, 500);
+                 // Smooth scroll to new event card
+                 $('html, body').animate({ scrollTop: $(`[data-event-number="${eventCount}"]`).offset().top - 20 }, 500);
              } else {
+                 // M.toast({html: `Maximum of ${MAX_EVENTS} events reached.`});
                  alert(`Maximum of ${MAX_EVENTS} events reached.`);
              }
          });
 
        $('#pgForm').submit(function (event) {
          event.preventDefault();
-         console.log("Submitting...");
-
          let formIsValid = true;
-         ['ttNumber', 'operatorName', 'siteDropdown', 'pgOperatorDropdown', 'teamLeaderDropdown', 'selectOption'].forEach(id => {
+
+         // Validate TT Number specifically
+         const ttVal = $('#ttNumber').val().trim();
+         const currentSelectOption = $('#selectOption').val();
+         if (currentSelectOption !== 'PG Run') {
+             if (!ttVal) { displayError('ttNumber', 'TT Number is mandatory.'); formIsValid = false; }
+             else if (!/^\d{7}$/.test(ttVal)) { displayError('ttNumber', 'TT Number must be 7 digits.'); formIsValid = false; }
+             else { displayError('ttNumber', ''); }
+         } else { // For 'PG Run'
+             if (ttVal && !/^\d{1,7}$/.test(ttVal)) { displayError('ttNumber', 'If provided, TT Number must be 1-7 digits.'); formIsValid = false; }
+             else { displayError('ttNumber', ''); }
+         }
+
+         // Validate other mandatory non-conditional fields
+         ['operatorName', 'siteDropdown', 'pgOperatorDropdown', 'teamLeaderDropdown', 'selectOption'].forEach(id => {
              if (!validateField(id)) formIsValid = false;
          });
+
          if (!validateAllConditionalFields()) formIsValid = false;
 
          if (!formIsValid) {
+             // M.toast({html: 'Please fix errors before submitting.'});
              alert('Please fix errors before submitting.');
-             console.log("Submit failed: Validation errors.");
              return;
          }
 
          $('.loading').show();
+         $('.primary-submit-btn').prop('disabled', true);
+
+         let rawTtNumber = $('#ttNumber').val().trim();
+         let finalTtNumber = rawTtNumber;
+         if (rawTtNumber && /^\d+$/.test(rawTtNumber)) {
+             finalTtNumber = 'TT' + rawTtNumber;
+         }
+
+
          const jsonData = {
-             ttNumber: $('#ttNumber').val() || '',
+             ttNumber: finalTtNumber,
              operatorName: $('#operatorName').val() || '',
              site: $('#siteDropdown').val() || '',
              pgOperator: $('#pgOperatorDropdown').val() || '',
@@ -536,20 +623,22 @@
                  const start = $(`#pgStart${eventNumber}`).val();
                  const stop = $(`#pgStop${eventNumber}`).val();
                  const fuel = $(`#fuelUsedFrom${eventNumber}`).val();
+                 // Only add if all parts of an event are filled
                  if (start && stop && fuel) {
                      jsonData.pgEvents.push({ eventNumber, start, stop, fuelUsedFrom: fuel });
                  }
              });
-             if (jsonData.pgEvents.length === 0) {
-                 alert("Please enter at least one full PG Run event.");
+             if (jsonData.pgEvents.length === 0) { // If PG Run is selected, at least one event is mandatory
+                 // M.toast({html: "For 'PG Run', please enter at least one complete event."});
+                 alert("For 'PG Run', please enter at least one complete event.");
                  $('.loading').hide();
+                 $('.primary-submit-btn').prop('disabled', false);
+                 formIsValid = false; // Mark as invalid to prevent submission
                  return;
              }
          }
 
-         console.log("Sending:", jsonData);
-
-         fetch('/.netlify/functions/proxy', {
+         fetch('/.netlify/functions/proxy', { // Update with your actual API endpoint
            method: 'POST',
            headers: { 'Content-Type': 'application/json' },
            body: JSON.stringify(jsonData)
@@ -557,28 +646,44 @@
          .then(response => response.ok ? response.json() : response.text().then(text => Promise.reject(new Error(text || `HTTP error ${response.status}`))))
          .then(result => {
            $('.loading').hide();
-           console.log("Response:", result);
+           $('.primary-submit-btn').prop('disabled', false);
            if (result && result.result === 'success') {
-               $('.success-message').show();
+               $('.success-message').fadeIn();
                $('#pgForm')[0].reset();
-               $('select').val(null).trigger('change.select2');
+               // Reset Select2 fields
+               $('select').each(function() {
+                   $(this).val($(this).find('option[disabled][selected]').val() || null).trigger('change.select2');
+               });
                $('#pgEventsContainer').empty(); eventCount = 0;
                $('#addEventBtn').hide();
-               $('.error-message').text('');
-               $('input, select').removeClass('is-invalid');
-               $('.select2-container .select2-selection--single').removeClass('is-invalid');
-               setTimeout(() => $('.success-message').hide(), 3000);
+               $('#misscallTTFields, #pgRunFields, #siteAttendDateTimeField').hide();
+               $('.error-message').text('').hide();
+               $('input, select').removeClass('invalid');
+               $('.select2-container').find('.select2-selection--single').removeClass('invalid-select2');
+                M_updateTextFields(); // Update labels after reset
+               setTimeout(() => $('.success-message').fadeOut(), 4000);
            } else {
                const errorMsg = (result && result.error) ? (result.error.message || result.error) : 'Unknown submission error.';
+               // M.toast({html: 'Submission failed: ' + errorMsg, classes: 'red'});
                alert('Submission failed: ' + errorMsg);
+               if (result && result.error && result.error.field === "ttNumber") {
+                    displayError('ttNumber', result.error.message);
+               } else if (result && result.error && result.error.conflictingEventNumber) {
+                    const eventNum = result.error.conflictingEventNumber;
+                    displayError(`pgStart${eventNum}`, result.error.message);
+                    // M.toast({html: result.error.message, classes: 'red'});
+                    alert(result.error.message);
+               }
            }
          })
          .catch(error => {
            $('.loading').hide();
-           alert('Submission failed: ' + error.message);
-           console.error('Fetch Error:', error);
+           $('.primary-submit-btn').prop('disabled', false);
+           // M.toast({html: 'Submission error: ' + error.message, classes: 'red'});
+           alert('Submission error: ' + error.message);
          });
        });
+        M_updateTextFields(); // Initial call
     }
 
     // --- Login Page JavaScript ---
@@ -588,12 +693,14 @@
         const loginStatusDiv = $('#login-status');
 
         if (errorSpan.length) {
-            errorSpan.text(message || '');
-            fieldElement.toggleClass('is-invalid', !!message);
+            errorSpan.text(message || '').toggle(!!message);
+            fieldElement.toggleClass('invalid', !!message);
         }
         if (fieldId === 'login-status') {
             loginStatusDiv.text(message || '').toggleClass('error', !!message).toggle(!!message);
+             if(message === 'Login successful!') loginStatusDiv.removeClass('error').addClass('success');
         }
+        M_updateTextFields();
     }
 
     $('#loginForm').submit(function(event) {
@@ -604,45 +711,55 @@
 
         const username = $('#username').val().trim();
         const password = $('#password').val().trim();
-        if (!username || !password) {
-            if (!username) displayLoginError('username', 'Required.');
-            if (!password) displayLoginError('password', 'Required.');
+        let loginValid = true;
+        if (!username) { displayLoginError('username', 'Required.'); loginValid = false;}
+        if (!password) { displayLoginError('password', 'Required.'); loginValid = false;}
+        
+        if (!loginValid) {
             displayLoginError('login-status', 'Please enter username and password.');
             return;
         }
 
-        displayLoginError('login-status', 'Logging in...');
 
-        fetch('/.netlify/functions/proxy', {
+        displayLoginError('login-status', 'Logging in...');
+        $(this).find('button[type="submit"]').prop('disabled', true);
+
+
+        fetch('/.netlify/functions/proxy', { // Update with your actual API endpoint
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ login: true, username: username, password: password })
         })
         .then(response => response.json().then(data => ({ ok: response.ok, data })))
         .then(({ ok, data }) => {
+            $(this).find('button[type="submit"]').prop('disabled', false);
             if (!ok || !data.success) {
                 throw new Error((data && data.error) || 'Invalid username or password.');
             }
             displayLoginError('login-status', 'Login successful!');
             loggedInUsername = username;
-            $('#loginContainer').hide();
-            $('#formContainer').show();
-            initializeForm();
+            // Transition from login to form
+            $('#loginContainer').fadeOut(400, function() {
+                $('#formContainer').fadeIn(400);
+                initializeForm();
+            });
         })
         .catch(error => {
-            console.error('Login Error:', error);
+            $(this).find('button[type="submit"]').prop('disabled', false);
             displayLoginError('login-status', 'Login failed: ' + error.message);
-            $('#password').val('');
+            $('#password').val(''); // Clear password on failed attempt
+            M_updateTextFields();
         });
     });
 
-    $('#username, #password').on('focus', function() {
-        displayLoginError($(this).attr('id'), '');
-        displayLoginError('login-status', '');
-    });
-
+    // Make labels active on focus for login form
+    $('#loginContainer input').on('focus', function() { $(this).siblings('label').addClass('active'); });
+    $('#loginContainer input').on('blur', function() { if ($(this).val() === '') $(this).siblings('label').removeClass('active');});
+    
+    // Initial state
     $('#formContainer').hide();
     $('#loginContainer').show();
+    M_updateTextFields(); // For login form initial render
   });
 </script>
 
