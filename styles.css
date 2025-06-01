@@ -1,540 +1,575 @@
-/* Content from uploaded styles1.css starts here */
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* --- Global Styles & Resets --- */
+:root {
+  --primary-color: #673AB7; /* Deep Purple 500 - Refined Primary */
+  --primary-dark-color: #512DA8; /* Deep Purple 700 */
+  --accent-color: #00BCD4; /* Cyan 500 - Refined Accent */
+  --accent-dark-color: #0097A7; /* Cyan 700 */
+  --error-color: #F44336; /* Red 500 */
+  --success-color: #4CAF50; /* Green 500 */
+  --text-color: #263238; /* Blue Grey 900 - Darker Text for Readability */
+  --label-color: #546E7A; /* Blue Grey 600 - Softer Labels */
+  --border-color: #B0BEC5; /* Blue Grey 200 - Softer Borders */
+  --background-light: #FAFAFA; /* Grey 50 - Very Light Page Background */
+  --white: #ffffff;
+  --card-shadow: 0 2px 5px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.08); /* Even Softer Shadow */
+  --card-hover-shadow: 0 5px 12px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.1);
+  --border-radius: 6px; /* Slightly smaller, crisper radius */
+  --input-height: 2.9rem; /* Consistent input height, allows a bit more space */
+}
+
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* More modern font */
-  /* Subtle gradient background - Added for attractive login style */
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--background-light);
   margin: 0;
-  padding: 20px; /* Add padding around the body */
-  line-height: 1.6; /* Improved readability */
-  color: #333; /* Default text color */
-   /* Added flexbox for centering both login and form containers */
+  padding: 20px;
+  line-height: 1.6;
+  color: var(--text-color);
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  flex-direction: column; /* Stack login and form vertically */
-   box-sizing: border-box; /* Include padding in height */
-}
-
-/* Style for the main form container when visible */
-.container { /* This is the form container */
-  max-width: 600px;
-  margin: 20px auto; /* Adjusted margin for better mobile view */
-  padding: 30px; /* Increased padding */
-  background-color: #ffffff; /* White background for the form */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* More pronounced shadow */
-  border-radius: 10px; /* Rounded corners */
-   margin-bottom: 60px; /* Space above footer (Adjusted from styles1.css) */
-   /* No animation here, as login handles initial show */
-}
-
-/* Style for the attractive login container */
-.login-container {
-  max-width: 400px; /* Smaller container for login */
-  width: 90%; /* Responsive width */
-  padding: 40px; /* Increased padding for login container */
-  background-color: #ffffff; /* White background for login */
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); /* More prominent shadow for login */
-  border-radius: 12px; /* More rounded corners for login */
-  text-align: center;
-  margin-bottom: 30px; /* Space between login box and footer */
-  /* Add fade-in-up animation for login container */
-  animation: fadeInUp 0.8s ease-out;
-   /* Ensure it takes space when visible */
-   /* Removed flex properties from here, handled by body */
-}
-
-/* Animation for the login container */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-/* Heading Styling (Applies to both login and form h2) */
-h2 {
-  text-align: center;
-  color: #2c3e50; /* Darker, professional color */
-  margin-bottom: 35px; /* More space below heading */
-  font-size: 2.2em; /* Slightly larger font */
-  position: relative; /* Needed for underline effect */
-  padding-bottom: 10px; /* Space for underline */
-}
-
-/* Subtle underline effect for heading */
-h2::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  height: 3px;
-  width: 60px; /* Length of the underline */
-  background-color: #3498db; /* Blue underline color */
-  border-radius: 1.5px; /* Rounded ends for underline */
-}
-
-
-/* Styling for input groups (label + input + error) in login form */
-.login-container .input-group {
-  margin-bottom: 25px; /* Increased space between login input groups */
-  text-align: left;
-}
-
-
-/* Label Styling (Applies to both login and form unless more specific) */
-label {
-  display: block;
-  margin: 15px 0 5px; /* Adjusted margin-bottom for spacing with error message */
-  color: #34495e; /* Slightly darker label color */
-  font-weight: bold; /* Make labels bold */
-}
-
-/* Styling for text, password, and datetime-local inputs, and selects */
-/* This now applies to inputs/selects in both form and login sections */
-input[type="text"],
-input[type="password"], /* Added password type for login */
-input[type="datetime-local"], /* Included datetime-local for form */
-select, /* Included select for form */
-button {
-  width: 100%;
-  padding: 12px 15px; /* Increased padding */
-  margin-bottom: 20px; /* Default space below fields */
-  border: 1px solid #bdc3c7; /* Adjusted border color (from styles1.css #ddd) */
-  border-radius: 5px;
+  flex-direction: column;
   box-sizing: border-box;
-  font-size: 1em;
-  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Specific style for inputs within the login container */
-.login-container input[type="text"],
-.login-container input[type="password"] {
-     padding: 14px 15px; /* Increased padding for login inputs */
-     border-radius: 6px; /* Slightly more rounded */
-     margin-bottom: 0; /* Remove default margin-bottom here, input-group handles it */
-     border: 1px solid #ddd; /* Lighter border */
+/* --- Login Page Specific --- */
+.login-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex-grow: 1;
 }
 
-
-/* Focus States for Inputs */
-input[type="text"]:focus,
-input[type="password"]:focus, /* Added password type focus */
-select:focus,
-input[type="datetime-local"]:focus /* Added datetime-local focus */
-{
-  border-color: #3498db; /* Highlight border on focus */
-  box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); /* Add a subtle shadow on focus */
-  outline: none; /* Remove default outline */
-}
-
-/* Specific focus style for login inputs */
-.login-container input[type="text"]:focus,
-.login-container input[type="password"]:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 10px rgba(52, 152, 219, 0.4); /* More prominent shadow */
-}
-
-/* Placeholder Text Styling */
-input::placeholder {
-  color: #aaa; /* Lighter color for placeholder */
-  font-style: italic; /* Italic placeholder */
-}
-
-
-/* Button Styling (Applies to both form and login submit buttons) */
-button {
-  padding: 12px;
-  margin-top: 10px;
-  background-color: #2ecc71; /* Green for form submit button (adjusted from styles1.css blue) */
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1.1em;
-  transition: background-color 0.3s ease-in-out;
-}
-
-button:hover {
-  background-color: #27ae60; /* Darker green on hover */
-}
-
-/* Specific style for login submit button (Attractive style) */
-.login-container button[type="submit"] {
-  padding: 14px;
-  margin-top: 15px;
-  background: linear-gradient(to right, #3498db, #2980b9); /* Gradient button */
-  font-size: 1.15em;
-  font-weight: bold;
-  transition: opacity 0.3s ease-in-out, transform 0.2s ease-in-out;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.login-container button[type="submit"]:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
-  background-color: #2980b9; /* Fallback for hover */
-}
-
-
-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
-  opacity: 0.8;
-}
-
-
-/* Messages (Loading, Success, Login Status) */
-.success-message {
-  display: none;
+.login-container {
+  background: var(--white); /* Solid white for cleaner look */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 6px 15px rgba(0, 0, 0, 0.08);
+  border-radius: var(--border-radius);
+  width: 100%;
+  max-width: 380px; /* Optimal for login */
+  padding: 40px;
+  animation: fadeInUp 0.5s ease-out forwards;
   text-align: center;
-  color: #27ae60; /* Green */
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
-  border-radius: 5px;
-  padding: 15px;
-  margin-top: 20px;
+  border-top: 4px solid var(--primary-color);
 }
 
-.loading {
-  display: none;
-  text-align: center;
-  color: #3498db; /* Blue */
-  margin-top: 20px;
-  font-style: italic;
-}
-
-/* Styling for the login status message (Attractive style) */
-.login-message {
-  margin-top: 25px;
-  padding: 12px;
-  border-radius: 6px;
-  font-weight: bold;
-  display: none; /* Hidden by default, shown by JS */
-   /* Add fade-in animation */
-  animation: fadeIn 0.5s ease-out;
-}
-
-/* Animation for messages */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.login-message.success {
-  color: #27ae60;
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
-  display: block;
-}
-
-.login-message.error {
-  color: #e74c3c; /* Red */
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  display: block;
-}
-
-
-/* Card Styling for the Form */
-.card,
-.event-card {
-  background-color: #fdfefe; /* Very light off-white (adjusted from styles1.css) */
-  padding: 20px;
+.login-header {
   margin-bottom: 25px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-  border: 1px solid #ecf0f1;
+}
+.login-icon {
+  font-size: 48px; /* Slightly smaller */
+  color: var(--primary-color);
+  margin-bottom: 10px;
+  display: inline-block;
+}
+.login-container h2 {
+  color: var(--primary-dark-color);
+  margin-bottom: 0;
+  font-size: 1.7em; /* Adjusted */
+  font-weight: 500;
+}
+.login-container .input-field {
+  margin-bottom: 2.6rem; /* Space for potential errors */
+}
+.login-container .input-field label {
+  left: 2.9rem; /* Align with prefix icon */
+}
+.login-container .input-field input:focus + label,
+.login-container .input-field label.active {
+  transform: translateY(-140%) translateX(-2.9rem) scale(0.8); /* Fine-tuned */
 }
 
-.event-card h3 {
-  margin-top: 0;
-  color: #3498db;
-  border-bottom: 1px solid #ecf0f1;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
+.login-btn {
+  width: 100%;
+  margin-top: 20px;
+  background-color: var(--primary-color);
+  font-size: 0.95rem;
+  height: 42px;
+  line-height: 42px;
 }
-
-/* Styles for Select2 dropdowns (Integrated and adjusted) */
-.select2-container--default .select2-selection--single {
-    height: 44px !important; /* Adjusted height */
-    padding: 8px 24px 8px 15px !important; /* Adjusted padding */
-    border: 1px solid #bdc3c7 !important; /* Match other input borders */
-    border-radius: 5px !important;
-    font-size: 1em !important;
-    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    box-sizing: border-box;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 42px !important; /* Match height */
-}
-
-.select2-container--default.select2-container--open .select2-selection--single {
-    border-color: #3498db !important; /* Focus color */
-    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3) !important;
-}
-
-.select2-container--default .select2-dropdown {
-    border-color: #bdc3c7 !important; /* Border color */
-    border-radius: 5px !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+.login-btn:hover {
+  background-color: var(--primary-dark-color);
+  transform: translateY(-2px);
 }
 
 
-/* --- Error Message and Invalid Field Styling (Comprehensive) --- */
-/* These styles support the detailed validation logic and error spans */
+/* --- Main Form Container --- */
+.container {
+  background-color: var(--white);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.07); /* Main container shadow */
+  border-radius: var(--border-radius);
+  width: 100%;
+  max-width: 760px; /* Adjusted width */
+  padding: 30px 40px; /* Generous padding */
+  margin: 30px auto 50px auto;
+  transition: all 0.3s ease-out;
+}
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border-color);
+}
+.container h2 {
+  text-align: left;
+  color: var(--primary-dark-color);
+  margin: 0;
+  font-size: 1.6em; /* Adjusted */
+  font-weight: 500;
+}
+.logged-in-user {
+    font-size: 0.85em;
+    color: var(--label-color);
+    background-color: var(--background-light);
+    padding: 6px 12px;
+    border-radius: 4px;
+}
 
-.error-message {
-    color: #e74c3c; /* Red for error messages */
-    font-size: 0.8em;
-    display: block;
-    margin-top: 5px;
-    margin-bottom: 15px; /* Default margin below error */
-    min-height: 1em; /* Reserve space */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Cards --- */
+.card {
+  background-color: var(--white);
+  border-radius: var(--border-radius);
+  box-shadow: none;
+  border: 1px solid var(--border-color);
+  margin-bottom: 30px; /* More space between cards */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  overflow: visible;
+}
+.card:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow on hover */
+}
+.card .card-content {
+  padding: 25px 30px; /* Increased padding */
+}
+.card .card-title {
+  font-size: 1.1rem; /* Adjusted */
+  font-weight: 500;
+  color: var(--primary-color);
+  margin: -26px -31px 25px -31px;
+  padding: 18px 30px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: #fcfcff; /* Very light tint */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+.event-card .card-title .remove-event-btn {
+    margin: 0;
+}
+
+
+/* --- Input Fields (Material Design Inspired) --- */
+.input-field {
+  position: relative;
+  margin-top: 1.2rem; /* Reduced top margin */
+  margin-bottom: 3rem; /* CRITICAL: Space for error message below */
+}
+.input-field .prefix {
+    position: absolute;
+    font-size: 1.6rem; /* Adjusted */
+    top: calc( (var(--input-height) - 1.6rem) / 2 );
+    left: 0.3rem;
+    color: var(--label-color);
+    transition: color .2s;
+    width: 2.6rem;
+    text-align: center;
+}
+.input-field input:focus ~ .prefix {
+    color: var(--primary-color);
+}
+
+.input-field input[type="text"],
+.input-field input[type="password"],
+.input-field input[type="datetime-local"],
+.input-field input[type="number"],
+.input-field input[type="tel"],
+.input-field textarea {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 0;
+  outline: none;
+  height: var(--input-height);
+  width: 100%;
+  font-size: 0.95rem; /* Slightly smaller input text */
+  margin: 0;
+  padding: 0.7rem 0; /* Vertical padding for text */
+  box-shadow: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease-in-out;
+  color: var(--text-color);
+}
+.input-field .prefix ~ input[type="text"],
+.input-field .prefix ~ input[type="password"],
+.input-field .prefix ~ input[type="tel"] {
+    padding-left: 2.9rem;
+}
+
+
+.input-field input[type="text"]:not(.browser-default):focus:not([readonly]),
+.input-field input[type="password"]:not(.browser-default):focus:not([readonly]),
+.input-field input[type="datetime-local"]:not(.browser-default):focus:not([readonly]),
+.input-field input[type="number"]:not(.browser-default):focus:not([readonly]),
+.input-field input[type="tel"]:not(.browser-default):focus:not([readonly]) {
+  border-bottom: 2px solid var(--primary-color);
+  box-shadow: none;
+}
+
+.input-field input[type="datetime-local"] {
+    color: var(--text-color);
+    padding-right: 8px;
+}
+.input-field input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.5; /* Softer default opacity */
+    transition: opacity 0.2s;
+    filter: grayscale(60%) opacity(60%);
+}
+.input-field input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 0.8;
+    filter: grayscale(20%) opacity(80%);
+}
+
+.input-field label {
+  color: var(--label-color);
+  position: absolute;
+  top: 0.8rem; /* Align with input text */
+  left: 0;
+  font-size: 0.95rem; /* Match input text size */
+  cursor: text;
+  transition: transform 0.2s ease-out, color 0.2s ease-out, font-size 0.2s ease-out, background-color 0.2s ease-out, padding 0.2s ease-out;
+  transform-origin: 0 0;
+  pointer-events: none;
+  background-color: transparent; /* Start transparent */
+  padding: 0 1px; /* Minimal padding initially */
+}
+.input-field .prefix ~ label {
+    left: 2.9rem;
+}
+
+
+.input-field input:focus + label,
+.input-field textarea:focus + label,
+.input-field label.active { /* This includes .select-label.active */
+  transform: translateY(-125%) scale(0.8); /* Adjusted for better float */
+  color: var(--primary-color);
+  background-color: var(--white); /* CRITICAL: Label background when floating */
+  padding: 0 5px; /* Padding for floating label text */
+}
+
+
+/* Validation States */
+.input-field input.invalid,
+.input-field textarea.invalid {
+  border-bottom: 2px solid var(--error-color);
+}
+.input-field input.invalid + label,
+.input-field textarea.invalid + label,
+.input-field input.invalid ~ .prefix {
+  color: var(--error-color);
+}
+
+.input-field .error-message {
+  display: block;
+  visibility: hidden;
+  opacity: 0;
+  color: var(--error-color);
+  font-size: 0.7rem; /* Even smaller error text */
+  position: absolute;
+  top: calc(var(--input-height) + 4px); /* Position it just below the input's bottom border + small gap */
+  left: 0;
+  padding-top: 0; /* No extra top padding, rely on `top` */
+  line-height: 1.3; /* Adjusted line height */
+  transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+  font-weight: 400; /* Lighter weight for errors */
+}
+.input-field .error-message:empty { display: none; }
+.input-field .error-message:not(:empty) { visibility: visible; opacity: 1; }
+
+
+/* Select2 Material Styling */
+.input-field .select2-container .select2-selection--single {
+  height: var(--input-height);
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 0;
+  background-color: transparent;
+  padding-left: 0;
+  display: flex;
+  align-items: center;
+}
+.input-field .select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: var(--text-color);
+  line-height: normal;
+  padding-right: 28px;
+  padding-left: 0;
+  font-size: 0.95rem; /* Match input text size */
+}
+.input-field .select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: calc(var(--input-height) - 1px);
+  right: 0;
+  top: 0;
+  width: 28px;
+}
+.input-field .select2-container--default.select2-container--open .select2-selection--single,
+.input-field .select2-container--default .select2-selection--single:focus {
+  border-bottom: 2px solid var(--primary-color);
+  box-shadow: none;
+}
+.input-field .select2-container .select2-selection--single.invalid-select2 {
+    border-bottom: 2px solid var(--error-color) !important;
+}
+/* Ensure label for Select2 floats correctly when Select2 has a value or is focused */
+.input-field .select2-container + label.select-label.active {
+    transform: translateY(-125%) scale(0.8);
+    color: var(--primary-color);
+    background-color: var(--white);
     padding: 0 5px;
 }
 
-/* Adjust error message margin specifically within login input groups */
-.login-container .input-group .error-message {
-    margin-top: 6px;
-    margin-bottom: 5px;
-    font-size: 0.85em;
-}
-
-
-/* Style for input/select borders when invalid */
-input.is-invalid,
-select.is-invalid {
-    border-color: #e74c3c !important; /* Red border */
-    box-shadow: 0 0 5px rgba(231, 76, 60, 0.4); /* Red shadow */
-}
-
-/* Style for Select2 containers when the linked select is invalid */
-.select2-container--default .select2-selection--single.is-invalid {
-     border-color: #e74c3c !important;
-     box-shadow: 0 0 5px rgba(231, 76, 60, 0.4);
-}
-
-/* Style for Flatpickr inputs (which are type="text") when invalid */
-input[type="text"].is-invalid.flatpickr-input {
-    border-color: #e74c3c !important;
-    box-shadow: 0 0 5px rgba(231, 76, 60, 0.4);
-}
-
-/* Style for datetime-local inputs when invalid (if used without Flatpickr or fallback) */
-input[type="datetime-local"].is-invalid {
-     border-color: #e74c3c !important;
-     box-shadow: 0 0 5px rgba(231, 76, 60, 0.4);
-}
-
-
-/* Ensure error message follows the Select2 container with correct spacing */
-.select2-container + .error-message {
-    margin-top: 5px;
-}
-
-/* Ensure error message follows a Flatpickr input (type="text") with correct spacing */
-input[type="text"].flatpickr-input + .error-message {
-     margin-top: 5px;
-}
-
-/* Ensure error message follows a datetime-local input with correct spacing */
-input[type="datetime-local"] + .error-message {
-     margin-top: 5px;
-}
-
-
-/* Footer Styling */
-.footer-info {
-  text-align: center;
-  margin-top: 40px;
-  padding: 15px; /* Adjusted padding */
-  color: rgba(255, 255, 255, 0.8); /* Lighter color for background contrast */
-  font-size: 0.9em;
-   /* No animation */
-   opacity: 1;
-}
-
-.footer-info strong {
-  color: #fff; /* White */
-}
-
-.footer-info small {
-    display: block;
-    margin-top: 5px;
-    color: rgba(255, 255, 255, 0.6); /* Lighter color */
-    font-size: 0.8em;
-}
-
-/* Mobile responsiveness - Refined */
-@media (max-width: 600px) {
-  body {
-      padding: 10px; /* Less padding on small screens */
-  }
-  .container { /* For the form container */
-    width: 100%; /* Full width minus padding */
-    margin: 10px auto;
-    padding: 15px; /* Less padding inside */
-  }
-   .login-container { /* For the login container */
-    width: 100%; /* Full width minus padding */
-    padding: 20px; /* Less padding inside */
-  }
-
-  h2 {
-    font-size: 1.8em;
-    margin-bottom: 20px;
-  }
-   h2::after {
-       width: 50px;
-   }
-
-  select,
-  input[type="text"],
-  input[type="password"],
-  input[type="datetime-local"],
-  button {
-    padding: 10px;
-    margin-bottom: 15px;
-  }
-
-   .login-container input[type="text"],
-   .login-container input[type="password"] {
-       padding: 12px; /* Adjusted padding */
-   }
-
-  button[type="submit"] {
-     font-size: 1.1em;
-     margin-top: 10px;
-  }
-
-   .card,
-  .event-card {
-    padding: 15px;
-    margin-bottom: 20px;
-  }
-
-  .event-card h3 {
-     margin-bottom: 15px;
-     padding-bottom: 8px;
-  }
-
-  .login-message {
-      margin-top: 20px; /* Keep some space */
-      padding: 10px; /* Less padding */
-      font-size: 0.9em; /* Slightly smaller font */
-  }
-
-  .footer-info {
-    margin-top: 30px;
-    font-size: 0.8em;
-  }
-   .footer-info small {
-    font-size: 0.7em;
-  }
-
-    /* Adjust Select2 dropdowns on small screens */
-   .select2-container--default .select2-selection--single {
-       height: 40px !important; /* Slightly smaller height */
-       padding: 6px 24px 6px 10px !important; /* Adjusted padding */
-   }
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 38px !important; /* Match height */
-    }
-
-
-}
-/* Fix Select2 dropdown alignment and prevent overflow */
-.select2-container {
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box;
-}
 
 .select2-dropdown {
-  width: 100% !important;
-  max-width: 100vw !important;
-  left: 0 !important;
-  right: auto !important;
-  box-sizing: border-box;
-  margin: 0 !important;
-  border-radius: 0 0 5px 5px;
+  border: 1px solid var(--border-color);
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  z-index: 1060; /* Ensure it's above other elements */
+  background-color: var(--white);
+}
+.select2-results__option {
+    padding: 9px 14px; /* More padding in options */
+    font-size: 0.9rem;
+    transition: background-color 0.15s ease-in-out;
+}
+.select2-results__option--highlighted[aria-selected] {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+.select2results__option[aria-selected=true] { /* Style for already selected item in dropdown */
+    background-color: var(--background-light);
+    color: var(--primary-dark-color);
+    font-weight: 500;
+}
+.select2-search--dropdown .select2-search__field {
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px; /* Slightly rounded search field */
+    font-size: 0.9rem;
+    margin: 8px;
+    width: calc(100% - 16px);
+    box-sizing: border-box;
 }
 
-@media (max-width: 600px) {
-  .select2-dropdown {
-    width: 100% !important;
-    left: 0 !important;
-    right: auto !important;
-    max-width: 100vw !important;
-  }
-}
 
-/* Style for the Add Another Event and Remove Event buttons */
-.add-button,
-.remove-button {
-  display: inline-block; /* Allows padding and margin */
-  width: auto; /* Auto width based on content */
-  padding: 8px 15px; /* Smaller padding */
-  margin-top: 10px; /* Space above */
-  font-size: 0.9em; /* Smaller font size */
-  border-radius: 4px; /* Slightly less rounded corners */
+/* --- Buttons --- */
+.btn, button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--white);
+  background-color: var(--primary-color);
+  text-align: center;
+  letter-spacing: .5px; /* Adjusted */
+  transition: background-color .2s ease-out, box-shadow .2s ease-out, transform .15s ease-out;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  box-shadow: none; /* Remove the larger shadow */
-  transform: none; /* Remove transform effect on hover */
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0 24px; /* More horizontal padding */
+  height: 40px; /* Slightly shorter */
+  line-height: 40px;
+  font-size: 0.85rem; /* Adjusted */
+  font-weight: 500;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 1px 1px rgba(0,0,0,0.04); /* Softer button shadow */
+  outline: 0;
+  margin: 12px 6px; /* Adjusted margin */
+}
+.btn:hover, button:hover {
+  background-color: var(--primary-dark-color);
+  box-shadow: 0 3px 7px rgba(0,0,0,0.1), 0 2px 3px rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+}
+.btn:active, button:active {
+    background-color: var(--primary-dark-color);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    transform: translateY(0px);
+}
+.btn:disabled, button:disabled {
+  background-color: #CFD8DC !important; /* Lighter disabled color */
+  box-shadow: none !important;
+  color: #78909C !important;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
-/* Specific style for the Add button */
+.btn .material-icons {
+  font-size: 1rem; /* Adjusted */
+  line-height: inherit;
+}
+.btn .material-icons.left { margin-right: 8px; } /* Adjusted */
+.btn .material-icons.right { margin-left: 8px; } /* Adjusted */
+
+.add-event-wrapper {
+    text-align: right;
+    margin-top: 10px; /* Reduced margin */
+    margin-bottom: 20px; /* Space after add button */
+}
 .add-button {
-  background-color: #3498db; /* Blue color */
-  color: #fff;
-  border: none;
-   margin-right: 10px; /* Space between add button and card below */
+  background-color: var(--accent-color);
 }
-
 .add-button:hover {
-  background-color: #2980b9; /* Darker blue on hover */
-  opacity: 1; /* Ensure full opacity */
+  background-color: var(--accent-dark-color);
+}
+.remove-event-btn {
+  background-color: var(--error-color);
+  height: 28px;
+  width: 28px;
+  padding: 0;
+  border-radius: 50%;
+  line-height: 28px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+.remove-event-btn:hover {
+  background-color: #D32F2F; /* Darker Red */
+}
+.remove-event-btn i { font-size: 16px; } /* Smaller icon for smaller button */
+
+.primary-submit-btn {
+    min-width: 150px; /* Adjusted */
+    margin-top: 25px; /* Adjusted */
+    width: 100%;
+    background-color: var(--success-color);
+}
+.primary-submit-btn:hover {
+    background-color: #388E3C;
+}
+@media (min-width: 600px) {
+    .primary-submit-btn { width: auto; }
 }
 
-/* Specific style for the Remove button */
-.remove-button {
-  background-color: #e74c3c; /* Red color */
-  color: #fff;
-  border: none;
-   margin-left: 10px; /* Space from date inputs */
-   float: right; /* Float to the right within the event card */
+
+/* --- Messages & Loaders --- */
+.login-message, .submission-status-message {
+  margin-top: 18px; /* Adjusted */
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  text-align: center;
+  animation: fadeIn 0.4s ease-out forwards; /* Faster fade */
+  font-size: 0.8rem; /* Adjusted */
+  border-width: 1px;
+  border-style: solid;
+  line-height: 1.3; /* Adjusted */
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+.login-message.success, .submission-status-message.success {
+  color: #388E3C; background-color: #E8F5E9; border-color: #A5D6A7;
+}
+.login-message.error, .submission-status-message.error {
+  color: #D32F2F; background-color: #FFEBEE; border-color: #EF9A9A;
 }
 
-.remove-button:hover {
-  background-color: #c0392b; /* Darker red on hover */
-  opacity: 1; /* Ensure full opacity */
+.progress-bar {
+  position: relative;
+  height: 5px; /* Slightly thinner */
+  display: block;
+  width: 100%;
+  background-color: #B2DFDB; /* Accent light for track */
+  border-radius: var(--border-radius);
+  margin: 1.5rem 0; /* Adjusted */
+  overflow: hidden;
+}
+.progress-bar .indeterminate { background-color: var(--accent-color); }
+.progress-bar .indeterminate:before {
+  content: ''; position: absolute; background-color: inherit; top: 0; left: 0; bottom: 0; will-change: left, right;
+  animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+.progress-bar .indeterminate:after {
+  content: ''; position: absolute; background-color: inherit; top: 0; left: 0; bottom: 0; will-change: left, right;
+  animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite; animation-delay: 1.15s;
+}
+@keyframes indeterminate { 0% { left: -35%; right: 100%; } 60% { left: 100%; right: -90%; } 100% { left: 100%; right: -90%; } }
+@keyframes indeterminate-short { 0% { left: -200%; right: 100%; } 60% { left: 107%; right: -8%; } 100% { left: 107%; right: -8%; } }
+
+.conditional-section {
+    padding-top: 12px; /* Adjusted */
+    margin-top: 12px; /* Adjusted */
+    border-top: 1px dashed #CFD8DC; /* Softer dashed border */
+}
+.conditional-section:first-child {
+    border-top: none;
 }
 
-/* Clear float for elements following the remove button */
-.event-card::after {
-    content: "";
-    display: table;
-    clear: both;
+
+/* --- Footer --- */
+.footer-info {
+  text-align: center;
+  margin-top: auto;
+  padding: 20px; /* Adjusted */
+  color: var(--label-color);
+  font-size: 0.8rem; /* Adjusted */
+  width: 100%;
+  background-color: var(--white);
+  box-shadow: 0 -1px 4px rgba(0,0,0,0.04); /* Very subtle top shadow */
+}
+.footer-info strong { color: var(--primary-dark-color); }
+.footer-info small { display: block; margin-top: 4px; font-size: 0.9em; }
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .container { padding: 20px 25px; margin: 20px auto 30px auto; }
+  .login-container { padding: 30px; max-width: calc(100% - 40px); }
+  .container h2 { font-size: 1.5em; }
+  .login-container h2 { font-size: 1.6em; }
+  .btn, button { height: 38px; line-height: 38px; font-size: 0.8rem; padding: 0 16px; }
+  .card .card-content { padding: 20px; }
+  .card .card-title { padding: 15px 20px; font-size: 1.05rem; margin: -21px -21px 20px -21px;}
+  .input-field { margin-bottom: 2.8rem; } /* Ensure enough space on mobile */
+  .input-field .error-message { top: calc(var(--input-height) + 3px); font-size: 0.65rem; }
 }
 
-
-/* Adjust margin-bottom for date inputs within event cards that have a remove button */
-.event-card input[type="datetime-local"] {
-     margin-bottom: 10px; /* Reduce space if needed */
+@media (max-width: 480px) {
+  body { padding: 10px; }
+  .container, .login-container { padding: 20px 15px; max-width: calc(100% - 20px); margin: 15px auto 25px auto; }
+  .container h2 { font-size: 1.3em; }
+  .login-container h2 { font-size: 1.4em; }
+  .input-field label { font-size: 0.85rem; top: 0.85rem; }
+  .input-field .prefix ~ label { left: 2.6rem; }
+  .input-field input:focus + label,
+  .input-field label.active {
+    transform: translateY(-120%) scale(0.75);
+  }
+   .login-container .input-field label { left: 2.6rem; }
+  .login-container .input-field input:focus + label,
+  .login-container .input-field label.active {
+    transform: translateY(-135%) translateX(-2.6rem) scale(0.75);
+  }
+  .login-container .prefix { font-size: 1.4rem; top: calc( (var(--input-height) - 1.4rem) / 2 ); width: 2.6rem;}
+  .footer-info { font-size: 0.75em; padding: 15px; }
+  .primary-submit-btn { margin-top: 15px; }
+  .input-field { margin-bottom: 2.6rem; }
+  .input-field .error-message { top: calc(var(--input-height) + 2px); font-size: 0.65rem; }
 }
 
-/* You might need to adjust the margin-bottom of the last date input before the remove button */
-.event-card .remove-button {
-     margin-bottom: 5px; /* Ensure some space below the button */
+/* Ensure Select2 dropdowns are not cut off */
+.select2-container { width: 100% !important; }
+select { /* Hide original ugly select arrows */
+  -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important;
 }
